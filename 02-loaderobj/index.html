@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Proyecto 1 Computacion Grafica</title>
+	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+	<script src="../99-common/glmatrix/gl-matrix-min.js"></script>
+	<script src="../99-common/VertexAttributeInfo.js"></script>
+	<script src="../99-common/VAOHelper.js"></script>
+	<script src="../99-common/ShaderProgramHelper.js"></script>
+	<script src="../99-common/Utils.js"></script>
+	<script src="../99-common/OBJParser.js"></script>
+	<script src="sphericalCamera.js"></script>
+	<script src="files/shaders/vertex.glsl"></script>
+	<script src="files/shaders/fragment.glsl"></script>
+	<script src="../Modelos/satelite.js"></script>
+	<script src="../Modelos/planetaOriginal.js"></script>
+	<script src="../Modelos/planeta.js"></script>
+	<script src="../Modelos/anillo1.js"></script>
+	<script src="../Modelos/anillo2.js"></script>
+	<script src="js/controls.js"></script>
+	<script src="js/app.js"></script>
+	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
+</head>
+<body onload='onLoad();onRender();'>
+	<div id='myDiv'>
+		<button style="float:left; border : none;" onclick="launchFullScreen(document.documentElement);"><img src="../images/Full Screen_50px.png" ></button>
+		<h1>Escena</h1>
+		<div id='canvasDiv'>
+			<canvas id='webglCanvas' width = "1000" height = "700">
+			</canvas>
+		</div>
+		<div id='controlDiv'>
+			<table id='myTable'>
+				<tr id='myTableRow'>
+					<th colspan="2">Planeta Central</th>
+				</tr>
+				<tr>
+					<td>Rotación</td> 
+					<td>
+						<input id="slider1" type="range" min="-360" max="360" value="0" class="slider" oninput="onSliderRotationPlanet(this);">
+						<input type="text" id="textInput1" value="0" onchange="setNewValue(1,this.value)">
+						
+					</td>
+				</tr>
+				<tr>
+				 <td colspan="1"><button onclick="animateObject(7);">Rotación Automática Horario</button></td>
+				 <td colspan="1"><button onclick="animateObject(0);">Rotación Automática Antihorario</button></td>
+				</tr>
+			</table>
+			<table id='myTable'>
+				<tr id='myTableRow'>
+					<th colspan="2">Satélite orbitando</th>
+				</tr>
+				<tr>
+					<td>Rotación</td>
+					<td>
+						<input id="slider2" type="range" min="-360" max="360" value="0" class="slider"  oninput="onSliderRotationSatellite(this);">
+						<input type="text"  id="textInput2" value="0" onchange="setNewValue(2,this.value)">
+					</td>
+				</tr>
+				<tr>
+					<td>Orbitar</td>
+					<td>
+						<input id="slider3" type="range" min="-360" max="360" value="0" class="slider" oninput="onSliderRotationSatellitePlanet(this);">
+						<input type="text" id="textInput3" value="0" onchange="setNewValue(3,this.value)">
+					</td>
+				</tr>
+				<tr>
+					<td><button onclick="animateObject(1);">Rotación Automática Horario</button></td>
+					<td><button onclick="animateObject(8);">Rotación Automática Antihorario</button></td>
+				</tr>	
+				<tr>
+					<td><button onclick="animateObject(2);">Orbita Automática Horario</button></td>
+					<td><button onclick="animateObject(9);">Orbita Automática Antihorario</button></td>
+				</tr>
+			</table>
+			<table id='myTable'>
+				<tr id='myTableRow'>
+					<th colspan="3">Cámara</th>
+				</tr>
+				
+
+				<tr>
+					<td>Zoom in/out</td>
+					<td>
+						<input id="slider4" type="range" min="0" max="90" value="20" class="slider" oninput="onSliderZoomCamera(this);">
+						<input type="text" id="textInput4" value="20" onchange="setNewValue(4,this.value)">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>Arriba/Abajo</td>
+					<td>
+						<input id="slider5" type="range" min="0" max="360" value="18" class="slider" oninput="onSliderUpDownCamera(this);" >
+						<input type="text" id="textInput5" value="18" onchange="setNewValue(5,this.value)">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>Rotación</td>
+					<td>
+						<input id="slider6" type="range" min="0" max="360" value="297" class="slider" oninput="onSliderRotationCamera(this);"> 
+						<input type="text" id="textInput6" value="297" onchange="setNewValue(6,this.value)">
+					</td>
+					
+				</tr>
+				<tr >
+					<td><button onclick="animateObject(6);">Rotación Automática Horario</button></td>
+					<td><button onclick="animateObject(5);">Rotación Automática Antihorario</button></td>
+				</tr>
+				
+				
+			</table>
+			<button style="color:white" onclick="resetScene();">Reset</button>
+			
+		</div>
+	</div>
+
+</body>
+</html>

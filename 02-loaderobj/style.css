@@ -1,0 +1,147 @@
+body{
+	background-color : #dae1e7;
+	font-family : Helvetica;
+}
+
+/**Codigo de modificacion para el div general*/
+#myDiv{
+	background-color : #1c4b82;
+	width : 1600px;
+	height : 800px;
+	margin : auto;
+	border-radius : 25px;
+	border : 2px solid #183661;
+	padding : 15px;
+	color : white;
+	text-align : center;
+}
+
+/**Div con controles*/
+#controlDiv{
+	background-color : #183661;
+	width : 550px;
+	height : 700px;
+	float : right;
+	border-radius : 25px;
+	border : 2px solid #183661;
+}
+
+/**Div con canvas*/
+#canvasDiv{
+	background-color : #183661;
+    width : 1005px;
+	height : 705px;
+	float : left;
+	border-radius : 25px;
+	border : 2px solid #183661;
+}
+
+/**Modificaciones de la tabla (General)*/
+#myTable{
+	color : #5e5e5e;
+	background-color : #dae1e7;
+	width : 525px;
+	margin-top : 10px;
+	margin-bottom : 10px;
+	margin-right : auto;
+	margin-left : auto;	
+	border-collapse : collapse;
+	border-radius : 10px;
+	overflow : hidden;
+	font-family : Helvetica;
+	
+}
+
+/**Modificaciones de los headers de la tabla*/
+#myTableRow{
+	background-color : #dd6b4d;
+	font-size : 18px;
+	color : black;
+}
+
+/*Modificaciones de todas las filas de la tabla (Menos los headers)*/
+tr{
+	height : 40px;	
+}
+
+/*Modificacion del tamaño de columna*/
+td{
+	width : 50%;
+}
+
+/**Modificaciones de todas las filas impares de la tabla*/
+tbody tr:nth-child(odd) {
+  background-color : #f5f5f5;
+}
+
+#webglCanvas{
+	width : 1000px;
+	height : 700px;
+	border : 2px solid #183661;
+	border-radius : 25px;    
+	margin : auto;
+}
+
+/**Modificaciones a los botones*/
+button {
+  background-color : rgba(0,0,0,0);
+  border: 2px solid #dd6b4d;
+  border-radius : 25px;
+  padding: 5px 10px;
+  text-align: center;
+  font-size: 16px;
+  transition-duration: 0.4s;
+}
+
+/**Modificaciones cuando pongo el mouse encima del boton*/
+button:hover {
+  background-color: #dd6b4d;
+  color: white;
+}
+
+/* Modificacion de los range slider*/
+.slider {
+  -webkit-appearance: none; 
+  appearance: none;
+  width: 200px; 
+  height: 5px; 
+  background: #1c4b82; 
+  outline: none; 
+  opacity: 0.7; 
+  -webkit-transition: .2s; 
+  transition: opacity .2s;
+}
+
+/* Modificaciones cuando pongo el mouse encima del range slider*/
+.slider:hover {
+  opacity: 1;
+}
+
+/* Modificaciones del manejador en chrome, safari, etc */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; 
+  appearance: none;
+  width: 15px; 
+  height: 15px;
+  border : 2px solid gray;
+  border-radius : 20px;
+  background: white;
+}
+
+/*Modificador del manejador en firefox*/
+.slider::-moz-range-thumb {
+  width: 11px; 
+  height: 11px; 
+  border : 2px solid gray;
+  border-radius : 20px;
+  background: white; 
+}
+
+input[type=text]{
+	background-color : white;
+	border-radius : 10px;
+	border : 2px solid gray;
+	margin-left:5px; width: 30px;
+	text-align : center;
+	
+}
