@@ -4,27 +4,28 @@
 	<meta charset="UTF-8">
 	<title>Proyecto 1 Computacion Grafica</title>
 	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
-	<script src="../99-common/glmatrix/gl-matrix-min.js"></script>
-	<script src="../99-common/VertexAttributeInfo.js"></script>
-	<script src="../99-common/VAOHelper.js"></script>
-	<script src="../99-common/ShaderProgramHelper.js"></script>
-	<script src="../99-common/Utils.js"></script>
-	<script src="../99-common/OBJParser.js"></script>
-	<script src="sphericalCamera.js"></script>
-	<script src="files/shaders/vertex.glsl"></script>
-	<script src="files/shaders/fragment.glsl"></script>
-	<script src="../Modelos/satelite.js"></script>
-	<script src="../Modelos/planetaOriginal.js"></script>
-	<script src="../Modelos/planeta.js"></script>
-	<script src="../Modelos/anillo1.js"></script>
-	<script src="../Modelos/anillo2.js"></script>
-	<script src="js/controls.js"></script>
-	<script src="js/app.js"></script>
-	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
+	<script src="Utils/gl-matrix-min.js"></script>
+	<script src="Utils/VertexAttributeInfo.js"></script>
+	<script src="Utils/VAOHelper.js"></script>
+	<script src="Utils/Utils.js"></script>
+	<script src="Utils/OBJParser.js"></script>
+	<script src="Utils/sphericalCamera.js"></script>
+	<script src="Utils/mouseCamera.js"></script>
+	<script src="Utils/Shaders/ShaderProgramHelper.js"></script>
+	<script src="Utils/Shaders/vertex.glsl"></script>
+	<script src="Utils/Shaders/fragment.glsl"></script>
+	<script src="Modelos/satelite.js"></script>
+	<script src="Modelos/planetaOriginal.js"></script>
+	<script src="Modelos/planeta.js"></script>
+	<script src="Modelos/anillo1.js"></script>
+	<script src="Modelos/anillo2.js"></script>
+	<script src="Utils/Interfaz/controls.js"></script>
+	<script src="app.js"></script>
+	<LINK REL=StyleSheet HREF="Utils/Interfaz/style.css" TYPE="text/css" MEDIA=screen>
 </head>
 <body onload='onLoad();onRender();'>
 	<div id='myDiv'>
-		<button style="float:left; border : none;" onclick="launchFullScreen(document.documentElement);"><img src="../images/Full Screen_50px.png" ></button>
+		<button style="float:left; border : none;" onclick="launchFullScreen(document.documentElement);"><img src="Utils/Interfaz/Full Screen_50px.png" ></button>
 		<h1>Escena</h1>
 		<div id='canvasDiv'>
 			<canvas id='webglCanvas' width = "1000" height = "700">
