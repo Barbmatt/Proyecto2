@@ -2,7 +2,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Proyecto #1</title>
+	<title>???</title>
 	<script src="libs/gl-matrix-min.js"></script>
 	<script src="libs/VertexAttributeInfo.js"></script>
 	<script src="libs/VAOHelper.js"></script>
@@ -23,7 +23,6 @@
 		
 		function check(e) {
 			var code = e.keyCode;
-			console.log(code)
 			     if ( code == 37) camara_mouse.flecha_derecha(); 			
 			else if ( code == 38 ) camara_mouse.flecha_arriba(); 		
 			else if ( code == 39 ) camara_mouse.flecha_izquierda(); 		
@@ -38,8 +37,8 @@
 </head>
 
 <body>
-	<h1>Proyecto #1</h1>
-	<canvas id='webglCanvas' width="800" height="800" style='float:left' oninput="teclado(this);">
+	<h1>???</h1>
+	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
 	</canvas>
 
 	<table border='2'>
@@ -65,7 +64,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td><button id="boton_reset" disabled onclick="reset_camera();">Restablecer cámara</button>
+			<td><button id="boton_reset" disabled onclick="reset_camara();">Restablecer cámara</button>
 			</td>
 			<td>
 				<button id="boton_cargar_dibujar" onclick="onLoad();">Cargar y dibujar</button>

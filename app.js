@@ -1,3 +1,9 @@
+/* TODO: más de una matriz modelo
+ *		 por qué se ve raro la renderización? windows?
+ *		 límites en el zoom
+ *		 movimiento del mouse infinito, de un extremo de la pantalla al otro sin soltarlo
+ */
+
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
 var gl = null;
@@ -32,6 +38,9 @@ var u_brillo;
 var matriz_modelo_h = mat4.create();
 var matriz_modelo_r = mat4.create();
 var matriz_modelo_m = mat4.create();
+var matriz_normal_h = mat4.create();
+var matriz_normal_r = mat4.create();
+var matriz_normal_m = mat4.create();
 
 //Aux variables,
 var default_pos_r = [0,20,-15];
@@ -86,17 +95,17 @@ function onLoad() {
 	u_matriz_modelo = gl.getUniformLocation(shader_program, 'modelMatrix');
 	u_matriz_vista = gl.getUniformLocation(shader_program, 'viewMatrix');
 	u_matriz_proyeccion = gl.getUniformLocation(shader_program, 'projectionMatrix');
-	u_matriz_normal = gl.getUniformLocation(shaderProgram,'normalMatrix');
-	u_posicion_luz = gl.getUniformLocation(shaderProgram,'posL');
+	u_matriz_normal = gl.getUniformLocation(shader_program,'normalMatrix');
+	u_posicion_luz = gl.getUniformLocation(shader_program,'posL');
 
 	// configuración del fragment shader
-	u_intensidad_ambiente = gl.getUniformLocation(shaderProgram,"intensidad_ambiente");
-	u_intensidad_difusa = gl.getUniformLocation(shaderProgram,"intensidad_difusa");
-	u_atenuacion = gl.getUniformLocation(shaderProgram,"func_atenuacion");
-	u_constante_ambiente = gl.getUniformLocation(shaderProgram,"ka");
-	u_constante_difusa = gl.getUniformLocation(shaderProgram,"kd");
-	u_constante_especular = gl.getUniformLocation(shaderProgram,"ks");
-	u_brillo = gl.getUniformLocation(shaderProgram,"n");
+	u_intensidad_ambiente = gl.getUniformLocation(shader_program,"intensidad_ambiente");
+	u_intensidad_difusa = gl.getUniformLocation(shader_program,"intensidad_difusa");
+	u_atenuacion = gl.getUniformLocation(shader_program,"func_atenuacion");
+	u_constante_ambiente = gl.getUniformLocation(shader_program,"ka");
+	u_constante_difusa = gl.getUniformLocation(shader_program,"kd");
+	u_constante_especular = gl.getUniformLocation(shader_program,"ks");
+	u_brillo = gl.getUniformLocation(shader_program,"n");
 
 	// un arreglo de atributos para cada objeto
 	let vertex_attribute_info_array_h = [
@@ -133,8 +142,6 @@ function onLoad() {
 	interfaz.deshabilitar_sliders_camara_reset(false);
 	gl.enable(gl.DEPTH_TEST);
 
-	dibujar_mountain();
-
 	gl.bindVertexArray(null);
 
 	// se empieza a dibujar por cuadro
@@ -143,32 +150,65 @@ function onLoad() {
 
 function onRender(now) {
 	// se controla en cada cuadro si la cámara es automática
-	control_automatica();
+	control_automatica(now);
 
 	// limpiar canvas
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// setear el shader a utilizar con las matrices que necesita para dibujar la casa
+	// setear los uniforms generales
 	gl.useProgram(shader_program);
-	gl.uniformMatrix4fv(u_matriz_modelo, false, matriz_modelo_h);
 	gl.uniformMatrix4fv(u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(u_matriz_proyeccion, false, camara.proyeccion());
+	gl.uniform3f(u_posicion_luz, 10.0,10.0,10.0);
+	gl.uniform3f(u_intensidad_ambiente, 1.0,1.0,1.0);
+	gl.uniform3f(u_intensidad_difusa, 1.0,1.0,1.0);
+	gl.uniform1f(u_atenuacion, 1.0);
 
 	// dibujar casa
+
+	gl.uniform3f(u_constante_ambiente,0.21,0.13,0.05);
+	gl.uniform3f(u_constante_difusa,0.71,0.43,0.18);
+	gl.uniform3f(u_constante_especular,0.39,0.27,0.17);
+	gl.uniform1f(u_brillo, 25.6);
+	gl.uniformMatrix4fv(u_matriz_modelo, false, matriz_modelo_h);
+
+	mat4.multiply(matriz_normal_h,camara.vista(), matriz_modelo_h);
+	mat4.invert(matriz_normal_h,matriz_normal_h);
+	mat4.transpose(matriz_normal_h,matriz_normal_h);
+	gl.uniformMatrix4fv(u_matriz_normal, false, matriz_normal_h);
+
 	gl.bindVertexArray(vao_h);
-	gl.drawElements(gl.LINES, cant_indices_h, gl.UNSIGNED_INT, 0);
+	gl.drawElements(gl.TRIANGLES, cant_indices_h, gl.UNSIGNED_INT, 0);
 
 	gl.bindVertexArray(null);
 
-	// se cambia la matriz de modelo a la del cohete y se procede a dibujar
+	// se cambia la matriz de modelo a la del cohete y se procede a dibujargl.uniform3f(u_constante_ambiente,0.21,0.13,0.05);
+	gl.uniform3f(u_constante_difusa,0.17,0.01,0.01);
+	gl.uniform3f(u_constante_especular,0.61,0.04,0.04);
+	gl.uniform1f(u_brillo,0.73,0.63,0.63);
 	gl.uniformMatrix4fv(u_matriz_modelo, false, matriz_modelo_r);
+
+	mat4.multiply(matriz_normal_r,camara.vista(), matriz_modelo_r);
+	mat4.invert(matriz_normal_r,matriz_normal_r);
+	mat4.transpose(matriz_normal_r,matriz_normal_r);
+	gl.uniformMatrix4fv(u_matriz_normal, false, matriz_normal_r);
+
 	gl.bindVertexArray(vao_r);
-	gl.drawElements(gl.LINES, cant_indices_r, gl.UNSIGNED_INT, 0);
+	gl.drawElements(gl.TRIANGLES, cant_indices_r, gl.UNSIGNED_INT, 0);
 
 	// se cambia la matriz de modelo a la de la montaña y se procede a dibujar
+	gl.uniform3f(u_constante_difusa,0.10,0.19,0.17);
+	gl.uniform3f(u_constante_especular,0.40,0.74,0.70);
+	gl.uniform1f(u_brillo,0.30,0.31,0.31);
 	gl.uniformMatrix4fv(u_matriz_modelo, false, matriz_modelo_m);
+
+	mat4.multiply(matriz_normal_m,camara.vista(), matriz_modelo_m);
+	mat4.invert(matriz_normal_m,matriz_normal_m);
+	mat4.transpose(matriz_normal_m,matriz_normal_m);
+	gl.uniformMatrix4fv(u_matriz_normal, false, matriz_normal_m);
+
 	gl.bindVertexArray(vao_m);
-	gl.drawElements(gl.LINES, cant_indices_m, gl.UNSIGNED_INT, 0);
+	gl.drawElements(gl.TRIANGLES, cant_indices_m, gl.UNSIGNED_INT, 0);
 
 	gl.bindVertexArray(null);
 
@@ -178,8 +218,9 @@ function onRender(now) {
 	requestAnimationFrame(onRender);
 }
 
-function control_automatica() {
+function control_automatica(now) {
 	if ( interfaz.camara_seleccionada() == 'a' ) { // la cámara es automática
+		document.getElementById("boton_reset").disabled = true;
 		// de milisegundos a segundos
 		now *= 0.001;
 
@@ -198,6 +239,7 @@ function control_automatica() {
 		// guardar cuándo se realiza este frame y se vuelve a renderizar
 		last_draw_time = now;
 	}
+	else document.getElementById("boton_reset").disabled = false;
 }
 
 function rotar_cohete(slider) {
@@ -241,6 +283,8 @@ function rotar_casa(slider) {
 	// rotar la matriz de modelado de la casa
 	mat4.rotateY(matriz_modelo_h, matriz_modelo_h, angulo*Math.PI/180);
 }
+
+function reset_camara() { camara.reset(); }
 
 function cargar_modelos() {
 	parsed_obj_h = OBJParser.parseFile(house);
