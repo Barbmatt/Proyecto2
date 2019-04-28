@@ -1,0 +1,73 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>???</title>
+	<script src="libs/gl-matrix-min.js"></script>
+	<script src="libs/VertexAttributeInfo.js"></script>
+	<script src="libs/VAOHelper.js"></script>
+	<script src="libs/ShaderProgramHelper.js"></script>
+	<script src="libs/interfaz.js"></script>
+	<script src="libs/Utils.js"></script>
+	<script src="libs/OBJParser.js"></script>
+	<script src="libs/vertex.glsl"></script>
+	<script src="libs/fragment.glsl"></script>
+	<script src="libs/Camara_esfericas.js"></script>
+	<script src="libs/Camara_mouse.js"></script>
+	<script src="Modelos/house.js"></script>
+	<script src="Modelos/rocket.js"></script>
+	<script src="Modelos/mountain.js"></script>
+	<script src="app.js"></script>
+	<script type="text/javascript">
+		window.addEventListener('keydown',this.check,false);
+		
+		function check(e) {
+			var code = e.keyCode;
+			     if ( code == 37) camara_mouse.flecha_derecha(); 			
+			else if ( code == 38 ) camara_mouse.flecha_arriba(); 		
+			else if ( code == 39 ) camara_mouse.flecha_izquierda(); 		
+			else if ( code == 40 ) camara_mouse.flecha_abajo(); 		
+
+			else if ( code == 87 ) camara_mouse.flecha_arriba(); 		
+			else if ( code == 68 ) camara_mouse.flecha_izquierda(); 		
+			else if ( code == 65 ) camara_mouse.flecha_derecha(); 		
+			else if ( code == 83 ) camara_mouse.flecha_abajo(); 		
+		}
+	</script>
+</head>
+
+<body onload='onLoad();'>
+	<h1>???</h1>
+	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
+	</canvas>
+
+	<table border='2'>
+		<tr>
+			<td>Rotar casa</td>
+			<td><input type="range" id="range_casa" step="1" min="0" max="360" value="0" oninput="rotar_casa(this);"></td>
+		</tr>
+		<tr>
+			<td>Rotar cohete</td>
+			<td><input type="range" id='range_cohete' step="1" min="0" max="360" value="0" oninput="rotar_cohete(this);"></td>
+		</tr>
+		<tr>
+			<td>Orbitar cohete</td>
+			<td><input type="range" id='range_orbita' step="0.01" min="0" max="360" value="0" oninput="orbitar_cohete(this);"></td>
+		</tr>
+		<tr>
+			<td>
+				<button id="boton_reset" onclick="reset_camara();">Restablecer cámara
+				</button>
+			</td>
+			<td>
+				<select id="camara_seleccionada">
+					<option value=0>Cámara manual</option>
+					<option value=1>Cámara automática</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+</body>
+
+</html>
+

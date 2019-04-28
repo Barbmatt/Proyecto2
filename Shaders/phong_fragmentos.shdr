@@ -1,0 +1,71 @@
+{
+  "vertexSource": "#version 300 es\n\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\nuniform mat4 modelMatrix;\n\nuniform vec3 posL;// en coordenadas del mundo\n\nin vec3 vertexNormal;\nin vec3 vertexPosition;\nout vec3 vNE;\nout vec3 vLE;\nout vec3 vVE;\n\n\nvoid main() {\n    vec3 vPE = vec3(viewMatrix * modelMatrix * vec4(vertexPosition, 1));\n    vec3 posLE = vec3(viewMatrix * vec4(posL,1));\n    vLE = normalize(vec3(posLE-vPE));\n    vNE = normalize(vec3(normalMatrix*vec4(vertexNormal,1)));\n    vVE = normalize(-vPE);  // distancia entre la posicion del ojo (0,0,0) y un vertice del objeto\n   \n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);\n}",
+  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nuniform vec3 intensidad_ambiente;\nuniform vec3 intensidad_difusa;\nuniform float func_atenuacion;\n\nuniform vec3 ka;\nuniform vec3 kd;\nuniform vec3 ks;\nuniform float n;\n\nin vec3 vNE;\nin vec3 vLE;\nin vec3 vVE;\n\nvec3 color;\nout vec3 fragmentColor;\n\nvoid main() {\n    vec3 N = normalize(vNE);\n    vec3 L = normalize(vLE);\n    vec3 V = normalize(vVE);\n    vec3 H = normalize(L+V);\n    \n    float luz_difusa = max(dot(N,L),0.0); // intensidad de luz difusa \n    float luz_especular=pow(max(dot(N,H),0.0),n);// intensidad de luz especular\n   \n    vec3 luz1 = (0.3) * func_atenuacion*intensidad_difusa*(kd*luz_difusa + ks*luz_especular);\n\tvec3 luz2 = (1.0) * func_atenuacion*intensidad_difusa*(kd*luz_difusa + ks*luz_especular);\n    vec3 luz3 = (0.7) * func_atenuacion*intensidad_difusa*(kd*luz_difusa + ks*luz_especular);\n    color = intensidad_ambiente*ka + luz1 + luz2 + luz3 ; \n    fragmentColor = color;\n}",
+  "model": "teapot",
+  "uniforms": [
+    {
+      "name": "posL",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "intensidad_ambiente",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "intensidad_difusa",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "func_atenuacion",
+      "type": "float",
+      "value": 1
+    },
+    {
+      "name": "ka",
+      "type": "vec3",
+      "value": [
+        0.5,
+        0.30000001192092896,
+        0.10000000149011612
+      ]
+    },
+    {
+      "name": "kd",
+      "type": "vec3",
+      "value": [
+        0.4000000059604645,
+        0.699999988079071,
+        0.10000000149011612
+      ]
+    },
+    {
+      "name": "ks",
+      "type": "vec3",
+      "value": [
+        0.10000000149011612,
+        0.699999988079071,
+        0.5
+      ]
+    },
+    {
+      "name": "n",
+      "type": "float",
+      "value": 20
+    }
+  ]
+}
