@@ -18,9 +18,8 @@ class interfaz {
 		let select_camara = document.getElementById("camara_seleccionada");
 		let camara_seleccionada = select_camara.options[select_camara.selectedIndex].text;
 		// camara_seleccionada nada más puede ser Manual o Automática. basta con controlar un valor posible
-		let resultado;
-		if ( camara_seleccionada == "Manual" ) resultado = 'm'
-		else resultado = 'a';
+		let resultado = "a";
+		if ( camara_seleccionada == "Cámara manual" ) resultado = 'm'
 		return resultado;
 	}
 }

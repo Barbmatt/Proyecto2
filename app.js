@@ -19,7 +19,9 @@ var camara_mouse = null;
 var angulo_viejo_rotacion = 0;			// para rotar el cohete en su eje direccional
 
 // variables uniformes
-var u_matriz_modelo;
+var u_matriz_modelo_h;
+var u_matriz_modelo_r;
+var u_matriz_modelo_m;
 var u_matriz_vista;
 var u_matriz_proyeccion;
 var u_matriz_normal;
@@ -54,30 +56,24 @@ function onLoad() {
 	let canvas = document.getElementById('webglCanvas');
 	gl = canvas.getContext('webgl2');
 
-	// se clickeó el botón de cargar y dibujar. ya no se va a utilizar
-	document.getElementById('boton_cargar_dibujar').disabled = true;
-
 	cargar_modelos();
 
 	// obtener índices, posiciones y normales de la casa ([h]ouse)
 	let indices_h = parsed_obj_h.indices;
 	let posiciones_h = parsed_obj_h.positions;
 	let normales_h = parsed_obj_h.normals;
-	//let indices_h = Utils.indices_triangulos_a_lineas(indices_triangulos_h);
 	cant_indices_h = indices_h.length;
 
 	// lo mismo con el cohete ([r]ocket)
 	let indices_r = parsed_obj_r.indices;
 	let posiciones_r = parsed_obj_r.positions;
 	let normales_r = parsed_obj_r.normals;
-	//let indices_r = Utils.indices_triangulos_a_lineas(indices_triangulos_r);
 	cant_indices_r = indices_r.length;
 
 	// lo mismo con la montaña
 	let indices_m = parsed_obj_m.indices;
 	let posiciones_m = parsed_obj_m.positions;
 	let normales_m = parsed_obj_m.normals;
-	//let indices_m = Utils.indices_triangulos_a_lineas(indices_triangulos_m);
 	cant_indices_m = indices_m.length;
 
 	// configuración del vertex shader
@@ -85,14 +81,9 @@ function onLoad() {
 	let loc_posicion = gl.getAttribLocation(shader_program, 'vertexPosition');
 	let loc_normal = gl.getAttribLocation(shader_program, 'vertexNormal');
 	
-	/* 
-	 *
-	 * TODO: más de una u_matriz_modelo?
-	 *
-	 */	
-	
-	
-	u_matriz_modelo = gl.getUniformLocation(shader_program, 'modelMatrix');
+	u_matriz_modelo_h = gl.getUniformLocation(shader_program, 'modelMatrix');
+	u_matriz_modelo_r = gl.getUniformLocation(shader_program, 'modelMatrix');
+	u_matriz_modelo_m = gl.getUniformLocation(shader_program, 'modelMatrix');
 	u_matriz_vista = gl.getUniformLocation(shader_program, 'viewMatrix');
 	u_matriz_proyeccion = gl.getUniformLocation(shader_program, 'projectionMatrix');
 	u_matriz_normal = gl.getUniformLocation(shader_program,'normalMatrix');
@@ -137,9 +128,6 @@ function onLoad() {
 	// posicionamiento inicial del cohete
 	mat4.translate(matriz_modelo_r,matriz_modelo_r,default_pos_r);
 
-	// se habilitan los sliders para poder interactuar con la escena y se procede a pintar
-	interfaz.deshabilitar_sliders_movimientos_reset_select(false);
-	interfaz.deshabilitar_sliders_camara_reset(false);
 	gl.enable(gl.DEPTH_TEST);
 
 	gl.bindVertexArray(null);
@@ -159,19 +147,22 @@ function onRender(now) {
 	gl.useProgram(shader_program);
 	gl.uniformMatrix4fv(u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(u_matriz_proyeccion, false, camara.proyeccion());
-	gl.uniform3f(u_posicion_luz, 10.0,10.0,10.0);
-	gl.uniform3f(u_intensidad_ambiente, 1.0,1.0,1.0);
+	
+	let pos_l = [7,7,7];
+	gl.uniform3f(u_posicion_luz, pos_l[0], pos_l[1], pos_l[2]);
+	gl.uniform3f(u_intensidad_ambiente, 1.0, 1.0, 1.0);
 	gl.uniform3f(u_intensidad_difusa, 1.0,1.0,1.0);
-	gl.uniform1f(u_atenuacion, 1.0);
+	gl.uniform1f(u_atenuacion, 0.7);
 
+	matriz_modelo_h = mat4.create()
+	mat4.translate(matriz_modelo_h,matriz_modelo_h,pos_l)
 	// dibujar casa
-
 	gl.uniform3f(u_constante_ambiente,0.21,0.13,0.05);
 	gl.uniform3f(u_constante_difusa,0.71,0.43,0.18);
 	gl.uniform3f(u_constante_especular,0.39,0.27,0.17);
 	gl.uniform1f(u_brillo, 25.6);
-	gl.uniformMatrix4fv(u_matriz_modelo, false, matriz_modelo_h);
 
+	gl.uniformMatrix4fv(u_matriz_modelo_h, false, matriz_modelo_h);
 	mat4.multiply(matriz_normal_h,camara.vista(), matriz_modelo_h);
 	mat4.invert(matriz_normal_h,matriz_normal_h);
 	mat4.transpose(matriz_normal_h,matriz_normal_h);
@@ -179,15 +170,15 @@ function onRender(now) {
 
 	gl.bindVertexArray(vao_h);
 	gl.drawElements(gl.TRIANGLES, cant_indices_h, gl.UNSIGNED_INT, 0);
-
+	
 	gl.bindVertexArray(null);
 
-	// se cambia la matriz de modelo a la del cohete y se procede a dibujargl.uniform3f(u_constante_ambiente,0.21,0.13,0.05);
-	gl.uniform3f(u_constante_difusa,0.17,0.01,0.01);
-	gl.uniform3f(u_constante_especular,0.61,0.04,0.04);
-	gl.uniform1f(u_brillo,0.73,0.63,0.63);
-	gl.uniformMatrix4fv(u_matriz_modelo, false, matriz_modelo_r);
+	// se cambia la matriz de modelo a la del cohete y se procede a dibujar
+	gl.uniform3f(u_constante_ambiente,0.17,0.01,0.01);
+	gl.uniform3f(u_constante_difusa,0.61,0.04,0.04);
+	gl.uniform3f(u_constante_especular,0.73,0.63,0.63);
 
+	gl.uniformMatrix4fv(u_matriz_modelo_r, false, matriz_modelo_r);
 	mat4.multiply(matriz_normal_r,camara.vista(), matriz_modelo_r);
 	mat4.invert(matriz_normal_r,matriz_normal_r);
 	mat4.transpose(matriz_normal_r,matriz_normal_r);
@@ -196,12 +187,14 @@ function onRender(now) {
 	gl.bindVertexArray(vao_r);
 	gl.drawElements(gl.TRIANGLES, cant_indices_r, gl.UNSIGNED_INT, 0);
 
-	// se cambia la matriz de modelo a la de la montaña y se procede a dibujar
-	gl.uniform3f(u_constante_difusa,0.10,0.19,0.17);
-	gl.uniform3f(u_constante_especular,0.40,0.74,0.70);
-	gl.uniform1f(u_brillo,0.30,0.31,0.31);
-	gl.uniformMatrix4fv(u_matriz_modelo, false, matriz_modelo_m);
+	gl.bindVertexArray(null);
 
+	// se cambia la matriz de modelo a la de la montaña y se procede a dibujar
+	gl.uniform3f(u_constante_ambiente,0.10,0.19,0.17);
+	gl.uniform3f(u_constante_difusa,0.40,0.74,0.70);
+	gl.uniform3f(u_constante_especular,0.30,0.31,0.31);
+	
+	gl.uniformMatrix4fv(u_matriz_modelo_m, false, matriz_modelo_m);
 	mat4.multiply(matriz_normal_m,camara.vista(), matriz_modelo_m);
 	mat4.invert(matriz_normal_m,matriz_normal_m);
 	mat4.transpose(matriz_normal_m,matriz_normal_m);
@@ -212,15 +205,12 @@ function onRender(now) {
 
 	gl.bindVertexArray(null);
 
-	gl.useProgram(null);
-
 	// otra vez a dibujar
 	requestAnimationFrame(onRender);
 }
 
 function control_automatica(now) {
 	if ( interfaz.camara_seleccionada() == 'a' ) { // la cámara es automática
-		document.getElementById("boton_reset").disabled = true;
 		// de milisegundos a segundos
 		now *= 0.001;
 
@@ -239,7 +229,6 @@ function control_automatica(now) {
 		// guardar cuándo se realiza este frame y se vuelve a renderizar
 		last_draw_time = now;
 	}
-	else document.getElementById("boton_reset").disabled = false;
 }
 
 function rotar_cohete(slider) {

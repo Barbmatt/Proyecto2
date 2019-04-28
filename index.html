@@ -36,7 +36,7 @@
 	</script>
 </head>
 
-<body>
+<body onload='onLoad();'>
 	<h1>???</h1>
 	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
 	</canvas>
@@ -44,34 +44,29 @@
 	<table border='2'>
 		<tr>
 			<td>Rotar casa</td>
-			<td><input type="range" disabled id="range_casa" step="1" min="0" max="360" value="0" oninput="rotar_casa(this);"></td>
+			<td><input type="range" id="range_casa" step="1" min="0" max="360" value="0" oninput="rotar_casa(this);"></td>
 		</tr>
 		<tr>
 			<td>Rotar cohete</td>
-			<td><input type="range" disabled id='range_cohete' step="1" min="0" max="360" value="0" oninput="rotar_cohete(this);"></td>
+			<td><input type="range" id='range_cohete' step="1" min="0" max="360" value="0" oninput="rotar_cohete(this);"></td>
 		</tr>
 		<tr>
 			<td>Orbitar cohete</td>
-			<td><input type="range" disabled id='range_orbita' step="0.01" min="0" max="360" value="0" oninput="orbitar_cohete(this);"></td>
+			<td><input type="range" id='range_orbita' step="0.01" min="0" max="360" value="0" oninput="orbitar_cohete(this);"></td>
 		</tr>
 		<tr>
-			<td>Seleccionar tipo de cámara</td>
 			<td>
-				<select disabled id="camara_seleccionada">
-					<option value=0>Manual</option>
-					<option value=1>Automática</option>
+				<button id="boton_reset" onclick="reset_camara();">Restablecer cámara
+				</button>
+			</td>
+			<td>
+				<select id="camara_seleccionada">
+					<option value=0>Cámara manual</option>
+					<option value=1>Cámara automática</option>
 				</select>
 			</td>
 		</tr>
-		<tr>
-			<td><button id="boton_reset" disabled onclick="reset_camara();">Restablecer cámara</button>
-			</td>
-			<td>
-				<button id="boton_cargar_dibujar" onclick="onLoad();">Cargar y dibujar</button>
-			</td>
-		</tr>
 	</table>
-
 </body>
 
 </html>
