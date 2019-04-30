@@ -1,20 +1,12 @@
-/* TODO: más de una matriz modelo
- *		 por qué se ve raro la renderización? windows?
- *		 límites en el zoom
- *		 movimiento del mouse infinito, de un extremo de la pantalla al otro sin soltarlo
+/* Porque no dibuja los objetos? modelmatriz?
+ *		 
  */
 
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
 var gl = null;
 var shader_program = null;
-var vao_h = null; 					
-var vao_r = null;
-var vao_m = null;
-var cant_indices_r = 0;				
-var cant_indices_h = 0;
-var cant_indices_m = 0;
-var camara = null; 	// setea la cámara a utilizar
+var camara = null; 						// setea la cámara a utilizar
 var camara_mouse = null;
 var angulo_viejo_rotacion = 0;			// para rotar el cohete en su eje direccional
 
@@ -40,41 +32,41 @@ var u_brillo;
 var matriz_modelo_h = mat4.create();
 var matriz_modelo_r = mat4.create();
 var matriz_modelo_m = mat4.create();
+
 var matriz_normal_h = mat4.create();
 var matriz_normal_r = mat4.create();
 var matriz_normal_m = mat4.create();
 
 //Aux variables,
 var default_pos_r = [0,20,-15];
-var parsed_obj_h = null; 				//Parsed OBJ file
-var parsed_obj_r = null; 				//Parsed OBJ file
-var parsed_obj_m = null; 				//Parsed OBJ file
+var parsed_obj_h = null; 				//Parsed OBJ file house
+var parsed_obj_r = null; 				//Parsed OBJ file rocket
+var parsed_obj_m = null; 				//Parsed OBJ file mountain
+
+// constantes para el objeto casa
+var constante_ambiente_house= [0.21,0.13,0.05];
+var constante_difusa_house =[0.71,0.43,0.18];
+var constante_especular_house =[0.39,0.27,0.17];
+var brillo_house=25.6;
+
+// constantes para el objeto cohete
+var constante_ambiente_rocket= [0.17,0.01,0.01];
+var constante_difusa_rocket =[0.61,0.04,0.04];
+var constante_especular_rocket =[0.73,0.63,0.63];
+var brillo_rocket=76.8;
+
+// constantes para el objeto montaña
+var constante_ambiente_mountain= [0.10,0.19,0.17];
+var constante_difusa_mountain =[0.40,0.74,0.70];
+var constante_especular_mountain =[0.30,0.31,0.31];
+var brillo_mountain=12.8;
+
 
 function onLoad() {
 
 	// obtener el canvas
 	let canvas = document.getElementById('webglCanvas');
 	gl = canvas.getContext('webgl2');
-
-	cargar_modelos();
-
-	// obtener índices, posiciones y normales de la casa ([h]ouse)
-	let indices_h = parsed_obj_h.indices;
-	let posiciones_h = parsed_obj_h.positions;
-	let normales_h = parsed_obj_h.normals;
-	cant_indices_h = indices_h.length;
-
-	// lo mismo con el cohete ([r]ocket)
-	let indices_r = parsed_obj_r.indices;
-	let posiciones_r = parsed_obj_r.positions;
-	let normales_r = parsed_obj_r.normals;
-	cant_indices_r = indices_r.length;
-
-	// lo mismo con la montaña
-	let indices_m = parsed_obj_m.indices;
-	let posiciones_m = parsed_obj_m.positions;
-	let normales_m = parsed_obj_m.normals;
-	cant_indices_m = indices_m.length;
 
 	// configuración del vertex shader
 	shader_program = ShaderProgramHelper.create(vertexShaderSource, fragmentShaderSource);
@@ -98,27 +90,9 @@ function onLoad() {
 	u_constante_especular = gl.getUniformLocation(shader_program,"ks");
 	u_brillo = gl.getUniformLocation(shader_program,"n");
 
-	// un arreglo de atributos para cada objeto
-	let vertex_attribute_info_array_h = [
-		new VertexAttributeInfo(posiciones_h, loc_posicion, 3),
-		new VertexAttributeInfo(normales_h, loc_normal, 3)
-	];
-
-	let vertex_attribute_info_array_r = [
-		new VertexAttributeInfo(posiciones_r, loc_posicion, 3),
-		new VertexAttributeInfo(normales_r, loc_normal, 3)
-	];
-
-	let vertex_attribute_info_array_m = [
-		new VertexAttributeInfo(posiciones_m, loc_posicion, 3),
-		new VertexAttributeInfo(normales_m, loc_normal, 3)
-	];
-
-	// se crean los VAO de cada objeto
-	vao_h = VAOHelper.create(indices_h, vertex_attribute_info_array_h);
-	vao_r = VAOHelper.create(indices_r, vertex_attribute_info_array_r);
-	vao_m = VAOHelper.create(indices_m, vertex_attribute_info_array_m);
-
+	// Cargo los objetos
+	cargar_modelos(loc_posicion,loc_normal);
+	
 	// se setean las cámaras
 	camara = new Camara_esfericas();
 	camara_mouse = new Camara_mouse(camara,canvas);
@@ -148,64 +122,28 @@ function onRender(now) {
 	gl.uniformMatrix4fv(u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(u_matriz_proyeccion, false, camara.proyeccion());
 	
+	// Parametros de la luz
 	let pos_l = [7,7,7];
 	gl.uniform3f(u_posicion_luz, pos_l[0], pos_l[1], pos_l[2]);
 	gl.uniform3f(u_intensidad_ambiente, 1.0, 1.0, 1.0);
 	gl.uniform3f(u_intensidad_difusa, 1.0,1.0,1.0);
 	gl.uniform1f(u_atenuacion, 0.7);
 
-	matriz_modelo_h = mat4.create()
+	// -------------dibujar casa---------------------
+	matriz_modelo_h = mat4.create();
 	mat4.translate(matriz_modelo_h,matriz_modelo_h,pos_l)
-	// dibujar casa
-	gl.uniform3f(u_constante_ambiente,0.21,0.13,0.05);
-	gl.uniform3f(u_constante_difusa,0.71,0.43,0.18);
-	gl.uniform3f(u_constante_especular,0.39,0.27,0.17);
-	gl.uniform1f(u_brillo, 25.6);
+	parsed_obj_h.draw(gl,u_matriz_modelo_h,matriz_modelo_h,matriz_normal_h,constante_ambiente_house,
+		constante_difusa_house,constante_especular_house,brillo_house);
 
-	gl.uniformMatrix4fv(u_matriz_modelo_h, false, matriz_modelo_h);
-	mat4.multiply(matriz_normal_h,camara.vista(), matriz_modelo_h);
-	mat4.invert(matriz_normal_h,matriz_normal_h);
-	mat4.transpose(matriz_normal_h,matriz_normal_h);
-	gl.uniformMatrix4fv(u_matriz_normal, false, matriz_normal_h);
-
-	gl.bindVertexArray(vao_h);
-	gl.drawElements(gl.TRIANGLES, cant_indices_h, gl.UNSIGNED_INT, 0);
-	
-	gl.bindVertexArray(null);
-
-	// se cambia la matriz de modelo a la del cohete y se procede a dibujar
-	gl.uniform3f(u_constante_ambiente,0.17,0.01,0.01);
-	gl.uniform3f(u_constante_difusa,0.61,0.04,0.04);
-	gl.uniform3f(u_constante_especular,0.73,0.63,0.63);
-
-	gl.uniformMatrix4fv(u_matriz_modelo_r, false, matriz_modelo_r);
-	mat4.multiply(matriz_normal_r,camara.vista(), matriz_modelo_r);
-	mat4.invert(matriz_normal_r,matriz_normal_r);
-	mat4.transpose(matriz_normal_r,matriz_normal_r);
-	gl.uniformMatrix4fv(u_matriz_normal, false, matriz_normal_r);
-
-	gl.bindVertexArray(vao_r);
-	gl.drawElements(gl.TRIANGLES, cant_indices_r, gl.UNSIGNED_INT, 0);
-
-	gl.bindVertexArray(null);
+	/*// se cambia la matriz de modelo a la del cohete y se procede a dibujar
+	parsed_obj_r.draw(gl,u_matriz_modelo_r,matriz_normal_r,constante_ambiente_rocket,
+		constante_difusa_rocket,constante_especular_rocket,brillo_rocket);
 
 	// se cambia la matriz de modelo a la de la montaña y se procede a dibujar
-	gl.uniform3f(u_constante_ambiente,0.10,0.19,0.17);
-	gl.uniform3f(u_constante_difusa,0.40,0.74,0.70);
-	gl.uniform3f(u_constante_especular,0.30,0.31,0.31);
-	
-	gl.uniformMatrix4fv(u_matriz_modelo_m, false, matriz_modelo_m);
-	mat4.multiply(matriz_normal_m,camara.vista(), matriz_modelo_m);
-	mat4.invert(matriz_normal_m,matriz_normal_m);
-	mat4.transpose(matriz_normal_m,matriz_normal_m);
-	gl.uniformMatrix4fv(u_matriz_normal, false, matriz_normal_m);
+	parsed_obj_m.draw(gl,u_matriz_modelo_m,matriz_normal_m,constante_ambiente_mountain,
+		constante_difusa_mountain,constante_especular_mountain,brillo_mountain);*/
 
-	gl.bindVertexArray(vao_m);
-	gl.drawElements(gl.TRIANGLES, cant_indices_m, gl.UNSIGNED_INT, 0);
-
-	gl.bindVertexArray(null);
-
-	// otra vez a dibujar
+	// ciclo dibujar nuevamente
 	requestAnimationFrame(onRender);
 }
 
@@ -275,8 +213,16 @@ function rotar_casa(slider) {
 
 function reset_camara() { camara.reset(); }
 
-function cargar_modelos() {
-	parsed_obj_h = OBJParser.parseFile(house);
-	parsed_obj_r = OBJParser.parseFile(rocket);
-	parsed_obj_m = OBJParser.parseFile(mountain);
+function cargar_modelos(loc_posicion,loc_normal) {
+	// Cargo el modelo house
+	parsed_obj_h = new Model(house);
+	parsed_obj_h.generateModel(this.loc_posicion,this.loc_normal);
+
+	/*// Cargo el modelo rocket
+	parsed_obj_r = new Model(rocket);
+	parsed_obj_r.generateModel(loc_posicion,loc_normal);
+
+	// Cargo el modelo mountain
+	parsed_obj_m = new Model(mountain);
+	parsed_obj_m.generateModel(loc_posicion,loc_normal);*/
 }
