@@ -16,6 +16,7 @@ var cant_indices_h = 0;
 var cant_indices_m = 0;
 var camara = null; 	// setea la cámara a utilizar
 var camara_mouse = null;
+var luz = null;
 var angulo_viejo_rotacion = 0;			// para rotar el cohete en su eje direccional
 
 // variables uniformes
@@ -122,7 +123,8 @@ function onLoad() {
 	// se setean las cámaras
 	camara = new Camara_esfericas();
 	camara_mouse = new Camara_mouse(camara,canvas);
-	
+	luz = new Ligth();
+
 	gl.clearColor(0.18, 0.18, 0.18, 1.0);;
 
 	// posicionamiento inicial del cohete
@@ -148,11 +150,11 @@ function onRender(now) {
 	gl.uniformMatrix4fv(u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(u_matriz_proyeccion, false, camara.proyeccion());
 	
-	let pos_l = [7,7,7];
-	gl.uniform3f(u_posicion_luz, pos_l[0], pos_l[1], pos_l[2]);
-	gl.uniform3f(u_intensidad_ambiente, 1.0, 1.0, 1.0);
-	gl.uniform3f(u_intensidad_difusa, 1.0,1.0,1.0);
-	gl.uniform1f(u_atenuacion, 0.7);
+	
+	gl.uniform3f(u_posicion_luz, luz.posL[0], luz.posL[1], luz.posL[2]);
+	gl.uniform3f(u_intensidad_ambiente, luz.intensidad_ambiente[0],luz.intensidad_ambiente[1],luz.intensidad_ambiente[2]);
+	gl.uniform3f(u_intensidad_difusa, luz.intensidad_difusa[0],luz.intensidad_difusa[1],luz.intensidad_difusa[2]);
+	gl.uniform1f(u_atenuacion, luz.func_atenuacion(1,0,0,0));
 
 	matriz_modelo_h = mat4.create()
 	mat4.translate(matriz_modelo_h,matriz_modelo_h,pos_l)
