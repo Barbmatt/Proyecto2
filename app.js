@@ -156,13 +156,8 @@ function onRender(now) {
 	gl.uniform3f(u_intensidad_difusa, luz.intensidad_difusa[0],luz.intensidad_difusa[1],luz.intensidad_difusa[2]);
 	gl.uniform1f(u_atenuacion, luz.func_atenuacion(1,0,0,0));
 
-<<<<<<< HEAD
 	matriz_modelo_h = mat4.create();
-	mat4.translate(matriz_modelo_h,matriz_modelo_h,pos_l);
-=======
-	matriz_modelo_h = mat4.create()
-	mat4.translate(matriz_modelo_h,matriz_modelo_h,pos_l)
->>>>>>> master
+	mat4.translate(matriz_modelo_h,matriz_modelo_h,luz.posL);
 	// dibujar casa
 	gl.uniform3f(u_constante_ambiente,0.21,0.13,0.05);
 	gl.uniform3f(u_constante_difusa,0.71,0.43,0.18);
@@ -287,3 +282,4 @@ function cargar_modelos() {
 	parsed_obj_r = OBJParser.parseFile(rocket);
 	parsed_obj_m = OBJParser.parseFile(mountain);
 }
+
