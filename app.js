@@ -11,7 +11,7 @@ var camara_mouse = null;
 var angulo_viejo_rotacion = 0;			// para rotar el cohete en su eje direccional
 
 // variables uniformes
-var u_matriz_modelo_h;
+var u_matriz_modelo;
 var u_matriz_modelo_r;
 var u_matriz_modelo_m;
 var u_matriz_vista;
@@ -39,27 +39,27 @@ var matriz_normal_m = mat4.create();
 
 //Aux variables,
 var default_pos_r = [0,20,-15];
-var parsed_obj_h = null; 				//Parsed OBJ file house
-var parsed_obj_r = null; 				//Parsed OBJ file rocket
-var parsed_obj_m = null; 				//Parsed OBJ file mountain
+var objeto_house = null; 				//Parsed OBJ file house
+var objeto_rocket = null; 				//Parsed OBJ file rocket
+var objeto_mountain = null; 				//Parsed OBJ file mountain
 
 // constantes para el objeto casa
-var constante_ambiente_house= [0.21,0.13,0.05];
-var constante_difusa_house =[0.71,0.43,0.18];
-var constante_especular_house =[0.39,0.27,0.17];
-var brillo_house=25.6;
+var ka_h = [0.21,0.13,0.05];
+var kd_h = [0.71,0.43,0.18];
+var ks_h = [0.39,0.27,0.17];
+var n_h = 25.6;
 
 // constantes para el objeto cohete
-var constante_ambiente_rocket= [0.17,0.01,0.01];
-var constante_difusa_rocket =[0.61,0.04,0.04];
-var constante_especular_rocket =[0.73,0.63,0.63];
-var brillo_rocket=76.8;
+var ka_r = [0.17,0.01,0.01];
+var kd_r = [0.61,0.04,0.04];
+var ks_r = [0.73,0.63,0.63];
+var n_r = 76.8;
 
 // constantes para el objeto montaña
-var constante_ambiente_mountain= [0.10,0.19,0.17];
-var constante_difusa_mountain =[0.40,0.74,0.70];
-var constante_especular_mountain =[0.30,0.31,0.31];
-var brillo_mountain=12.8;
+var ka_m = [0.10,0.19,0.17];
+var kd_m = [0.40,0.74,0.70];
+var ks_m = [0.30,0.31,0.31];
+var n_m = 12.8;
 
 
 function onLoad() {
@@ -73,9 +73,7 @@ function onLoad() {
 	let loc_posicion = gl.getAttribLocation(shader_program, 'vertexPosition');
 	let loc_normal = gl.getAttribLocation(shader_program, 'vertexNormal');
 	
-	u_matriz_modelo_h = gl.getUniformLocation(shader_program, 'modelMatrix');
-	u_matriz_modelo_r = gl.getUniformLocation(shader_program, 'modelMatrix');
-	u_matriz_modelo_m = gl.getUniformLocation(shader_program, 'modelMatrix');
+	u_matriz_modelo = gl.getUniformLocation(shader_program, 'modelMatrix');
 	u_matriz_vista = gl.getUniformLocation(shader_program, 'viewMatrix');
 	u_matriz_proyeccion = gl.getUniformLocation(shader_program, 'projectionMatrix');
 	u_matriz_normal = gl.getUniformLocation(shader_program,'normalMatrix');
@@ -90,9 +88,9 @@ function onLoad() {
 	u_constante_especular = gl.getUniformLocation(shader_program,"ks");
 	u_brillo = gl.getUniformLocation(shader_program,"n");
 
-	// Cargo los objetos
-	cargar_modelos(loc_posicion,loc_normal);
-	
+	// Cargo los objetos	
+	cargar_modelos(loc_posicion, loc_normal);
+
 	// se setean las cámaras
 	camara = new Camara_esfericas();
 	camara_mouse = new Camara_mouse(camara,canvas);
@@ -122,29 +120,49 @@ function onRender(now) {
 	gl.uniformMatrix4fv(u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(u_matriz_proyeccion, false, camara.proyeccion());
 	
-	// Parametros de la luz
+	setear_luz();
+
+	dibujar(objeto_house, matriz_modelo_h);
+	dibujar(objeto_rocket, matriz_modelo_r);
+	dibujar(objeto_mountain, matriz_modelo_m);
+	
+	// ciclo dibujar nuevamente
+	requestAnimationFrame(onRender);
+}
+
+function setear_luz() {
 	let pos_l = [7,7,7];
 	gl.uniform3f(u_posicion_luz, pos_l[0], pos_l[1], pos_l[2]);
 	gl.uniform3f(u_intensidad_ambiente, 1.0, 1.0, 1.0);
 	gl.uniform3f(u_intensidad_difusa, 1.0,1.0,1.0);
 	gl.uniform1f(u_atenuacion, 0.7);
+}
 
-	// -------------dibujar casa---------------------
-	matriz_modelo_h = mat4.create();
-	mat4.translate(matriz_modelo_h,matriz_modelo_h,pos_l)
-	parsed_obj_h.draw(gl,u_matriz_modelo_h,matriz_modelo_h,matriz_normal_h,constante_ambiente_house,
-		constante_difusa_house,constante_especular_house,brillo_house);
+function dibujar(objeto,matriz_modelo) {
+	setear_uniforms_material(objeto.material);
+	setear_uniforms_matrices(matriz_modelo);
+	gl.bindVertexArray(objeto.vao);
+	gl.drawElements(gl.TRIANGLES, objeto.cant_indices, gl.UNSIGNED_INT, 0);
+	gl.bindVertexArray(null);
+}
 
-	/*// se cambia la matriz de modelo a la del cohete y se procede a dibujar
-	parsed_obj_r.draw(gl,u_matriz_modelo_r,matriz_normal_r,constante_ambiente_rocket,
-		constante_difusa_rocket,constante_especular_rocket,brillo_rocket);
+function setear_uniforms_material(material) {
+	ka = material[0]; kd = material[1]; ks = material[2]; n = material[3];
+	gl.uniform3f(u_constante_ambiente,ka[0],ka[1],ka[2]);
+	gl.uniform3f(u_constante_difusa,kd[0],kd[1],kd[2]);
+	gl.uniform3f(u_constante_especular,ks[0],ks[1],ks[2]);
+	gl.uniform1f(u_brillo,n)
+}
 
-	// se cambia la matriz de modelo a la de la montaña y se procede a dibujar
-	parsed_obj_m.draw(gl,u_matriz_modelo_m,matriz_normal_m,constante_ambiente_mountain,
-		constante_difusa_mountain,constante_especular_mountain,brillo_mountain);*/
+function setear_uniforms_matrices(matriz_modelo) {
+	gl.uniformMatrix4fv(u_matriz_modelo, false,matriz_modelo);
 
-	// ciclo dibujar nuevamente
-	requestAnimationFrame(onRender);
+	matriz_normal = mat4.create()
+	mat4.multiply(matriz_normal,camara.vista(),matriz_modelo);
+	mat4.invert(matriz_normal,matriz_normal);
+	mat4.transpose(matriz_normal,matriz_normal);
+
+	gl.uniformMatrix4fv(u_matriz_normal, false, matriz_normal);
 }
 
 function control_automatica(now) {
@@ -213,16 +231,13 @@ function rotar_casa(slider) {
 
 function reset_camara() { camara.reset(); }
 
-function cargar_modelos(loc_posicion,loc_normal) {
-	// Cargo el modelo house
-	parsed_obj_h = new Model(house);
-	parsed_obj_h.generateModel(this.loc_posicion,this.loc_normal);
+function cargar_modelos(loc_posicion, loc_normal) {
+	objeto_house = new Model(house,ka_h,kd_h,ks_h,n_h);
+	objeto_house.generar_modelo(loc_posicion,loc_normal);
 
-	/*// Cargo el modelo rocket
-	parsed_obj_r = new Model(rocket);
-	parsed_obj_r.generateModel(loc_posicion,loc_normal);
+	objeto_rocket = new Model(rocket,ka_r,kd_r,ks_r,n_r);
+	objeto_rocket.generar_modelo(loc_posicion,loc_normal);
 
-	// Cargo el modelo mountain
-	parsed_obj_m = new Model(mountain);
-	parsed_obj_m.generateModel(loc_posicion,loc_normal);*/
+	objeto_mountain = new Model(mountain,ka_m,kd_m,ks_m,n_m);
+	objeto_mountain.generar_modelo(loc_posicion,loc_normal);
 }
