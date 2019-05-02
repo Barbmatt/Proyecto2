@@ -1,7 +1,3 @@
-/* Porque no dibuja los objetos? modelmatriz?
- *		 
- */
-
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
 var gl = null;
@@ -133,11 +129,15 @@ function onRender(now) {
 }
 
 function setear_luz() {
-	let pos_l = [7,7,7];
+	let pos_l = luz.posL;
+	let ia = luz.intensidad_ambiente;
+	let id = luz.intensidad_difusa;
+	luz.set_atenuacion(1.0,0.0,0.0,0.0);
+	let atenuacion = luz.atenuacion;
 	gl.uniform3f(u_posicion_luz, pos_l[0], pos_l[1], pos_l[2]);
-	gl.uniform3f(u_intensidad_ambiente, 1.0, 1.0, 1.0);
-	gl.uniform3f(u_intensidad_difusa, 1.0,1.0,1.0);
-	gl.uniform1f(u_atenuacion, 0.7);
+	gl.uniform3f(u_intensidad_ambiente, ia[0], ia[1], ia[2]);
+	gl.uniform3f(u_intensidad_difusa, id[0], id[1], id[2]);
+	gl.uniform1f(u_atenuacion, atenuacion);
 }
 
 function dibujar(objeto,matriz_modelo) {
