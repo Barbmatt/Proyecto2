@@ -8,6 +8,7 @@ var gl = null;
 var shader_program = null;
 var camara = null; 						// setea la cámara a utilizar
 var camara_mouse = null;
+var luz = null;
 var angulo_viejo_rotacion = 0;			// para rotar el cohete en su eje direccional
 
 // variables uniformes
@@ -94,7 +95,8 @@ function onLoad() {
 	// se setean las cámaras
 	camara = new Camara_esfericas();
 	camara_mouse = new Camara_mouse(camara,canvas);
-	
+	luz = new Ligth();
+
 	gl.clearColor(0.18, 0.18, 0.18, 1.0);;
 
 	// posicionamiento inicial del cohete
