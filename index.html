@@ -12,8 +12,7 @@
 	<script src="libs/OBJParser.js"></script>
 	<script src="libs/vertex.glsl"></script>
 	<script src="libs/fragment.glsl"></script>
-	<script src="libs/Camara_esfericas.js"></script>
-	<script src="libs/Camara_mouse.js"></script>
+	<script src="libs/Camara.js"></script>
 	<script src="libs/model.js"></script>
 	<script src="Modelos/house.js"></script>
 	<script src="Modelos/rocket.js"></script>
@@ -25,15 +24,16 @@
 		
 		function check(e) {
 			var code = e.keyCode;
-			     if ( code == 37) camara_mouse.flecha_derecha(); 			
-			else if ( code == 38 ) camara_mouse.flecha_arriba(); 		
-			else if ( code == 39 ) camara_mouse.flecha_izquierda(); 		
-			else if ( code == 40 ) camara_mouse.flecha_abajo(); 		
+			     if ( code == 37) camara.flecha_derecha(); 			
+			else if ( code == 38 ) camara.flecha_arriba(); 		
+			else if ( code == 39 ) camara.flecha_izquierda(); 		
+			else if ( code == 40 ) camara.flecha_abajo(); 		
 
-			else if ( code == 87 ) camara_mouse.flecha_arriba(); 		
-			else if ( code == 68 ) camara_mouse.flecha_izquierda(); 		
-			else if ( code == 65 ) camara_mouse.flecha_derecha(); 		
-			else if ( code == 83 ) camara_mouse.flecha_abajo(); 		
+			else if ( code == 87 ) camara.flecha_arriba(); 		
+			else if ( code == 68 ) camara.flecha_izquierda(); 		
+			else if ( code == 65 ) camara.flecha_derecha(); 		
+			else if ( code == 83 ) camara.flecha_abajo(); 	
+			else if ( code == 32 ) toggle_camara();
 		}
 	</script>
 </head>
@@ -45,16 +45,8 @@
 
 	<table border='2'>
 		<tr>
-			<td>Rotar casa</td>
-			<td><input type="range" id="range_casa" step="1" min="0" max="360" value="0" oninput="rotar_casa(this);"></td>
-		</tr>
-		<tr>
-			<td>Rotar cohete</td>
-			<td><input type="range" id='range_cohete' step="1" min="0" max="360" value="0" oninput="rotar_cohete(this);"></td>
-		</tr>
-		<tr>
-			<td>Orbitar cohete</td>
-			<td><input type="range" id='range_orbita' step="0.01" min="0" max="360" value="0" oninput="orbitar_cohete(this);"></td>
+			<td>Control luces</td>
+			<td><input type="range" id="range_casa" step="1" min="0" max="360" value="0"></td>
 		</tr>
 		<tr>
 			<td>
