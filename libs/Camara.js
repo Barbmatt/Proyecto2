@@ -1,16 +1,9 @@
 // clase apuntada para la manipulación de la cámara, en cartesianas
 
-class Camara_esfericas {
-
-    // resetea la cámara
-    reset() {
-        this.r = 63;
-        this.t = 45*Math.PI/180;
-        this.f = 30*Math.PI/180;
-    }
+class Camara {
 
     // construye la cámara con valores por defecto
-    constructor() {
+    constructor(registerZone) {
         this.reset(); // para reutilizar código
         this.matriz_vista = mat4.create();
 
@@ -19,6 +12,28 @@ class Camara_esfericas {
         this.zNear = 0.1;
         this.zFar = 450;
         this.matriz_proyeccion = mat4.create();
+
+        // controles mouse.
+
+        this.dragFactor    = 0.1  // sensibilidad del drag
+        this.zoomFactor    = 0.01   // sensibilidad del zoom
+        this.dragging      = false
+        this.lastX         = 0
+        this.lastY         = 0
+        this.registerZone  = registerZone
+
+        this.registerZone.addEventListener("wheel", (event) => { this.zoom_mouse(event) }, { passive: true })
+        this.registerZone.addEventListener("mousedown", (event) => { this.drag_start(event) })
+        this.registerZone.addEventListener("dblclick", (event) => { this.reset() })
+        document.addEventListener("mousemove", (event) => { this.drag_move(event) })
+        document.addEventListener("mouseup", () => { this.drag_end() })
+    }
+
+    // resetea la cámara
+    reset() {
+        this.r = 63;
+        this.t = 45*Math.PI/180;
+        this.f = 30*Math.PI/180;
     }
 
     // crea y retorna la matriz de proyección
@@ -58,4 +73,40 @@ class Camara_esfericas {
 
     // rota la cámara alrededor del eje Y, en función del ángulo en grados que viene como parámetro
     rotar_camara(delta_t) { this.t += delta_t*Math.PI/180; }
+    
+    zoom_mouse(event) { this.zoom(event.deltaY * this.zoomFactor * 7) }
+
+    drag_start(event) {
+        event.preventDefault()
+        const leftClick = 1
+
+        if (event.which === leftClick) {
+            this.dragging = true
+            this.lastX    = event.clientX
+            this.lastY    = event.clientY
+        }
+    }
+
+    flecha_arriba() { this.altura(2); }
+
+    flecha_abajo() { this.altura(-2); }
+
+    flecha_izquierda() { this.paneo(-2); }
+
+    flecha_derecha() { this.paneo(2); }
+
+    drag_move(event) {
+        if (this.dragging) {
+            const mouseChangeX = (event.clientX - this.lastX)
+            const mouseChangeY = (event.clientY - this.lastY)
+
+            this.paneo(mouseChangeX * this.dragFactor)
+            this.altura(mouseChangeY * this.dragFactor)
+
+            this.lastX = event.clientX
+            this.lastY = event.clientY
+        }
+    }
+
+    drag_end() { this.dragging = false }
 }

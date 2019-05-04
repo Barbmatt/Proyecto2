@@ -1,11 +1,11 @@
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
 var gl = null;
-var shader_program = null;
+var shader_program1 = null;
+var shader_program2 = null;
+var shader_program3 = null;
 var camara = null; 						// setea la cámara a utilizar
-var camara_mouse = null;
 var luz = null;
-var angulo_viejo_rotacion = 0;			// para rotar el cohete en su eje direccional
 
 // variables uniformes
 var u_matriz_modelo;
@@ -80,8 +80,7 @@ function onLoad() {
 	cargar_modelos(loc_posicion, loc_normal);
 
 	// se setean las cámaras
-	camara = new Camara_esfericas();
-	camara_mouse = new Camara_mouse(camara,canvas);
+	camara = new Camara(canvas);
 	luz = new Ligth();
 
 	gl.clearColor(0.18, 0.18, 0.18, 1.0);;
@@ -159,7 +158,7 @@ function setear_uniforms_matrices(matriz_modelo) {
 }
 
 function control_automatica(now) {
-	if ( interfaz.camara_seleccionada() == 'a' ) { // la cámara es automática
+	if ( document.getElementById("camara_seleccionada").value == 1 ) { // la cámara es automática
 		// de milisegundos a segundos
 		now *= 0.001;
 
@@ -173,53 +172,11 @@ function control_automatica(now) {
 		if ( angulo_nuevo_rotacion > 1 ) angulo_nuevo_rotacion = 0;
 
 		// se efectúa la rotación y se dibuja
-		camara.rotar_camara(angulo_nuevo_rotacion);
+		camara.paneo(angulo_nuevo_rotacion);
 
 		// guardar cuándo se realiza este frame y se vuelve a renderizar
 		last_draw_time = now;
 	}
-}
-
-function rotar_cohete(slider) {
-	// el ángulo lo indica el slider
-	let angulo_nuevo = parseFloat(slider.value);
-	let i = angulo_viejo_rotacion;
-	if ( angulo_viejo_rotacion < angulo_nuevo ) {
-		// el ángulo nuevo es mayor, entonces se rota en sentido antihorario
-		while ( i <= angulo_nuevo ) {
-			// ya que el slider no recorre todos los valores entre dos estados, se fuerza a que lo haga para obtener un recorrido suave
-			mat4.rotateX(matriz_modelo_r,matriz_modelo_r,1*Math.PI/180);
-			i++;
-		}
-	}
-	if ( angulo_viejo_rotacion > angulo_nuevo ) {
-		// el ángulo nuevo es menor, entonces se rota en sentido horario
-		while ( i >= angulo_nuevo ) {
-			// ya que el slider no recorre todos los valores entre dos estados, se fuerza a que lo haga para obtener un recorrido suave
-			mat4.rotateX(matriz_modelo_r,matriz_modelo_r,-1*Math.PI/180);
-			i--;
-		}
-	}
-	// actualización del ángulo actual ya que éste cambió al valor del slider
-	angulo_viejo_rotacion = angulo_nuevo;
-}
-
-function orbitar_cohete(slider) {
-	// el ángulo lo indica el slider
-	let angulo = parseFloat(slider.value);
-	// trasladar al origen
-	matriz_modelo_r = mat4.create();
-	// rotar la matriz de modelado del cohete
-	mat4.rotateY(matriz_modelo_r,matriz_modelo_r,angulo*Math.PI/180);
-	// trasladar a la posición correcta (inversa de la traslación al origen)
-	mat4.translate(matriz_modelo_r,matriz_modelo_r,[0,20,-15]);
-}
-
-function rotar_casa(slider) {
-	let angulo = parseFloat(slider.value);
-	matriz_modelo_h = mat4.create();
-	// rotar la matriz de modelado de la casa
-	mat4.rotateY(matriz_modelo_h, matriz_modelo_h, angulo*Math.PI/180);
 }
 
 function reset_camara() { camara.reset(); }
@@ -231,4 +188,10 @@ function cargar_modelos(loc_posicion, loc_normal) {
 	esfera[] = new Model(house,ka_h,kd_h,ks_h,n_h);
 	objeto_house.generar_modelo(loc_posicion,loc_normal);
 	}
+}
+
+function toggle_camara() { 
+	let select = document.getElementById("camara_seleccionada");
+	if ( select.value == 1 ) select.value = 0;
+	else select.value = 1;
 }
