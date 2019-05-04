@@ -26,33 +26,24 @@ var u_constante_especular;
 var u_brillo;
 
 // variables de matrices
-var matriz_modelo_h = mat4.create();
-var matriz_modelo_r = mat4.create();
-var matriz_modelo_m = mat4.create();
-
-var matriz_normal_h = mat4.create();
-var matriz_normal_r = mat4.create();
-var matriz_normal_m = mat4.create();
+var matriz_modelo_esfera = mat4.create();;
+var matriz_normal_esfera = mat4.create();
 
 //Aux variables,
-var default_pos_r = [0,20,-15];
-var objeto_house = null; 				//Parsed OBJ file house
-var objeto_rocket = null; 				//Parsed OBJ file rocket
-var objeto_mountain = null; 				//Parsed OBJ file mountain
+var esfera[i] = null; 				
+// constante para objetos métalicos (copper)
+var ka_m = [0.20,0.07,0.02];
+var kd_m = [0.70,0.27,0.08];
+var ks_m = [0.26,0.13,0.09];
+var n_m = 12.8;
 
-// constantes para el objeto casa
-var ka_h = [0.21,0.13,0.05];
-var kd_h = [0.71,0.43,0.18];
-var ks_h = [0.39,0.27,0.17];
-var n_h = 25.6;
+// constantes para objetos satinado 
+var ka_s = [0.17,0.01,0.01];
+var kd_s = [0.61,0.04,0.04];
+var ks_s = [0.73,0.63,0.63];
+var n_s = 76.8;
 
-// constantes para el objeto cohete
-var ka_r = [0.17,0.01,0.01];
-var kd_r = [0.61,0.04,0.04];
-var ks_r = [0.73,0.63,0.63];
-var n_r = 76.8;
-
-// constantes para el objeto montaña
+// constantes para objetos rigurosos (Black Rubber)
 var ka_m = [0.10,0.19,0.17];
 var kd_m = [0.40,0.74,0.70];
 var ks_m = [0.30,0.31,0.31];
@@ -234,12 +225,10 @@ function rotar_casa(slider) {
 function reset_camara() { camara.reset(); }
 
 function cargar_modelos(loc_posicion, loc_normal) {
-	objeto_house = new Model(house,ka_h,kd_h,ks_h,n_h);
+
+	for (let=i ;i <  ;i++){
+	
+	esfera[] = new Model(house,ka_h,kd_h,ks_h,n_h);
 	objeto_house.generar_modelo(loc_posicion,loc_normal);
-
-	objeto_rocket = new Model(rocket,ka_r,kd_r,ks_r,n_r);
-	objeto_rocket.generar_modelo(loc_posicion,loc_normal);
-
-	objeto_mountain = new Model(mountain,ka_m,kd_m,ks_m,n_m);
-	objeto_mountain.generar_modelo(loc_posicion,loc_normal);
+	}
 }

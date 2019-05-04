@@ -1,5 +1,5 @@
 // Vertex Shader source, asignado a una variable para usarlo en un tag <script>
-var vertexShaderSource = `#version 300 es
+var vertexShaderSource_Opaca = `#version 300 es
 
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
