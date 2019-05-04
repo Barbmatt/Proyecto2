@@ -35,10 +35,10 @@ for (var i=0;i<6;i++)
   esfera[i] = new Array(4); 		
 
 // constante para objetos métalicos (copper)
-var ka_m = [0.20,0.07,0.02];
-var kd_m = [0.70,0.27,0.08];
-var ks_m = [0.26,0.13,0.09];
-var n_m = 12.8;
+var ka_m = [0.5,0.3,0.1];
+var kd_m = [0.4,0.7,0.1];
+var ks_m = [0.1,0.7,0.5];
+var n_m = 20.0;
 
 // constantes para objetos satinado 
 var ka_s = [0.17,0.01,0.01];
@@ -113,7 +113,8 @@ function onRender(now) {
 	// Dibujar esferas
 	for (let i=0;i<6;i++){
 		for (let j=0;j<4;j++){
-			mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[j*2,0,i*2]);
+			mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[5,5*1.4286,5]);
+			mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*2.5,0,(i-2.5)*2.5]);
 			dibujar(esfera[i][j], matriz_modelo_esfera);
 			matriz_modelo_esfera =mat4.create();
 		}	
@@ -154,7 +155,6 @@ function setear_uniforms_material(material) {
 
 function setear_uniforms_matrices(matriz_modelo) {
 	gl.uniformMatrix4fv(u_matriz_modelo, false,matriz_modelo);
-
 	matriz_normal = mat4.create()
 	mat4.multiply(matriz_normal,camara.vista(),matriz_modelo);
 	mat4.invert(matriz_normal,matriz_normal);

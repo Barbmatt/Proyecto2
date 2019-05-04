@@ -28,7 +28,7 @@ void main() {
     float luz_especular=pow(max(dot(N,H),0.0),n);// intensidad de luz especular
    
     vec3 luz1 = (0.3) * func_atenuacion*intensidad_difusa*(kd*luz_difusa + ks*luz_especular);
-	vec3 luz2 = (1.0) * func_atenuacion*intensidad_difusa*(kd*luz_difusa + ks*luz_especular);
+    vec3 luz2 = (1.0) * func_atenuacion*intensidad_difusa*(kd*luz_difusa + ks*luz_especular);
     vec3 luz3 = (0.7) * func_atenuacion*intensidad_difusa*(kd*luz_difusa + ks*luz_especular);
     color = intensidad_ambiente*ka + luz1 + luz2 + luz3 ; 
     fragmentColor = color;

@@ -31,7 +31,7 @@ class Camara {
 
     // resetea la cámara
     reset() {
-        this.r = 63;
+        this.r = 90;
         this.t = 45*Math.PI/180;
         this.f = 30*Math.PI/180;
     }
