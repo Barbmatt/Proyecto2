@@ -1,7 +1,7 @@
 class ShaderProgramHelper {
 
 	static create(vertexShaderSource, fragmentShaderSource, attributeBindings) {
-		let vertexShader = ShaderProgramHelper._createShader(gl.VERTEX_SHADER, vertexShaderSource_Opaco);
+		let vertexShader = ShaderProgramHelper._createShader(gl.VERTEX_SHADER, vertexShaderSource);
 		let fragmentShader = ShaderProgramHelper._createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
 
 		let shaderProgram = gl.createProgram();

@@ -30,7 +30,10 @@ var matriz_modelo_esfera = mat4.create();;
 var matriz_normal_esfera = mat4.create();
 
 //Aux variables,
-var esfera[i] = null; 				
+var esfera = new Array(6);
+for (var i=0;i<6;i++)
+  esfera[i] = new Array(4); 		
+
 // constante para objetos métalicos (copper)
 var ka_m = [0.20,0.07,0.02];
 var kd_m = [0.70,0.27,0.08];
@@ -43,7 +46,7 @@ var kd_s = [0.61,0.04,0.04];
 var ks_s = [0.73,0.63,0.63];
 var n_s = 76.8;
 
-// constantes para objetos rigurosos (Black Rubber)
+// constantes para objetos rugoso(Black Rubber)
 var ka_m = [0.10,0.19,0.17];
 var kd_m = [0.40,0.74,0.70];
 var ks_m = [0.30,0.31,0.31];
@@ -85,9 +88,6 @@ function onLoad() {
 
 	gl.clearColor(0.18, 0.18, 0.18, 1.0);;
 
-	// posicionamiento inicial del cohete
-	mat4.translate(matriz_modelo_r,matriz_modelo_r,default_pos_r);
-
 	gl.enable(gl.DEPTH_TEST);
 
 	gl.bindVertexArray(null);
@@ -110,10 +110,16 @@ function onRender(now) {
 	
 	setear_luz();
 
-	dibujar(objeto_house, matriz_modelo_h);
-	dibujar(objeto_rocket, matriz_modelo_r);
-	dibujar(objeto_mountain, matriz_modelo_m);
-	
+	// Dibujar esferas
+	for (let i=0;i<6;i++){
+		for (let j=0;j<4;j++){
+			mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[j*2,0,i*2]);
+			dibujar(esfera[i][j], matriz_modelo_esfera);
+			matriz_modelo_esfera =mat4.create();
+		}	
+	}
+
+
 	// ciclo dibujar nuevamente
 	requestAnimationFrame(onRender);
 }
@@ -139,7 +145,7 @@ function dibujar(objeto,matriz_modelo) {
 }
 
 function setear_uniforms_material(material) {
-	ka = material[0]; kd = material[1]; ks = material[2]; n = material[3];
+	let ka = material[0];  let kd = material[1]; let ks = material[2]; let n = material[3];
 	gl.uniform3f(u_constante_ambiente,ka[0],ka[1],ka[2]);
 	gl.uniform3f(u_constante_difusa,kd[0],kd[1],kd[2]);
 	gl.uniform3f(u_constante_especular,ks[0],ks[1],ks[2]);
@@ -183,10 +189,11 @@ function reset_camara() { camara.reset(); }
 
 function cargar_modelos(loc_posicion, loc_normal) {
 
-	for (let=i ;i <  ;i++){
-	
-	esfera[] = new Model(house,ka_h,kd_h,ks_h,n_h);
-	objeto_house.generar_modelo(loc_posicion,loc_normal);
+	for (let i=0;i<6;i++){
+		for (let j=0;j<4;j++){
+			esfera[i][j] = new Model(esferaSource,ka_m,kd_m,ks_m,n_m);
+			esfera[i][j].generar_modelo(loc_posicion,loc_normal);
+		}	
 	}
 }
 
