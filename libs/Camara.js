@@ -32,8 +32,8 @@ class Camara {
     // resetea la cámara
     reset() {
         this.r = 90;
-        this.t = 45*Math.PI/180;
-        this.f = 30*Math.PI/180;
+        this.t = 60*Math.PI/180;
+        this.f = 40*Math.PI/180;
     }
 
     // crea y retorna la matriz de proyección

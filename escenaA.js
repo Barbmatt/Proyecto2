@@ -1,16 +1,12 @@
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
 var gl = null;
-var shader_program1 = null;
-var shader_program2 = null;
-var shader_program3 = null;
+var shader_program = null;
 var camara = null; 						// setea la cámara a utilizar
 var luz = null;
 
 // variables uniformes
 var u_matriz_modelo;
-var u_matriz_modelo_r;
-var u_matriz_modelo_m;
 var u_matriz_vista;
 var u_matriz_proyeccion;
 var u_matriz_normal;
@@ -30,9 +26,11 @@ var matriz_modelo_esfera = mat4.create();;
 var matriz_normal_esfera = mat4.create();
 
 //Aux variables,
-var esfera = new Array(6);
-for (var i=0;i<6;i++)
-  esfera[i] = new Array(4); 		
+var filas = 6;
+var columnas = 4;
+var objeto_esfera = new Array(filas);
+for (let i=0;i<filas;i++)
+  objeto_esfera[i] = new Array(columnas); 
 
 // constante para objetos métalicos (copper)
 var ka_m = [0.5,0.3,0.1];
@@ -47,10 +45,10 @@ var ks_s = [0.73,0.63,0.63];
 var n_s = 76.8;
 
 // constantes para objetos rugoso(Black Rubber)
-var ka_m = [0.10,0.19,0.17];
-var kd_m = [0.40,0.74,0.70];
-var ks_m = [0.30,0.31,0.31];
-var n_m = 12.8;
+var ka_r = [0.10,0.19,0.17];
+var kd_r = [0.40,0.74,0.70];
+var ks_r = [0.30,0.31,0.31];
+var n_r = 12.8;
 
 
 function onLoad() {
@@ -80,11 +78,23 @@ function onLoad() {
 	u_brillo = gl.getUniformLocation(shader_program,"n");
 
 	// Cargo los objetos	
-	cargar_modelos(loc_posicion, loc_normal);
+	let i,j;
+	for ( j=0;j<columnas;j++) {
+		objeto_esfera[0][j] = new Model(esfera_obj,ka_m,kd_m,ks_m,n_m,loc_posicion,loc_normal);
+		objeto_esfera[5][j] = new Model(esfera_obj,ka_m,kd_m,ks_m,n_m,loc_posicion,loc_normal);
+	}
+	for ( j=0;j<columnas;j++) {
+		objeto_esfera[1][j] = new Model(esfera_obj,ka_s,kd_s,ks_s,n_s,loc_posicion,loc_normal);
+		objeto_esfera[4][j] = new Model(esfera_obj,ka_s,kd_s,ks_s,n_s,loc_posicion,loc_normal);
+	}
+	for ( j=0;j<columnas;j++) {
+		objeto_esfera[2][j] = new Model(esfera_obj,ka_r,kd_r,ks_r,n_r,loc_posicion,loc_normal);
+		objeto_esfera[3][j] = new Model(esfera_obj,ka_r,kd_r,ks_r,n_r,loc_posicion,loc_normal);
+	}
 
 	// se setean las cámaras
 	camara = new Camara(canvas);
-	luz = new Ligth();
+	luz = new Ligth(10.0,10.0,10.0);
 
 	gl.clearColor(0.18, 0.18, 0.18, 1.0);;
 
@@ -111,17 +121,16 @@ function onRender(now) {
 	setear_luz();
 
 	// Dibujar esferas
-	for (let i=0;i<6;i++){
-		for (let j=0;j<4;j++){
-			mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[5,5*1.4286,5]);
-			mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*2.5,0,(i-2.5)*2.5]);
-			dibujar(esfera[i][j], matriz_modelo_esfera);
+	let i,j;
+	for (i=0;i<filas;i++){
+		for (j=0;j<columnas;j++){
+			mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
+			mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(i-2.5)*4]);
+			dibujar(objeto_esfera[i][j], matriz_modelo_esfera);
 			matriz_modelo_esfera =mat4.create();
 		}	
 	}
 
-
-	// ciclo dibujar nuevamente
 	requestAnimationFrame(onRender);
 }
 
@@ -129,24 +138,25 @@ function setear_luz() {
 	let pos_l = luz.posL;
 	let ia = luz.intensidad_ambiente;
 	let id = luz.intensidad_difusa;
-	luz.set_atenuacion(1.0,0.0,0.0,0.0);
-	let atenuacion = luz.atenuacion;
 	gl.uniform3f(u_posicion_luz, pos_l[0], pos_l[1], pos_l[2]);
 	gl.uniform3f(u_intensidad_ambiente, ia[0], ia[1], ia[2]);
 	gl.uniform3f(u_intensidad_difusa, id[0], id[1], id[2]);
-	gl.uniform1f(u_atenuacion, atenuacion);
+	gl.uniform1f(u_atenuacion, luz.atenuacion);
 }
 
 function dibujar(objeto,matriz_modelo) {
 	setear_uniforms_material(objeto.material);
 	setear_uniforms_matrices(matriz_modelo);
 	gl.bindVertexArray(objeto.vao);
-	gl.drawElements(gl.TRIANGLES, objeto.cant_indices, gl.UNSIGNED_INT, 0);
+	gl.drawElements(gl.TRIANGLES, objeto.indices.length, gl.UNSIGNED_INT, 0);
 	gl.bindVertexArray(null);
 }
 
 function setear_uniforms_material(material) {
-	let ka = material[0];  let kd = material[1]; let ks = material[2]; let n = material[3];
+	let ka = material[0];
+	let kd = material[1]; 
+	let ks = material[2]; 
+	let n = material[3];
 	gl.uniform3f(u_constante_ambiente,ka[0],ka[1],ka[2]);
 	gl.uniform3f(u_constante_difusa,kd[0],kd[1],kd[2]);
 	gl.uniform3f(u_constante_especular,ks[0],ks[1],ks[2]);
@@ -186,16 +196,6 @@ function control_automatica(now) {
 }
 
 function reset_camara() { camara.reset(); }
-
-function cargar_modelos(loc_posicion, loc_normal) {
-
-	for (let i=0;i<6;i++){
-		for (let j=0;j<4;j++){
-			esfera[i][j] = new Model(esferaSource,ka_m,kd_m,ks_m,n_m);
-			esfera[i][j].generar_modelo(loc_posicion,loc_normal);
-		}	
-	}
-}
 
 function toggle_camara() { 
 	let select = document.getElementById("camara_seleccionada");

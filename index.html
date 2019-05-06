@@ -13,35 +13,36 @@
 	<script src="libs/vertex.glsl"></script>
 	<script src="libs/fragment.glsl"></script>
 	<script src="libs/Camara.js"></script>
-	<script src="libs/model.js"></script>
-	<script src="Modelos/esfera.obj"></script>
-	<script src="Modelos/house.js"></script>
-	<script src="Modelos/rocket.js"></script>
-	<script src="Modelos/mountain.js"></script>
-	<script src="app.js"></script>
+	<script src="libs/Model.js"></script>
 	<script src="libs/Ligth.js"></script>
+	<script src="Modelos/esfera.js"></script>
+	<script src="escenaA.js"></script>
 	<script type="text/javascript">
-		window.addEventListener('keydown',this.check,false);
+		window.addEventListener('keydown',this.oyente_teclado,false);
 		
-		function check(e) {
-			var code = e.keyCode;
-			     if ( code == 37) camara.flecha_derecha(); 			
-			else if ( code == 38 ) camara.flecha_arriba(); 		
-			else if ( code == 39 ) camara.flecha_izquierda(); 		
-			else if ( code == 40 ) camara.flecha_abajo(); 		
+		function oyente_teclado(e) {
+			var tecla = e.keyCode;
+			     if ( tecla == 37 ) camara.flecha_derecha(); 			
+			else if ( tecla == 38 ) camara.flecha_arriba(); 		
+			else if ( tecla == 39 ) camara.flecha_izquierda(); 		
+			else if ( tecla == 40 ) camara.flecha_abajo(); 		
 
-			else if ( code == 87 ) camara.flecha_arriba(); 		
-			else if ( code == 68 ) camara.flecha_izquierda(); 		
-			else if ( code == 65 ) camara.flecha_derecha(); 		
-			else if ( code == 83 ) camara.flecha_abajo(); 	
-			else if ( code == 32 ) toggle_camara();
+			else if ( tecla == 87 ) camara.flecha_arriba(); 		
+			else if ( tecla == 68 ) camara.flecha_izquierda(); 		
+			else if ( tecla == 65 ) camara.flecha_derecha(); 		
+			else if ( tecla == 83 ) camara.flecha_abajo(); 	
+			else if ( tecla == 32 ) {
+				let select = document.getElementById("camara_seleccionada");
+				if ( select.value == 1 ) select.value = 0;
+				else select.value = 1;
+			}
 		}
 	</script>
 </head>
 
 <body onload='onLoad();'>
 	<h1>???</h1>
-	<canvas id='webglCanvas' width="1000" height="500" style='float:left' oninput="teclado(this);">
+	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
 	</canvas>
 
 	<table border='2'>

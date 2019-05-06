@@ -1,6 +1,6 @@
 class Ligth{
-    constructor(posL){
-        this.posL = [10.0,10.0,10.0];
+    constructor(px,py,pz){
+        this.posL = [px,py,pz];
         this.intensidad_ambiente = [1.0,1.0,1.0]
         this.intensidad_difusa = [1.0,1.0,1.0]
         this.intensidad_especular = [1.0,1.0,1.0]
