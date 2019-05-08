@@ -9,10 +9,17 @@ class Model {
 		this.normals = this.parsedOBJ.normals;
 		// en un futuro se tendria que pasar las texturas tambien
 		
-		let vertexAttributeInfoArray = [
-			new VertexAttributeInfo(this.positions, loc_posicion, 3),
-			new VertexAttributeInfo(this.normals, loc_normal, 3)
-		];
+		let vertexAttributeInfoArray = null;
+
+		if ( loc_normal != null )
+			vertexAttributeInfoArray = [
+				new VertexAttributeInfo(this.positions, loc_posicion, 3),
+				new VertexAttributeInfo(this.normals, loc_normal, 3)
+			];
+		else
+			vertexAttributeInfoArray = [
+				new VertexAttributeInfo(this.positions, loc_posicion, 3)
+			];
 	
 		this.vao = VAOHelper.create(this.indices, vertexAttributeInfoArray);
 	}

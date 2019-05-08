@@ -76,3 +76,14 @@ void main() {
     fragmentColor = color;
 }
 `
+
+var color_posicion_f = `#version 300 es
+    precision mediump float;
+
+    in vec3 color;
+    out vec3 fragmentColor;
+
+    void main(){
+        fragmentColor = color;
+}
+`

@@ -17,6 +17,7 @@
 	<script src="libs/Ligth.js"></script>
 	<script src="Shaders/Phong.js"></script>
 	<script src="Shaders/Ward.js"></script>
+	<script src="Shaders/Color_posicion.js"></script>
 	<script src="Modelos/esfera.js"></script>
 	<script src="escenaA.js"></script>
 	<script type="text/javascript">
@@ -49,9 +50,31 @@
 
 	<table border='2'>
 		<tr>
-			<td>Control luces</td>
-			<td><input type="range" id="range_casa" step="1" min="0" max="360" value="0"></td>
+			<td>Controles de luz</td>
 		</tr>
+		<tr>
+			<tr>
+				<td>Coordenada X</td>
+				<td>
+					<input type="range" id="sliderx" min="-200" max="200" oninput="luz_slider()">
+					<input type="text" id="textox" value="0" oninput="luz_texto()">
+				</td>
+			</tr>
+			<tr>
+				<td>Coordenada Y</td>
+				<td>
+					<input type="range" id="slidery" min="-100" max="100" oninput="luz_slider()">
+					<input type="text" id="textoy" value="0" oninput="luz_texto()">
+				</td>
+			</tr>
+			<tr>
+				<td>Coordenada Z</td> 
+				<td>
+					<input type="range" id="sliderz" min="-200" max="200" oninput="luz_slider()">
+					<input type="text" id="textoz" value="0" oninput="luz_texto()">
+				</td>
+			</tr>
+
 		<tr>
 			<td>
 				<button id="boton_reset" onclick="reset_camara();">Restablecer cámara

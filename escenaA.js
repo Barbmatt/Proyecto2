@@ -4,6 +4,7 @@ var gl = null;
 var shader_m = null;
 var shader_s = null;
 var shader_r = null;
+var shader_luz = null;
 var camara = null; 						// setea la cámara a utilizar
 var luz = null;
 
@@ -16,6 +17,7 @@ var filas = 6;
 var columnas = 4;
 var objeto_esfera = new Array(filas);
 for (let i=0;i<filas;i++) objeto_esfera[i] = new Array(columnas); 
+var objetoLuz = null;
 
 // constante para objetos métalicos (copper)
 var material_m = {
@@ -49,6 +51,10 @@ function onLoad() {
 	shader_m = new Phong(phong_v,phong_f);
 	shader_s = new Ward(ward_v,ward_f);
 	shader_r = new Phong(goureaud_v,goureaud_f);
+	shader_luz = new Color_posicion(color_posicion_v, color_posicion_f);
+
+	objetoLuz = new Model(esfera_obj,null,shader_luz.loc_posicion,null);
+
 
 	// Cargo los objetos	
 	let j;
@@ -65,7 +71,10 @@ function onLoad() {
 
 	// se setean las cámaras
 	camara = new Camara(canvas);
-	luz = new Ligth(10.0,-10.0,10.0);
+	let x = document.getElementById("textox").value;
+	let y = document.getElementById("textoy").value;
+	let z = document.getElementById("textoz").value;
+	luz = new Ligth(x,y,z);
 
 	gl.clearColor(0.18, 0.18, 0.18, 1.0);;
 
@@ -84,6 +93,17 @@ function onRender(now) {
 
 	// limpiar canvas
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+	gl.useProgram(shader_luz.shader_program);
+	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
+	gl.uniformMatrix4fv(shader_luz.u_matriz_proyeccion, false, camara.proyeccion());
+	matriz_modelo_esfera = mat4.create();
+	mat4.translate(matriz_modelo_esfera, matriz_modelo_esfera, luz.posL);
+	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_esfera);
+	gl.bindVertexArray(objetoLuz.vao);
+	gl.drawElements(gl.TRIANGLES, objetoLuz.cant_indices, gl.UNSIGNED_INT, 0);
+	gl.bindVertexArray(null);
+	gl.useProgram(null);
 
 	// Dibujar esferas
 	let j;
@@ -183,4 +203,37 @@ function toggle_camara() {
 	let select = document.getElementById("camara_seleccionada");
 	if ( select.value == 1 ) select.value = 0;
 	else select.value = 1;
+}
+
+function luz_texto() {
+	let textox = document.getElementById("textox");
+	if  ( textox.value > 200 ) textox.value = 200;
+	else if ( textox.value < -200 ) textox.value = -200;
+
+	let textoy = document.getElementById("textoy");
+	if  ( textoy.value > 100 ) textoy.value = 100;
+	else if ( textoy.value < -100 ) textoy.value = -100;
+
+	let textoz = document.getElementById("textoz");
+	if  ( textoz.value > 200 ) textoz.value = 200;
+	else if ( textoz.value < -200 ) textoz.value = -200;
+	
+	document.getElementById("sliderx").value = textox.value;
+	document.getElementById("slidery").value = textoy.value;
+	document.getElementById("sliderz").value = textoz.value;
+
+	luz.posL = [textox.value,textoy.value,textoz.value];
+}
+
+function luz_slider() {
+	let sliderx = document.getElementById("sliderx").value;
+	let slidery = document.getElementById("slidery").value;
+	let sliderz = document.getElementById("sliderz").value;
+
+	
+	document.getElementById("textox").value = sliderx;
+	document.getElementById("textoy").value = slidery;
+	document.getElementById("textoz").value = sliderz;
+
+	luz.posL = [sliderx,slidery,sliderz];
 }
