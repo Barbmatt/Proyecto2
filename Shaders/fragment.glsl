@@ -3,6 +3,8 @@ var phong_f = `#version 300 es
 precision mediump float;
 
 uniform vec3 ia;
+uniform vec3 id;
+uniform vec3 is;
 uniform float fa;
 
 uniform vec3 ka;
@@ -10,32 +12,33 @@ uniform vec3 kd;
 uniform vec3 ks;
 uniform float n;
 
-in vec3 vNE;
-in vec3 vLE;
-in vec3 vVE;
+in vec3 normal;
+in vec3 luz;
+in vec3 ojo;
 
-out vec3 fragmentColor;
+out vec4 fragmentColor;
 
 void main() {
-    vec3 N = normalize(vNE);
-    vec3 L = normalize(vLE);
-    vec3 V = normalize(vVE);
+    vec3 N = normalize(normal);
+    vec3 L = normalize(luz);
+    vec3 V = normalize(ojo);
     vec3 H = normalize(L+V);
     
-    float id = max(dot(N,L),0.0); // intensidad de luz difusa 
-    float is = pow(max(dot(N,H),0.0),n);// intensidad de luz especular
-   
-    fragmentColor = ia*ka + fa*(kd*id + ks*is);
+    float NL = max(dot(N,L),0.0); // intensidad de luz difusa 
+    float NHn = pow(max(dot(N,H),0.0),n);// intensidad de luz especular
+    
+    fragmentColor = vec4(ia*ka +fa*(kd*NL*id + ks*NHn*is),1);
+       
 }
 `
 
 var goureaud_f = `#version 300 es
 precision mediump float;
 in vec3 color;
-out vec3 fragmentColor;
+out vec4 fragmentColor;
 
 void main() {
-    fragmentColor = color;
+    fragmentColor = vec4(color,1);
 }
 `
 
@@ -49,7 +52,7 @@ uniform float alfa;
 in vec3 vi;
 in vec3 vn;
 in vec3 vr;
-out vec3 fragmentColor;
+out vec4 fragmentColor;
 
 void main() {
     vec3 vni = normalize(vi);
@@ -65,15 +68,15 @@ void main() {
     float PI = 3.14159;
     vec3 color = pd/PI; 
     
-    if ( (cos_ti > 0.001) && (cos_tr > 0.001) ) {
+    //if ( (cos_ti > 0.001) && (cos_tr > 0.001) ) {
         float a2 = alfa*alfa;
-        float tangente = tan(tita_h/a2);
+        float tangente = tan(tita_h);
         float divisor = 4.0*PI*a2;
-        float exp_aux = exp(-tangente*tangente)/divisor;
+        float exp_aux = exp(-tangente*tangente/a2)/divisor;
         color += exp_aux * ps/sqrt(cos_ti*cos_tr);
-    }
+    //}
     
-    fragmentColor = color;
+    fragmentColor = vec4(color,1);
 }
 `
 
@@ -81,9 +84,9 @@ var color_posicion_f = `#version 300 es
     precision mediump float;
 
     in vec3 color;
-    out vec3 fragmentColor;
+    out vec4 fragmentColor;
 
     void main(){
-        fragmentColor = color;
+        fragmentColor = vec4(color,1);
 }
 `

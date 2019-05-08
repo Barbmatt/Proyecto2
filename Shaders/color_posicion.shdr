@@ -1,6 +1,6 @@
 {
   "vertexSource": "#version 300 es\n\nuniform mat4 viewMatrix;\nuniform mat4 modelMatrix;\nuniform mat4 projectionMatrix;\n\nin vec3 vertexPosition;\nout vec3 color;\n\nvoid main() {\n    color = vertexPosition;\n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);\n}",
-  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nin vec3 color;\nout vec3 fragmentColor;\n\nvoid main(){\n    fragmentColor = color;\n}",
+  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nin vec3 color;\nout vec4 fragmentColor;\n\nvoid main(){\n    fragmentColor = vec4(color,1);\n}",
   "model": "sphere",
   "uniforms": []
 }

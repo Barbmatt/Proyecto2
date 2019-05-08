@@ -10,21 +10,21 @@ var luz = null;
 
 // variables de matrices
 var matriz_modelo_esfera = mat4.create();
+var matriz_modelo_luz = mat4.create();
 var matriz_normal_esfera = mat4.create();
 
 //Aux variables,
 var filas = 6;
 var columnas = 4;
-var objeto_esfera = new Array(filas);
-for (let i=0;i<filas;i++) objeto_esfera[i] = new Array(columnas); 
+var objeto_esfera;
 var objetoLuz = null;
 
 // constante para objetos métalicos (copper)
 var material_m = {
-	ka: [0.5,0.3,0.1],
-	kd: [0.4,0.7,0.1],
-	ks: [0.1,0.7,0.5],
-	n: 20.0
+	ka: [0.23,0.23,0.23],
+	kd: [0.28, 0.28, 0.28],
+	ks: [0.77, 077, 077],
+	n: 89.6
 };
 
 // constantes para objetos satinado 
@@ -57,17 +57,8 @@ function onLoad() {
 
 
 	// Cargo los objetos	
-	let j;
-	for ( j=0;j<columnas;j++) {
-		objeto_esfera[0][j] = new Model(esfera_obj,material_m,shader_m.loc_posicion,shader_m.loc_normal);
-		objeto_esfera[1][j] = new Model(esfera_obj,material_m,shader_m.loc_posicion,shader_m.loc_normal);
-
-		objeto_esfera[2][j] = new Model(esfera_obj,material_s,shader_s.loc_posicion,shader_s.loc_normal);
-		objeto_esfera[3][j] = new Model(esfera_obj,material_s,shader_s.loc_posicion,shader_s.loc_normal);
-		
-		objeto_esfera[4][j] = new Model(esfera_obj,material_r,shader_r.loc_posicion,shader_r.loc_normal);
-		objeto_esfera[5][j] = new Model(esfera_obj,material_r,shader_r.loc_posicion,shader_r.loc_normal);
-	}
+	objeto_esfera = new Model(esfera_obj,material_m,shader_m.loc_posicion,shader_m.loc_normal);
+	mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
 
 	// se setean las cámaras
 	camara = new Camara(canvas);
@@ -94,12 +85,13 @@ function onRender(now) {
 	// limpiar canvas
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+	// dibujar esfera en la luz
 	gl.useProgram(shader_luz.shader_program);
 	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader_luz.u_matriz_proyeccion, false, camara.proyeccion());
-	matriz_modelo_esfera = mat4.create();
-	mat4.translate(matriz_modelo_esfera, matriz_modelo_esfera, luz.posL);
-	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_esfera);
+	matriz_modelo_luz = mat4.create();
+	mat4.translate(matriz_modelo_luz, matriz_modelo_luz, luz.posL);
+	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_luz);
 	gl.bindVertexArray(objetoLuz.vao);
 	gl.drawElements(gl.TRIANGLES, objetoLuz.cant_indices, gl.UNSIGNED_INT, 0);
 	gl.bindVertexArray(null);
@@ -110,48 +102,54 @@ function onRender(now) {
 	gl.useProgram(shader_m.shader_program);
 	gl.uniformMatrix4fv(shader_m.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader_m.u_matriz_proyeccion, false, camara.proyeccion());
-	for (j=0;j<columnas;j++){
-		matriz_modelo_esfera = mat4.create();
-		mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(0-2.5)*4]);
-		dibujar(shader_m, objeto_esfera[0][j], matriz_modelo_esfera);
+	gl.uniform3f(shader_m.u_intensidad_ambiente,1,1,1);
+	gl.uniform3f(shader_m.u_intensidad_difusa,1,1,1);
+	gl.uniform3f(shader_m.u_intensidad_especular,1,1,1);
+	objeto_esfera.material = material_m;
 
-		matriz_modelo_esfera = mat4.create();
-		mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
+	for (j=0;j<columnas;j++){
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(0-2.5)*4]);
+		dibujar(shader_m, objeto_esfera, matriz_modelo_esfera);
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(0-2.5)*4]);
+
 		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(1-2.5)*4]);
-		dibujar(shader_m, objeto_esfera[1][j], matriz_modelo_esfera);
+		dibujar(shader_m, objeto_esfera, matriz_modelo_esfera);
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(1-2.5)*4]);
 	}
 	gl.useProgram(null);
 
 	gl.useProgram(shader_s.shader_program);
 	gl.uniformMatrix4fv(shader_s.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader_s.u_matriz_proyeccion, false, camara.proyeccion());
-	for (j=0;j<columnas;j++){
-		matriz_modelo_esfera = mat4.create();
-		mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(2-2.5)*4]);
-		dibujar(shader_s, objeto_esfera[2][j], matriz_modelo_esfera);
+	objeto_esfera.material = material_s;
 
-		matriz_modelo_esfera = mat4.create();
-		mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
+	for (j=0;j<columnas;j++){
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(2-2.5)*4]);
+		dibujar(shader_s, objeto_esfera, matriz_modelo_esfera);
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(2-2.5)*4]);
+
 		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(3-2.5)*4]);
-		dibujar(shader_s, objeto_esfera[3][j], matriz_modelo_esfera);
+		dibujar(shader_s, objeto_esfera, matriz_modelo_esfera);
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(3-2.5)*4]);
 	}
 	gl.useProgram(null);
 
 	gl.useProgram(shader_r.shader_program);
 	gl.uniformMatrix4fv(shader_r.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader_r.u_matriz_proyeccion, false, camara.proyeccion());
-	for (j=0;j<columnas;j++){
-		matriz_modelo_esfera = mat4.create();
-		mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(4-2.5)*4]);
-		dibujar(shader_r, objeto_esfera[4][j], matriz_modelo_esfera);
+	objeto_esfera.material = material_r;
+	gl.uniform3f(shader_r.u_intensidad_ambiente,1,1,1);
+	gl.uniform3f(shader_r.u_intensidad_difusa,1,1,1);
+	gl.uniform3f(shader_r.u_intensidad_especular,1,1,1);
 
-		matriz_modelo_esfera = mat4.create();
-		mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
+	for (j=0;j<columnas;j++){
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(4-2.5)*4]);
+		dibujar(shader_r, objeto_esfera, matriz_modelo_esfera);
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(4-2.5)*4]);
+
 		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(5-2.5)*4]);
-		dibujar(shader_r, objeto_esfera[5][j], matriz_modelo_esfera);
+		dibujar(shader_r, objeto_esfera, matriz_modelo_esfera);
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(5-2.5)*4]);
 	}
 	requestAnimationFrame(onRender);
 }

@@ -14,6 +14,9 @@ class Phong {
         this.loc_posicion = gl.getAttribLocation(this.shader_program, 'vertexPosition');
 
         this.u_intensidad_ambiente = gl.getUniformLocation(this.shader_program,"ia");
+        this.u_intensidad_difusa = gl.getUniformLocation(this.shader_program,"id");
+        this.u_intensidad_especular = gl.getUniformLocation(this.shader_program,"is");
+
         this.u_atenuacion = gl.getUniformLocation(this.shader_program,"fa");
         
         this.u_constante_ambiente = gl.getUniformLocation(this.shader_program,"ka");

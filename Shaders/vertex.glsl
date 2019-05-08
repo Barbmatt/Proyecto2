@@ -6,21 +6,21 @@ uniform mat4 projectionMatrix;
 uniform mat4 normalMatrix;
 uniform mat4 modelMatrix;
 
-uniform vec3 L;// en coordenadas del mundo
+uniform vec3 posL;// en coordenadas del mundo
 
 in vec3 vertexNormal;
 in vec3 vertexPosition;
-out vec3 vNE;
-out vec3 vLE;
-out vec3 vVE;
+out vec3 normal;
+out vec3 luz;
+out vec3 ojo;
 
 
 void main() {
     vec3 vPE = vec3(viewMatrix * modelMatrix * vec4(vertexPosition, 1));
-    vec3 LE = vec3(viewMatrix * vec4(L,1));
-    vLE = normalize(vec3(LE-vPE));
-    vNE = normalize(vec3(normalMatrix*vec4(vertexNormal,1)));
-    vVE = normalize(-vPE);  // distancia entre la posicion del ojo (0,0,0) y un vertice del objeto
+    vec3 LE = vec3(viewMatrix * vec4(posL,1));
+    luz = normalize(vec3(LE-vPE));
+    normal = normalize(vec3(normalMatrix*vec4(vertexNormal,1)));
+    ojo = normalize(-vPE);  // distancia entre la posicion del ojo (0,0,0) y un vertice del objeto
    
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
 }
