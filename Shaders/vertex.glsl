@@ -33,9 +33,11 @@ uniform mat4 projectionMatrix;
 uniform mat4 normalMatrix;
 uniform mat4 modelMatrix;
 
-uniform vec3 L;
+uniform vec3 posL;
 
 uniform vec3 ia;
+uniform vec3 is;
+uniform vec3 id;
 uniform float fa;
 
 uniform vec3 ka;
@@ -49,17 +51,17 @@ out vec3 color;
 
 void main() {
     vec3 vertexPositionE = vec3(viewMatrix * modelMatrix * vec4(vertexPosition, 1));
-    vec3 LE = vec3(viewMatrix * vec4(L,1));
+    vec3 LE = vec3(viewMatrix * vec4(posL,1));
     vec3 L =normalize(LE-vertexPositionE);
     vec3 N =normalize(vec3(normalMatrix*vec4(vertexNormal,1)));
     
-    float id = max(dot(N,L),0.0); 
-    
     vec3 V = normalize(-vertexPositionE); 
-    vec3 R = normalize(reflect(-L,N));
-    float is=pow(max(dot(R,V),0.0),n);
+    vec3 H = normalize(L+V);
+    float NL = max(dot(N,L),0.0);
+    float NHn = pow(max(dot(N,H),0.0),n);
+
     
-    color = ia*ka + fa*(kd*id + ks*is);
+    color = ia*ka + fa*(kd*id*NL + ks*is*NHn);
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
 }
 `
@@ -71,7 +73,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 normalMatrix;
 uniform mat4 modelMatrix;
 
-uniform vec3 L;
+uniform vec3 posL;
 
 in vec3 vertexNormal;
 in vec3 vertexPosition;
@@ -81,7 +83,7 @@ out vec3 vr;
 
 void main() {
     vec3 p = vec3(viewMatrix * modelMatrix *vec4(vertexPosition, 1));
-    vi = vec3(viewMatrix * vec4(L,1)); 
+    vi = vec3(viewMatrix * vec4(posL,1)); 
     vi = vi - p;
     vr = -p;
     vn = vec3(normalMatrix*vec4(vertexNormal,1));

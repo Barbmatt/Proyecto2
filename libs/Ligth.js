@@ -1,10 +1,11 @@
 class Ligth{
-    constructor(px,py,pz){
-        this.posL = [px,py,pz];
-        this.intensidad_ambiente = [1.0,1.0,1.0]
-        this.intensidad_difusa = [1.0,1.0,1.0]
-        this.intensidad_especular = [1.0,1.0,1.0]
-        this.angulo = 360;
+    constructor(posicion, direccion, angulo){
+        this.posL = posicion;
+        this.dirL = direccion;
+        this.intensidad_ambiente = [1.0,1.0,1.0];
+        this.intensidad_difusa = [1.0,1.0,1.0];
+        this.intensidad_especular = [1.0,1.0,1.0];
+        this.angulo = angulo;
         this.atenuacion = 1.0;
     }
 

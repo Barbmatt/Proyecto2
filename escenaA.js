@@ -1,37 +1,38 @@
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
-var gl = null;
-var shader_m = null;
-var shader_s = null;
-var shader_r = null;
-var shader_luz = null;
-var camara = null; 						// setea la cámara a utilizar
-var luz = null;
+var gl;
+var shader_m;
+var shader_s;
+var shader_r;
+var shader_luz;
+var camara; 						
+var luz_puntual;					
+var luz_direccional;					
+var luz_spot;
 
 // variables de matrices
 var matriz_modelo_esfera = mat4.create();
-var matriz_modelo_luz = mat4.create();
-var matriz_normal_esfera = mat4.create();
 
 //Aux variables,
 var filas = 6;
 var columnas = 4;
 var objeto_esfera;
-var objetoLuz = null;
+var objeto_luz;
 
 // constante para objetos métalicos (copper)
 var material_m = {
-	ka: [0.23,0.23,0.23],
-	kd: [0.28, 0.28, 0.28],
-	ks: [0.77, 077, 077],
-	n: 89.6
+	ka: [0.33,0.22,0.03],
+	kd: [0.78, 0.57, 0.11],
+	ks: [0.99, 0.94, 0.8],
+	n: 40
 };
 
 // constantes para objetos satinado 
 var material_s = {
-	pd: [0.35,0.31,0.09],
-	ps: [0.8,0.72,0.21],
-	alfa: 0.8
+	pa: [0.19 ,0.07 ,0.02],
+	pd: [0.7 ,0.27 ,0.08],
+	ps: [0.26 ,0.14 ,0.09],
+	alfa: 0.08
 };
 
 // constantes para objetos rugoso(Black Rubber)
@@ -48,35 +49,53 @@ function onLoad() {
 	let canvas = document.getElementById('webglCanvas');
 	gl = canvas.getContext('webgl2');
 
-	shader_m = new Phong(phong_v,phong_f);
-	shader_s = new Ward(ward_v,ward_f);
-	shader_r = new Phong(goureaud_v,goureaud_f);
+	shader_m = new Phong(phong_v,phong_f,gl);
+	shader_s = new Ward(ward_v,ward_f,gl);
+	shader_r = new Phong(goureaud_v,goureaud_f,gl);
 	shader_luz = new Color_posicion(color_posicion_v, color_posicion_f);
 
-	objetoLuz = new Model(esfera_obj,null,shader_luz.loc_posicion,null);
-
+	// objetos para las luces
+	objeto_luz = new Model(esfera_obj,null,shader_luz.loc_posicion,null);
 
 	// Cargo los objetos	
-	objeto_esfera = new Model(esfera_obj,material_m,shader_m.loc_posicion,shader_m.loc_normal);
+	objeto_esfera = new Model(esfera_obj,null,shader_m.loc_posicion,shader_m.loc_normal);
 	mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
 
-	// se setean las cámaras
+	// se setean las cámaras (puntual, spot y direccional)
 	camara = new Camara(canvas);
-	let x = document.getElementById("textox").value;
-	let y = document.getElementById("textoy").value;
-	let z = document.getElementById("textoz").value;
-	luz = new Ligth(x,y,z);
+	let px = document.getElementById("pos_puntualx").value;
+	let py = document.getElementById("pos_puntualy").value;
+	let pz = document.getElementById("pos_puntualz").value;
+	luz_puntual = new Ligth([px,py,pz],null,360);
 
-	gl.clearColor(0.18, 0.18, 0.18, 1.0);;
+
+	px = document.getElementById("pos_spotx").value;
+	py = document.getElementById("pos_spoty").value;
+	pz = document.getElementById("pos_spotz").value;
+	let dx = document.getElementById("dir_spotx").value;
+	let dy = document.getElementById("dir_spoty").value;
+	let dz = document.getElementById("dir_spotz").value;
+	let angulo = document.getElementById("angulo_spot").value;
+	luz_spot = new Ligth([px,py,pz],[dx,dy,dz],angulo);
+
+
+	dx = document.getElementById("dir_direccionalx").value;
+	dy = document.getElementById("dir_direccionaly").value;
+	dz = document.getElementById("dir_direccionalz").value;
+	luz_direccional = new Ligth(null,[dx,dy,dz],360);
+
+	gl.clearColor(0.04,0.04,0.04,1);;
 
 	gl.enable(gl.DEPTH_TEST);
 
 	gl.bindVertexArray(null);
 
+	gl.useProgram(shader_luz.shader_program);
+	
+
 	// se empieza a dibujar por cuadro
 	requestAnimationFrame(onRender)
 }
-
 
 function onRender(now) {
 	// se controla en cada cuadro si la cámara es automática
@@ -85,76 +104,63 @@ function onRender(now) {
 	// limpiar canvas
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// dibujar esfera en la luz
-	gl.useProgram(shader_luz.shader_program);
-	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
-	gl.uniformMatrix4fv(shader_luz.u_matriz_proyeccion, false, camara.proyeccion());
-	matriz_modelo_luz = mat4.create();
-	mat4.translate(matriz_modelo_luz, matriz_modelo_luz, luz.posL);
-	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_luz);
-	gl.bindVertexArray(objetoLuz.vao);
-	gl.drawElements(gl.TRIANGLES, objetoLuz.cant_indices, gl.UNSIGNED_INT, 0);
-	gl.bindVertexArray(null);
-	gl.useProgram(null);
+	// 0 = dibuja la posición, 1 = dibuja la dirección
+	dibujar_luz(luz_puntual,0);
+	dibujar_luz(luz_direccional,1);
+	dibujar_luz(luz_spot,0);
 
 	// Dibujar esferas
-	let j;
-	gl.useProgram(shader_m.shader_program);
-	gl.uniformMatrix4fv(shader_m.u_matriz_vista, false, camara.vista());
-	gl.uniformMatrix4fv(shader_m.u_matriz_proyeccion, false, camara.proyeccion());
-	gl.uniform3f(shader_m.u_intensidad_ambiente,1,1,1);
-	gl.uniform3f(shader_m.u_intensidad_difusa,1,1,1);
-	gl.uniform3f(shader_m.u_intensidad_especular,1,1,1);
-	objeto_esfera.material = material_m;
-
-	for (j=0;j<columnas;j++){
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(0-2.5)*4]);
-		dibujar(shader_m, objeto_esfera, matriz_modelo_esfera);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(0-2.5)*4]);
-
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(1-2.5)*4]);
-		dibujar(shader_m, objeto_esfera, matriz_modelo_esfera);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(1-2.5)*4]);
-	}
-	gl.useProgram(null);
-
-	gl.useProgram(shader_s.shader_program);
-	gl.uniformMatrix4fv(shader_s.u_matriz_vista, false, camara.vista());
-	gl.uniformMatrix4fv(shader_s.u_matriz_proyeccion, false, camara.proyeccion());
-	objeto_esfera.material = material_s;
-
-	for (j=0;j<columnas;j++){
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(2-2.5)*4]);
-		dibujar(shader_s, objeto_esfera, matriz_modelo_esfera);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(2-2.5)*4]);
-
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(3-2.5)*4]);
-		dibujar(shader_s, objeto_esfera, matriz_modelo_esfera);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(3-2.5)*4]);
-	}
-	gl.useProgram(null);
-
-	gl.useProgram(shader_r.shader_program);
-	gl.uniformMatrix4fv(shader_r.u_matriz_vista, false, camara.vista());
-	gl.uniformMatrix4fv(shader_r.u_matriz_proyeccion, false, camara.proyeccion());
-	objeto_esfera.material = material_r;
-	gl.uniform3f(shader_r.u_intensidad_ambiente,1,1,1);
-	gl.uniform3f(shader_r.u_intensidad_difusa,1,1,1);
-	gl.uniform3f(shader_r.u_intensidad_especular,1,1,1);
-
-	for (j=0;j<columnas;j++){
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(4-2.5)*4]);
-		dibujar(shader_r, objeto_esfera, matriz_modelo_esfera);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(4-2.5)*4]);
-
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(5-2.5)*4]);
-		dibujar(shader_r, objeto_esfera, matriz_modelo_esfera);
-		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(5-2.5)*4]);
-	}
+	
+	// 1 = phong, 0 = ward
+	dibujar_esfera(shader_m, material_m, 1, 0, luz_puntual);
+	dibujar_esfera(shader_s, material_s, 0, 2, luz_puntual);
+	dibujar_esfera(shader_r, material_r, 1, 4, luz_puntual);
+	
 	requestAnimationFrame(onRender);
 }
 
-function dibujar(shader, objeto, matriz_modelo) {
+function dibujar_luz(luz, que_dibujar) {
+	gl.useProgram(shader_luz.shader_program);
+	gl.uniformMatrix4fv(shader_luz.u_matriz_proyeccion, false, camara.proyeccion());
+	let matriz_modelo_luz = mat4.create();
+	let vector = null;
+	if ( que_dibujar == 0 ) vector = luz.posL;
+	else vector = luz.dirL;
+	mat4.translate(matriz_modelo_luz,matriz_modelo_luz,vector);
+	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
+	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_luz);
+	gl.bindVertexArray(objeto_luz.vao);
+	gl.drawElements(gl.TRIANGLES, objeto_luz.cant_indices, gl.UNSIGNED_INT, 0);
+	gl.bindVertexArray(null);
+	gl.useProgram(null);
+}
+
+function dibujar_esfera(shader, material, tipo_shader, i, luz) {
+	let j;
+	gl.useProgram(shader.shader_program);
+	gl.uniformMatrix4fv(shader.u_matriz_vista, false, camara.vista());
+	gl.uniformMatrix4fv(shader.u_matriz_proyeccion, false, camara.proyeccion());
+	objeto_esfera.material = material;
+	
+	if ( tipo_shader == 1 ) {
+		gl.uniform3f(shader.u_intensidad_ambiente,1,1,1);
+		gl.uniform3f(shader.u_intensidad_difusa,1,1,1);
+		gl.uniform3f(shader.u_intensidad_especular,1,1,1);
+	}
+
+	for (j=0;j<columnas;j++){
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(i-2.5)*4]);
+		dibujar(shader, objeto_esfera, matriz_modelo_esfera, luz);
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(i-2.5)*4]);
+
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(i+1-2.5)*4]);
+		dibujar(shader, objeto_esfera, matriz_modelo_esfera, luz);
+		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(i+1-2.5)*4]);
+	}
+	gl.useProgram(null);
+}
+
+function dibujar(shader, objeto, matriz_modelo, luz) {
 	shader.set_luz(luz);
 	shader.set_material(objeto.material);
 	setear_uniforms_objeto(shader, matriz_modelo);
@@ -165,7 +171,7 @@ function dibujar(shader, objeto, matriz_modelo) {
 
 function setear_uniforms_objeto(shader, matriz_modelo) {
 	gl.uniformMatrix4fv(shader.u_matriz_modelo, false,matriz_modelo);
-	matriz_normal = mat4.create()
+	let matriz_normal = mat4.create()
 	mat4.multiply(matriz_normal,camara.vista(),matriz_modelo);
 	mat4.invert(matriz_normal,matriz_normal);
 	mat4.transpose(matriz_normal,matriz_normal);
@@ -203,35 +209,22 @@ function toggle_camara() {
 	else select.value = 1;
 }
 
-function luz_texto() {
-	let textox = document.getElementById("textox");
-	if  ( textox.value > 200 ) textox.value = 200;
-	else if ( textox.value < -200 ) textox.value = -200;
+function posicion_puntual() {
+	let px = document.getElementById("pos_puntualx").value;
+	/*\
+		TODO:
+		if ( !isNaN(px) ) posicion_puntual_vieja[0];
+		if ( !isNaN(py) ) posicion_puntual_vieja[1];
+		if ( !isNaN(pz) ) posicion_puntual_vieja[2];
+	\*/
 
-	let textoy = document.getElementById("textoy");
-	if  ( textoy.value > 100 ) textoy.value = 100;
-	else if ( textoy.value < -100 ) textoy.value = -100;
+	let py = document.getElementById("pos_puntualy").value;
 
-	let textoz = document.getElementById("textoz");
-	if  ( textoz.value > 200 ) textoz.value = 200;
-	else if ( textoz.value < -200 ) textoz.value = -200;
+	let pz = document.getElementById("pos_puntualz").value;
 	
-	document.getElementById("sliderx").value = textox.value;
-	document.getElementById("slidery").value = textoy.value;
-	document.getElementById("sliderz").value = textoz.value;
+	// document.getElementById("sliderx").value = px;
+	// document.getElementById("slidery").value = py;
+	// document.getElementById("sliderz").value = pz;
 
-	luz.posL = [textox.value,textoy.value,textoz.value];
-}
-
-function luz_slider() {
-	let sliderx = document.getElementById("sliderx").value;
-	let slidery = document.getElementById("slidery").value;
-	let sliderz = document.getElementById("sliderz").value;
-
-	
-	document.getElementById("textox").value = sliderx;
-	document.getElementById("textoy").value = slidery;
-	document.getElementById("textoz").value = sliderz;
-
-	luz.posL = [sliderx,slidery,sliderz];
+	luz_puntual.posL = [px,py,pz];
 }

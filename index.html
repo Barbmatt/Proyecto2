@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -48,46 +49,123 @@
 	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
 	</canvas>
 
-	<table border='2'>
+	<!---------------------------- Luz spot -------------------------------->
+
+
+	<table style="table-layout: fixed; width: 355px;" border="3">
 		<tr>
-			<td>Controles de luz</td>
+			<td>Luz spot</td>
+			<td> 
+				<label></label>
+			</td>
 		</tr>
-		<tr>
-			<tr>
-				<td>Coordenada X</td>
-				<td>
-					<input type="range" id="sliderx" min="-200" max="200" oninput="luz_slider()">
-					<input type="text" id="textox" value="0" oninput="luz_texto()">
-				</td>
-			</tr>
-			<tr>
-				<td>Coordenada Y</td>
-				<td>
-					<input type="range" id="slidery" min="-100" max="100" oninput="luz_slider()">
-					<input type="text" id="textoy" value="0" oninput="luz_texto()">
-				</td>
-			</tr>
-			<tr>
-				<td>Coordenada Z</td> 
-				<td>
-					<input type="range" id="sliderz" min="-200" max="200" oninput="luz_slider()">
-					<input type="text" id="textoz" value="0" oninput="luz_texto()">
-				</td>
-			</tr>
 
 		<tr>
+			<td>Ángulo de apertura</td>
 			<td>
-				<button id="boton_reset" onclick="reset_camara();">Restablecer cámara
-				</button>
+				<input type="text" id="angulo_spot" value="0" size="2" oninput="angulo_spot()">
 			</td>
+		</tr>
+		<tr>
+			<td>Dirección de la luz</td>
 			<td>
-				<select id="camara_seleccionada">
-					<option value=0>Cámara manual</option>
-					<option value=1>Cámara automática</option>
-				</select>
+				<label>x:</label>
+				<input type="text" id="dir_spotx" value="0" size="2" oninput="direccion_spot()">
+				<label>y:</label>
+				<input type="text" id="dir_spoty" value="0" size="2" oninput="direccion_spot()">
+				<label>z:</label>
+				<input type="text" id="dir_spotz" value="0" size="2" oninput="direccion_spot()">
+			</td>
+		</tr>
+
+		<tr>
+			<td>Posición</td>
+			<td>
+				<label>x:</label>
+				<input type="text" id="pos_spotx" value="0" size="2" oninput="posicion_spot()">
+				<label>y:</label>
+				<input type="text" id="pos_spoty" value="0" size="2" oninput="posicion_spot()">
+				<label>z:</label>
+				<input type="text" id="pos_spotz" value="0" size="2" oninput="posicion_spot()">
 			</td>
 		</tr>
 	</table>
+
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
+	<!---------------------------- Luz puntual -------------------------------->
+
+
+	<table style="table-layout: fixed; width: 355px;" border="3">
+		<tr>
+			<td>Luz puntual</td>
+			<td> 
+				<label></label>
+			</td>
+		</tr>
+		<tr>
+			<td>Posición</td>
+			<td>
+				<label>x:</label>
+				<input type="text" id="pos_puntualx" value="0" size="2" oninput="posicion_puntual()">
+				<label>y:</label>
+				<input type="text" id="pos_puntualy" value="0" size="2" oninput="posicion_puntual()">
+				<label>z:</label>
+				<input type="text" id="pos_puntualz" value="0" size="2" oninput="posicion_puntual()">
+			</td>
+		</tr>
+	</table>
+
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
+	<!---------------------------- Luz direccional ----------------------------->
+
+
+	<table style="table-layout: fixed; width: 355px;" border="3">
+		<tr>
+			<td>Luz direccional</td>
+			<td> 
+				<label></label>
+			</td>
+		</tr>
+		<tr>
+			<td>Dirección</td>
+			<td>
+				<label>x:</label>
+				<input type="text" id="dir_direccionalx" value="0" size="2" oninput="direccion_direccional()">
+				<label>y:</label>
+				<input type="text" id="dir_direccionaly" value="0" size="2" oninput="direccion_direccional()">
+				<label>z:</label>
+				<input type="text" id="dir_direccionalz" value="0" size="2" oninput="direccion_direccional()">
+			</td>
+		</tr>
+	</table>
+
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
+	<!------------------------------- Cámara ------------------------------------>
+
+
+	<table style="table-layout: fixed; width: 355px;" border="3">
+			<tr>
+				<td>Cámara</td>
+				<td> 
+					<label></label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button id="boton_reset" onclick="reset_camara();">Restablecer cámara
+					</button>
+				</td>
+				<td>
+					<select id="camara_seleccionada">
+						<option value=0>Cámara manual</option>
+						<option value=1>Cámara automática</option>
+					</select>
+				</td>
+			</tr>
+	</table>
+	
+
+
 </body>
 
 </html>

@@ -45,6 +45,7 @@ void main() {
 var ward_f = `#version 300 es
 precision mediump float;
 
+uniform vec3 pa;
 uniform vec3 pd;
 uniform vec3 ps;
 uniform float alfa;
@@ -66,17 +67,15 @@ void main() {
     float tita_h = acos(dot(vnh,vnn));
     
     float PI = 3.14159;
-    vec3 color = pd/PI; 
+    vec3 color =  pa + pd/PI; 
     
-    //if ( (cos_ti > 0.001) && (cos_tr > 0.001) ) {
-        float a2 = alfa*alfa;
-        float tangente = tan(tita_h);
-        float divisor = 4.0*PI*a2;
-        float exp_aux = exp(-tangente*tangente/a2)/divisor;
-        color += exp_aux * ps/sqrt(cos_ti*cos_tr);
-    //}
+    float a2 = alfa*alfa;
+    float tangente = tan(tita_h);
+    float divisor = 4.0*PI*a2;
+    float exp_aux = exp(-tangente*tangente/a2)/divisor;
+    color += exp_aux * ps/sqrt(cos_ti*cos_tr);
     
-    fragmentColor = vec4(color,1);
+    fragmentColor = vec4(color,1) * cos_ti * 1.5;
 }
 `
 
