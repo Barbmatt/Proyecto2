@@ -36,8 +36,6 @@ uniform mat4 modelMatrix;
 uniform vec3 posL;
 
 uniform vec3 ia;
-uniform vec3 is;
-uniform vec3 id;
 uniform float fa;
 
 uniform vec3 ka;
@@ -61,7 +59,7 @@ void main() {
     float NHn = pow(max(dot(N,H),0.0),n);
 
     
-    color = ia*ka + fa*(kd*id*NL + ks*is*NHn);
+    color = ia*ka + fa*(kd*NL + ks*NHn);
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
 }
 `

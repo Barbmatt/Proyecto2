@@ -1,6 +1,6 @@
 class Model {
-	constructor(objectSource, material, loc_posicion, loc_normal) {
-		this.material = material;
+	constructor(objectSource, loc_posicion, loc_normal) {
+		this.material = null;
 
 		this.parsedOBJ = OBJParser.parseFile(objectSource);
 		this.indices = this.parsedOBJ.indices;

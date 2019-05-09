@@ -3,8 +3,6 @@ var phong_f = `#version 300 es
 precision mediump float;
 
 uniform vec3 ia;
-uniform vec3 id;
-uniform vec3 is;
 uniform float fa;
 
 uniform vec3 ka;
@@ -27,7 +25,7 @@ void main() {
     float NL = max(dot(N,L),0.0); // intensidad de luz difusa 
     float NHn = pow(max(dot(N,H),0.0),n);// intensidad de luz especular
     
-    fragmentColor = vec4(ia*ka +fa*(kd*NL*id + ks*NHn*is),1);
+    fragmentColor = vec4(ia*ka +fa*(kd*NL + ks*NHn),1);
        
 }
 `
@@ -45,10 +43,12 @@ void main() {
 var ward_f = `#version 300 es
 precision mediump float;
 
-uniform vec3 pa;
-uniform vec3 pd;
-uniform vec3 ps;
-uniform float alfa;
+uniform vec3 ia;
+
+uniform vec3 ka;
+uniform vec3 kd;
+uniform vec3 ks;
+uniform float n;
 
 in vec3 vi;
 in vec3 vn;
@@ -66,16 +66,20 @@ void main() {
     
     float tita_h = acos(dot(vnh,vnn));
     
-    float PI = 3.14159;
-    vec3 color =  pa + pd/PI; 
+    vec3 color = ia*ka;
     
-    float a2 = alfa*alfa;
-    float tangente = tan(tita_h);
-    float divisor = 4.0*PI*a2;
-    float exp_aux = exp(-tangente*tangente/a2)/divisor;
-    color += exp_aux * ps/sqrt(cos_ti*cos_tr);
-    
-    fragmentColor = vec4(color,1) * cos_ti * 1.5;
+    if ( cos_ti > 0.0 && cos_tr > 0.0 ) {
+        float PI = 3.14159;
+        float tangente = tan(tita_h);
+        float n2 = n*n;
+        float divisor = 4.0*PI*n2;
+        float exp_aux = exp(-tangente*tangente/n2)/divisor;
+        color += kd/PI + exp_aux * ks/sqrt(cos_ti*cos_tr);
+    }
+    else {
+        color += kd*cos_ti + ks*cos_tr;
+    }
+    fragmentColor = vec4(color,1);
 }
 `
 

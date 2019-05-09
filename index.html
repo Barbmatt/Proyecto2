@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Proyecto 2</title>
+	<title>Jack Bauer esferas</title>
 	<script src="libs/gl-matrix-min.js"></script>
 	<script src="libs/VertexAttributeInfo.js"></script>
 	<script src="libs/VAOHelper.js"></script>
@@ -20,6 +20,7 @@
 	<script src="Shaders/Ward.js"></script>
 	<script src="Shaders/Color_posicion.js"></script>
 	<script src="Modelos/esfera.js"></script>
+	<script src="Modelos/suelo.js"></script>
 	<script src="escenaA.js"></script>
 	<script type="text/javascript">
 		window.addEventListener('keydown',this.oyente_teclado,false);
@@ -45,7 +46,6 @@
 </head>
 
 <body onload='onLoad();'>
-	<h1>???</h1>
 	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
 	</canvas>
 
@@ -63,18 +63,18 @@
 		<tr>
 			<td>Ángulo de apertura</td>
 			<td>
-				<input type="text" id="angulo_spot" value="0" size="2" oninput="angulo_spot()">
+				<input type="text" id="angulo_spot" value="0" size="2" oninput="angulo_spot();">
 			</td>
 		</tr>
 		<tr>
-			<td>Dirección de la luz</td>
+			<td>Dirección</td>
 			<td>
 				<label>x:</label>
-				<input type="text" id="dir_spotx" value="0" size="2" oninput="direccion_spot()">
+				<input type="text" id="dir_spotx" value="0" size="2" oninput="direccionx(luz_spot,id);">
 				<label>y:</label>
-				<input type="text" id="dir_spoty" value="0" size="2" oninput="direccion_spot()">
+				<input type="text" id="dir_spoty" value="0" size="2" oninput="direcciony(luz_spot,id);">
 				<label>z:</label>
-				<input type="text" id="dir_spotz" value="0" size="2" oninput="direccion_spot()">
+				<input type="text" id="dir_spotz" value="0" size="2" oninput="direccionz(luz_spot,id);">
 			</td>
 		</tr>
 
@@ -82,11 +82,23 @@
 			<td>Posición</td>
 			<td>
 				<label>x:</label>
-				<input type="text" id="pos_spotx" value="0" size="2" oninput="posicion_spot()">
+				<input type="text" id="pos_spotx" value="0" size="2" oninput="posicionx(luz_spot,id);">
 				<label>y:</label>
-				<input type="text" id="pos_spoty" value="0" size="2" oninput="posicion_spot()">
+				<input type="text" id="pos_spoty" value="0" size="2" oninput="posiciony(luz_spot,id);">
 				<label>z:</label>
-				<input type="text" id="pos_spotz" value="0" size="2" oninput="posicion_spot()">
+				<input type="text" id="pos_spotz" value="0" size="2" oninput="posicionz(luz_spot,id);">
+			</td>
+		</tr>
+
+		<tr>
+			<td>Intensidad</td>
+			<td>
+				<label>r:</label>
+				<input type="text" id="intensidad_spotr" value="1" size="2" oninput="intensidadr(luz_spot,id);">
+				<label>g:</label>
+				<input type="text" id="intensidad_spotg" value="0.96" size="2" oninput="intensidadg(luz_spot,id);">
+				<label>b:</label>
+				<input type="text" id="intensidad_spotb" value="0.89" size="2" oninput="intensidadb(luz_spot,id);">
 			</td>
 		</tr>
 	</table>
@@ -106,13 +118,27 @@
 			<td>Posición</td>
 			<td>
 				<label>x:</label>
-				<input type="text" id="pos_puntualx" value="0" size="2" oninput="posicion_puntual()">
+				<input type="text" id="pos_puntualx" value="0" size="2" oninput="posicionx(luz_puntual, id);">
 				<label>y:</label>
-				<input type="text" id="pos_puntualy" value="0" size="2" oninput="posicion_puntual()">
+				<input type="text" id="pos_puntualy" value="0" size="2" oninput="posiciony(luz_puntual, id);">
 				<label>z:</label>
-				<input type="text" id="pos_puntualz" value="0" size="2" oninput="posicion_puntual()">
+				<input type="text" id="pos_puntualz" value="0" size="2" oninput="posicionz(luz_puntual, id);">
 			</td>
 		</tr>
+
+
+		<tr>
+			<td>Intensidad</td>
+			<td>
+				<label>r:</label>
+				<input type="text" id="intensidad_puntualr" value="1" size="2" oninput="intensidadr(luz_puntual, id);">
+				<label>g:</label>
+				<input type="text" id="intensidad_puntualg" value="0.58" size="2" oninput="intensidadg(luz_puntual, id);">
+				<label>b:</label>
+				<input type="text" id="intensidad_puntualb" value="0.16" size="2" oninput="intensidadb(luz_puntual, id);">
+			</td>
+		</tr>
+
 	</table>
 
 	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
@@ -130,11 +156,24 @@
 			<td>Dirección</td>
 			<td>
 				<label>x:</label>
-				<input type="text" id="dir_direccionalx" value="0" size="2" oninput="direccion_direccional()">
+				<input type="text" id="dir_direccionalx" value="0" size="2" oninput="direccionx(luz_direccional,id);">
 				<label>y:</label>
-				<input type="text" id="dir_direccionaly" value="0" size="2" oninput="direccion_direccional()">
+				<input type="text" id="dir_direccionaly" value="0" size="2" oninput="direcciony(luz_direccional,id);">
 				<label>z:</label>
-				<input type="text" id="dir_direccionalz" value="0" size="2" oninput="direccion_direccional()">
+				<input type="text" id="dir_direccionalz" value="0" size="2" oninput="direccionz(luz_direccional,id);">
+			</td>
+		</tr>
+
+
+		<tr>
+			<td>Intensidad</td>
+			<td>
+				<label>r:</label>
+				<input type="text" id="intensidad_direccionalr" value="0.79" size="2" oninput="intensidadr(luz_direccional,id);">
+				<label>g:</label>
+				<input type="text" id="intensidad_direccionalg" value="0.89" size="2" oninput="intensidadg(luz_direccional,id);">
+				<label>b:</label>
+				<input type="text" id="intensidad_direccionalb" value="1" size="2" oninput="intensidadb(luz_direccional,id);">
 			</td>
 		</tr>
 	</table>

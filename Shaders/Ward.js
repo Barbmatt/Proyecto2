@@ -14,25 +14,29 @@ class Ward {
         this.loc_posicion = this.gl.getAttribLocation(this.shader_program, 'vertexPosition');
         this.loc_normal = this.gl.getAttribLocation(this.shader_program, 'vertexNormal');
 
-        this.u_pa = this.gl.getUniformLocation(this.shader_program,'pa');
-        this.u_pd = this.gl.getUniformLocation(this.shader_program,'pd');
-        this.u_ps = this.gl.getUniformLocation(this.shader_program,'ps');
-        this.u_alfa = this.gl.getUniformLocation(this.shader_program,'alfa');
+        this.u_ia = this.gl.getUniformLocation(this.shader_program,'ia');
+
+        this.u_ka = this.gl.getUniformLocation(this.shader_program,'ka');
+        this.u_kd = this.gl.getUniformLocation(this.shader_program,'kd');
+        this.u_ks = this.gl.getUniformLocation(this.shader_program,'ks');
+        this.u_n = this.gl.getUniformLocation(this.shader_program,'n');
     }
     
     set_luz(luz) {
         let pos_luz = luz.posL;
+        let ia = luz.intensidad;
+        this.gl.uniform3f(this.u_ia, ia[0], ia[1], ia[2]);
         this.gl.uniform3f(this.u_posicion_luz, pos_luz[0], pos_luz[1], pos_luz[2]);
     }
 
     set_material(material) {
-        let pa = material.pa;
-        let pd = material.pd;
-        let ps = material.ps;
-        let alfa = material.alfa;
-        this.gl.uniform3f(this.u_pa,pa[0],pa[1],pa[2]);
-        this.gl.uniform3f(this.u_pd,pd[0],pd[1],pd[2]);
-        this.gl.uniform3f(this.u_ps,ps[0],ps[1],ps[2]);
-        this.gl.uniform1f(this.u_alfa,alfa);
+        let ka = material.ka;
+        let kd = material.kd;
+        let ks = material.ks;
+        let n = material.n;
+        this.gl.uniform3f(this.u_ka,ka[0],ka[1],ka[2]);
+        this.gl.uniform3f(this.u_kd,kd[0],kd[1],kd[2]);
+        this.gl.uniform3f(this.u_ks,ks[0],ks[1],ks[2]);
+        this.gl.uniform1f(this.u_n,n);
     }
 }

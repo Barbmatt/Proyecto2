@@ -16,8 +16,6 @@ class Phong {
         this.loc_posicion = this.gl.getAttribLocation(this.shader_program, 'vertexPosition');
 
         this.u_intensidad_ambiente = this.gl.getUniformLocation(this.shader_program,"ia");
-        this.u_intensidad_difusa = this.gl.getUniformLocation(this.shader_program,"id");
-        this.u_intensidad_especular = this.gl.getUniformLocation(this.shader_program,"is");
 
         this.u_atenuacion = this.gl.getUniformLocation(this.shader_program,"fa");
         
@@ -29,6 +27,8 @@ class Phong {
 
     set_luz(luz) {
         let pos_l = luz.posL;
+        let ia = luz.intensidad;
+        this.gl.uniform3f(this.u_intensidad_ambiente , ia[0], ia[1], ia[2]);
         this.gl.uniform3f(this.u_posicion_luz, pos_l[0], pos_l[1], pos_l[2]);
         this.gl.uniform1f(this.u_atenuacion, luz.atenuacion);
     }
