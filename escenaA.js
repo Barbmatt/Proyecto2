@@ -29,13 +29,15 @@ var luz_spot;
 // variables de matrices
 var matriz_modelo_esfera = mat4.create();
 var matriz_modelo_suelo = mat4.create();
+var matriz_modelo_spot = mat4.create();
 
 //Aux variables,
 var filas = 6;
 var columnas = 4;
 var esfera;
 var suelo;
-var esfera_luz;
+var esfera_puntual;
+var cono_spot;
 
 // constante para objetos métalicos (copper)
 var material_m = {
@@ -74,13 +76,15 @@ function onLoad() {
 	let canvas = document.getElementById('webglCanvas');
 	gl = canvas.getContext('webgl2');
 
-	shader_m = new Phong(phong_v,phong_f,gl);
-	shader_s = new Ward(ward_v,ward_f,gl);
-	shader_r = new Phong(goureaud_v,goureaud_f,gl);
-	shader_luz = new Color_posicion(color_posicion_v, color_posicion_f);
+	shader_m = new Phong3(gl);
+	shader_s = new Phong3(gl);
+	shader_r = new Phong3(gl);
+	shader_luz = new Color_posicion(gl);
 
 	// objetos para las luces
-	esfera_luz = new Model(esfera_obj,shader_luz.loc_posicion,null);
+	esfera_puntual = new Model(esfera_obj,shader_luz.loc_posicion,null);
+	cono_spot = new Model(spot_obj,shader_luz.loc_posicion,null);
+
 
 	// Cargo los objetos	
 	esfera = new Model(esfera_obj,shader_m.loc_posicion,shader_m.loc_normal);
@@ -114,49 +118,54 @@ function onRender(now) {
 	// limpiar canvas
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// 0 = dibuja la posición, 1 = dibuja la dirección
-	dibujar_luz(luz_puntual,0);
-	dibujar_luz(luz_direccional,1);
-	dibujar_luz(luz_spot,0);
+	// 0 = puntual, 1 = direccional, 2 = spot
+	dibujar_luz(luz_puntual,0, esfera_puntual);
+	dibujar_luz(luz_direccional,1,esfera_puntual);
+	dibujar_luz(luz_spot,2,cono_spot);
 
-	dibujar_suelo(shader_m, material_suelo, luz_puntual);
+	dibujar_suelo(shader_m, material_suelo);
 
 	// Dibujar esferas
-	
-	// 1 = phong, 0 = ward
-	dibujar_esfera(shader_m, material_m, 0, luz_puntual);
-	dibujar_esfera(shader_s, material_s, 2, luz_puntual);
-	dibujar_esfera(shader_r, material_r, 4, luz_puntual);
+	dibujar_esfera(shader_m, material_m, 0);
+	dibujar_esfera(shader_s, material_s, 2);
+	dibujar_esfera(shader_r, material_r, 4);
 	
 	requestAnimationFrame(onRender);
 }
 
-function dibujar_luz(luz, que_dibujar) {
+function dibujar_luz(luz, que_dibujar, objeto) {
 	gl.useProgram(shader_luz.shader_program);
 	gl.uniformMatrix4fv(shader_luz.u_matriz_proyeccion, false, camara.proyeccion());
-	let matriz_modelo_luz = mat4.create();
 	let vector = null;
-	if ( que_dibujar == 0 ) vector = luz.posL;
-	else vector = luz.dirL;
+	if ( que_dibujar == 0 || que_dibujar == 2 ) vector = luz.posicion;
+	else vector = luz.direccion;
+	let matriz_modelo_luz = mat4.create();
+	if ( que_dibujar == 2 ) {
+		let escala = 10*luz.angulo/180;
+		mat4.scale(matriz_modelo_luz,matriz_modelo_luz,[escala,2,escala]);
+		//mat4.rotate(matriz_modelo_luz,matriz_modelo_luz,luz.direccion);
+	}
 	mat4.translate(matriz_modelo_luz,matriz_modelo_luz,vector);
-	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_luz);
-	gl.bindVertexArray(esfera_luz.vao);
-	gl.drawElements(gl.TRIANGLES, esfera_luz.cant_indices, gl.UNSIGNED_INT, 0);
+	
+	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
+	
+	gl.bindVertexArray(objeto.vao);
+	gl.drawElements(gl.TRIANGLES, objeto.cant_indices, gl.UNSIGNED_INT, 0);
 	gl.bindVertexArray(null);
 	gl.useProgram(null);
 }
 
-function dibujar_suelo(shader, material, luz) {
+function dibujar_suelo(shader, material) {
 	gl.useProgram(shader.shader_program);
 	gl.uniformMatrix4fv(shader.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader.u_matriz_proyeccion, false, camara.proyeccion());
 	suelo.material = material;
-	dibujar(shader, suelo, matriz_modelo_suelo, luz);
+	dibujar(shader, suelo, matriz_modelo_suelo);
 	gl.useProgram(null);
 }
 
-function dibujar_esfera(shader, material, i, luz) {
+function dibujar_esfera(shader, material, i) {
 	let j;
 	gl.useProgram(shader.shader_program);
 	gl.uniformMatrix4fv(shader.u_matriz_vista, false, camara.vista());
@@ -165,18 +174,18 @@ function dibujar_esfera(shader, material, i, luz) {
 
 	for (j=0;j<columnas;j++){
 		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(i-2.5)*4]);
-		dibujar(shader, esfera, matriz_modelo_esfera, luz);
+		dibujar(shader, esfera, matriz_modelo_esfera);
 		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(i-2.5)*4]);
 
 		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[(j-1.5)*4,0,(i+1-2.5)*4]);
-		dibujar(shader, esfera, matriz_modelo_esfera, luz);
+		dibujar(shader, esfera, matriz_modelo_esfera);
 		mat4.translate(matriz_modelo_esfera,matriz_modelo_esfera,[-(j-1.5)*4,0,-(i+1-2.5)*4]);
 	}
 	gl.useProgram(null);
 }
 
-function dibujar(shader, objeto, matriz_modelo, luz) {
-	shader.set_luz(luz);
+function dibujar(shader, objeto, matriz_modelo) {
+	shader.set_luz([1,1,1],luz_spot,luz_puntual,luz_direccional);
 	shader.set_material(objeto.material);
 	setear_uniforms_objeto(shader, matriz_modelo);
 	gl.bindVertexArray(objeto.vao);

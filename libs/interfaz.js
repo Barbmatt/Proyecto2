@@ -15,18 +15,17 @@ function toggle_camara() {
 // funciones de posición de luces.
 function posicionx(luz, id) {
 	let px = document.getElementById(id).value;
-	luz.posL[0] = px;
-	console.log(luz.posL);
+	luz.posicion[0] = px;
 }
 
 function posiciony(luz, id) {
 	let py = document.getElementById(id).value;
-	luz.posL[1] = py;
+	luz.posicion[1] = py;
 }
 
 function posicionz(luz, id) {
 	let pz = document.getElementById(id).value;
-	luz.posL[2] = pz;
+	luz.posicion[2] = pz;
 }
 
 
@@ -35,17 +34,17 @@ function posicionz(luz, id) {
 // funciones de dirección de luces.
 function direccionx(luz, id) {
 	let dx = document.getElementById(id).value;
-	luz.dirL[0] = dx;
+	luz.direccion[0] = dx;
 }
 
 function direcciony(luz, id) {
 	let dy = document.getElementById(id).value;
-	luz.dirL[1] = dy;
+	luz.direccion[1] = dy;
 }
 
 function direccionz(luz, id) {
 	let dz = document.getElementById(id).value;
-	luz.dirL[2] = dz;
+	luz.direccion[2] = dz;
 }
 
 
@@ -66,45 +65,42 @@ function intensidadb(luz, id) {
 	luz.intensidad[2] = ib;
 }
 
-function angulo_spot() {
+
+
+function angulo_spot(luz) {
 	let angulo = document.getElementById("angulo_spot").value;
-	luz_spot.angulo = angulo;
+	luz.angulo = angulo;
 }
+
+
 
 function iniciar_luces() {
 	// se setean las luces (spot, puntual y direccional)
-	// let px = document.getElementById("pos_spotx").value;
-	// let py = document.getElementById("pos_spoty").value;
-	// let pz = document.getElementById("pos_spotz").value;
-	// let dx = document.getElementById("dir_spotx").value;
-	// let dy = document.getElementById("dir_spoty").value;
-	// let dz = document.getElementById("dir_spotz").value;
-	// let angulo = document.getElementById("angulo_spot").value;
-
-	// px = document.getElementById("pos_puntualx").value;
-	// py = document.getElementById("pos_puntualy").value;
-	// pz = document.getElementById("pos_puntualz").value;
-
-	// dx = document.getElementById("dir_direccionalx").value;
-	// dy = document.getElementById("dir_direccionaly").value;
-	// dz = document.getElementById("dir_direccionalz").value;
-
-	// spot: [1.0,96,0.89], luz fluorescente
-	// puntual: [1,0.58,0.16],luz de vela
-	// direccional: [0.79,0.89,1], cielo cubierto
-
+	let px = document.getElementById("pos_spotx").value;
+	let py = document.getElementById("pos_spoty").value;
+	let pz = document.getElementById("pos_spotz").value;
+	let dx = document.getElementById("dir_spotx").value;
+	let dy = document.getElementById("dir_spoty").value;
+	let dz = document.getElementById("dir_spotz").value;
 	let ir = document.getElementById("intensidad_spotr").value;
-	let ig = document.getElementById("intensidad_spotr").value;
-	let ib = document.getElementById("intensidad_spotr").value;
-	luz_spot = new Ligth([0,0,0],[0,0,0],0, [ir,ig,ib]);
+	let ig = document.getElementById("intensidad_spotg").value;
+	let ib = document.getElementById("intensidad_spotb").value;
+	let angulo = document.getElementById("angulo_spot").value;
+	luz_spot = new Ligth([px,py,pz],[dx,dy,dz],angulo, [ir,ig,ib]);
 
+	px = document.getElementById("pos_puntualx").value;
+	py = document.getElementById("pos_puntualy").value;
+	pz = document.getElementById("pos_puntualz").value;
 	ir = document.getElementById("intensidad_puntualr").value;
-	ig = document.getElementById("intensidad_puntualr").value;
-	ib = document.getElementById("intensidad_puntualr").value;
-	luz_puntual = new Ligth([0,0,0],null,360, [ir,ig,ib]);
+	ig = document.getElementById("intensidad_puntualg").value;
+	ib = document.getElementById("intensidad_puntualb").value;
+	luz_puntual = new Ligth([px,py,pz],null,null,[ir,ig,ib]);
 
-	ir = document.getElementById("intensidad_direccionalr").value;
-	ig = document.getElementById("intensidad_direccionalr").value;
-	ib = document.getElementById("intensidad_direccionalr").value;
-	luz_direccional = new Ligth(null,[0,0,0],360, [ir,ig,ib]);
+	dx = document.getElementById("dir_direccionalx").value;
+	dy = document.getElementById("dir_direccionaly").value;
+	dz = document.getElementById("dir_direccionalz").value;
+	ir = document.getElementById("intensidad_puntualr").value;
+	ig = document.getElementById("intensidad_puntualg").value;
+	ib = document.getElementById("intensidad_puntualb").value;
+	luz_direccional = new Ligth(null,[dx,dy,dz],null, [ir,ig,ib]);
 }
