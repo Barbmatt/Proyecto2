@@ -1,11 +1,11 @@
 
-	/*\
-		TODO:
-			- if ( !isNaN(pz) ) posicion_puntual_vieja[2]; es decir, validar la entrada de cada textfield.
-			- cambiar función de atenuación por algo distinto a 1.
-			- poner las luces y las esferas con un mismo new Model.
-			- distintas esferas con distinto shader pero con un único loc_posicion/normal de _m?? al crear la esfera
-	\*/
+/*\
+	TODO:
+		- if ( !isNaN(pz) ) posicion_puntual_vieja[2]; es decir, validar la entrada de cada textfield.
+		- cambiar función de atenuación por algo distinto a 1.
+		- poner las luces y las esferas con un mismo new Model.
+		- distintas esferas con distinto shader pero con un único loc_posicion/normal de _m?? al crear la esfera
+\*/
 
 
 
@@ -38,6 +38,7 @@ var esfera;
 var suelo;
 var esfera_puntual;
 var cono_spot;
+var flecha_direccional;
 
 // constante para objetos métalicos (copper)
 var material_m = {
@@ -84,6 +85,7 @@ function onLoad() {
 	// objetos para las luces
 	esfera_puntual = new Model(esfera_obj,shader_luz.loc_posicion,null);
 	cono_spot = new Model(spot_obj,shader_luz.loc_posicion,null);
+	flecha_direccional = new Model(direccional_obj,shader_luz.loc_posicion,null);
 
 
 	// Cargo los objetos	
@@ -118,12 +120,12 @@ function onRender(now) {
 	// limpiar canvas
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// 0 = puntual, 1 = direccional, 2 = spot
-	dibujar_luz(luz_puntual,0, esfera_puntual);
-	dibujar_luz(luz_direccional,1,esfera_puntual);
-	dibujar_luz(luz_spot,2,cono_spot);
+	// 0 = spot, 1 = puntual, 2 = direccional
+	dibujar_luz(luz_spot,0,cono_spot);
+	dibujar_luz(luz_puntual,1, esfera_puntual);
+	dibujar_luz(luz_direccional,2,flecha_direccional);
 
-	dibujar_suelo(shader_m, material_suelo);
+	//dibujar_suelo(shader_m, material_suelo);
 
 	// Dibujar esferas
 	dibujar_esfera(shader_m, material_m, 0);
@@ -136,16 +138,21 @@ function onRender(now) {
 function dibujar_luz(luz, que_dibujar, objeto) {
 	gl.useProgram(shader_luz.shader_program);
 	gl.uniformMatrix4fv(shader_luz.u_matriz_proyeccion, false, camara.proyeccion());
-	let vector = null;
-	if ( que_dibujar == 0 || que_dibujar == 2 ) vector = luz.posicion;
-	else vector = luz.direccion;
+	let vector = [0,0,0];
+	if ( que_dibujar == 0 || que_dibujar == 1 ) vector = luz.posicion;
 	let matriz_modelo_luz = mat4.create();
-	if ( que_dibujar == 2 ) {
-		let escala = 10*luz.angulo/180;
-		mat4.scale(matriz_modelo_luz,matriz_modelo_luz,[escala,2,escala]);
-		//mat4.rotate(matriz_modelo_luz,matriz_modelo_luz,luz.direccion);
-	}
 	mat4.translate(matriz_modelo_luz,matriz_modelo_luz,vector);
+	if ( que_dibujar == 0 ) {
+		// rotar cono de spot
+		let escala = 10*luz.angulo/180;
+		mat4.scale(matriz_modelo_luz, matriz_modelo_luz, [escala,1,escala]);
+		// let matriz_rotacion = mat4.create();
+		// mat4.targetTo(matriz_rotacion, luz.posicion, luz.direccion, [0,1,0]);
+		// mat4.multiply(matriz_modelo_luz, matriz_modelo_luz, matriz_rotacion);
+	}
+	if ( que_dibujar ==  2) {
+		// rotar flecha direccional
+	}
 	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_luz);
 	
 	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());

@@ -43,7 +43,11 @@ class Phong3 {
         let intensidad = spot.intensidad;
         let atenuacion = spot.atenuacion;
         let direccion = spot.direccion;
-        let angulo = Math.cos(spot.angulo*Math.PI/180);
+
+        let angulo = spot.angulo;
+
+        if ( angulo < -180 || angulo > 180 ) angulo = 180; 
+        angulo = Math.cos(Math.PI*angulo/180);
 
         this.gl.uniform3f(this.u_pspot, posicion[0], posicion[1], posicion[2]);
         this.gl.uniform3f(this.u_ispot, intensidad[0], intensidad[1], intensidad[2]);

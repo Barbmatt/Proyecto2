@@ -44,7 +44,7 @@ function direcciony(luz, id) {
 
 function direccionz(luz, id) {
 	let dz = document.getElementById(id).value;
-	luz.direccion[2] = dz;
+	luz.direccion[2] = dz;	
 }
 
 
