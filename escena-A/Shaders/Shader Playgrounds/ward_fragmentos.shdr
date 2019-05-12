@@ -1,13 +1,22 @@
 {
-  "vertexSource": "#version 300 es\n\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\nuniform mat4 modelMatrix;\n\nuniform vec3 posL;\n\nin vec3 vertexNormal;\nin vec3 vertexPosition;\nout vec3 vi;\nout vec3 vn;\nout vec3 vr;\n\nvoid main() {\n    vec3 p = vec3(viewMatrix * modelMatrix *vec4(vertexPosition, 1));\n    vi = vec3(viewMatrix * vec4(posL,1)); \n    vi = vi - p;\n    vr = -p;\n    vn = vec3(normalMatrix*vec4(vertexNormal,1));\n    vi = normalize(vi);\n    vn = normalize(vn);\n    vr = normalize(vr);\n    \n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);\n}",
-  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nuniform vec3 ia;\n\nuniform vec3 ka;\nuniform vec3 kd;\nuniform vec3 ks;\nuniform float n;\n\nin vec3 vi;\nin vec3 vn;\nin vec3 vr;\nout vec4 fragmentColor;\n\nvoid main() {\n    vec3 vni = normalize(vi);\n    vec3 vnn = normalize(vn);\n    vec3 vnr = normalize(vr);\n    vec3 vnh = normalize(vr+vi);\n    \n    float cos_ti = dot(vnn,vni);\n    float cos_tr = dot(vnn,vnr);\n    \n    float tita_h = acos(dot(vnh,vnn));\n    \n    float PI = 3.14159;\n    vec3 color =  ia*ka + kd/PI; \n    \n    float a2 = n*n;\n    float tangente = tan(tita_h);\n    float divisor = 4.0*PI*a2;\n    float exp_aux = exp(-tangente*tangente/a2)/divisor;\n    color += exp_aux * ks/sqrt(cos_ti*cos_tr);\n    \n    fragmentColor = vec4(color,1) ;//* cos_ti * 1.5;\n}",
-  "model": "sphere",
+  "vertexSource": "#version 300 es\n\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\nuniform mat4 modelMatrix;\n\nuniform vec3 ppuntual;\nuniform vec3 pspot;\n\nin vec3 vertexNormal;\nin vec3 vertexPosition;\nout vec3 normal;\nout vec3 Lpuntual;\nout vec3 ojo;\nout vec3 Lspot;\nout vec3 LEspot;\n\nvoid main() {\n    vec3 p = vec3(viewMatrix * modelMatrix *vec4(vertexPosition, 1));\n    Lpuntual = vec3(viewMatrix * vec4(ppuntual,1)); \n    Lpuntual = normalize(Lpuntual - p);\n    normal = normalize(vec3(normalMatrix*vec4(vertexNormal,1)));\n    ojo = normalize(-p);\n    \n    \n    LEspot = vec3(viewMatrix * vec4(pspot,1));\n    Lspot = normalize( vec3(modelMatrix * vec4(vertexPosition, 1)) - pspot );\n    LEspot = normalize(vec3(LEspot-p));\n    \n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);\n}",
+  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nuniform vec3 ia;\n\nuniform vec3 ip;\nuniform vec3 fa;\n\nuniform vec3 ka;\nuniform vec3 kd;\nuniform vec3 ks;\nuniform float n;\n\nin vec3 Lspot;\nin vec3 LEspot;\nin vec3 normal;\nin vec3 Lpuntual;\nin vec3 ojo;\n\nout vec4 fragmentColor;\n\nvoid main() {\n    vec3 V = normalize(ojo);\n    vec3 N = normalize(normal);\n    vec3 L = normalize(Lpuntual);\n    vec3 H = normalize(ojo+L);\n    \n    float NL = max(dot(N,L),0.0);\n    float NV = max(dot(N,V),0.0);\n    float d = sqrt(L.x*L.x + L.y*L.y + L.z*L.z  );\n    float fa = 1.0/(1.0+fa.x+fa.y*d+fa.z*d*d);\n    \n    vec3 color =  ia*ka + fa*ip*kd*NL; \n    \n    if ( NL > 0.0 && NV > 0.0 ) {\n   \t\tfloat NH = max(dot(H,N),0.0); \n        float NH2 = NH*NH;\n    \tfloat PI = 3.14159;\n        float n2 = n*n;\n        float tangente = (1.0 - NH2)/ NH2;\n        float divisor = 4.0*PI*n2;\n        float exp_aux = exp(-tangente*tangente/n2)/divisor;\n        color += fa*ip*exp_aux * ks/sqrt(NL*NV);\n    }\n    \n    \n    fragmentColor = vec4(color,1);//* 1.5;\n}",
+  "model": "cube",
   "uniforms": [
     {
-      "name": "posL",
+      "name": "ppuntual",
       "type": "vec3",
       "value": [
-        1,
+        0,
+        0,
+        3
+      ]
+    },
+    {
+      "name": "pspot",
+      "type": "vec3",
+      "value": [
+        0,
         2,
         0
       ]
@@ -22,36 +31,54 @@
       ]
     },
     {
+      "name": "ip",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "fa",
+      "type": "vec3",
+      "value": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
       "name": "ka",
       "type": "vec3",
       "value": [
-        0.1899999976158142,
-        0.07000000029802322,
-        0.019999999552965164
+        0.23000000417232513,
+        0.23000000417232513,
+        0.23000000417232513
       ]
     },
     {
       "name": "kd",
       "type": "vec3",
       "value": [
-        0.699999988079071,
-        0.27000001072883606,
-        0.07999999821186066
+        0.2800000011920929,
+        0.2800000011920929,
+        0.2800000011920929
       ]
     },
     {
       "name": "ks",
       "type": "vec3",
       "value": [
-        0.25999999046325684,
-        0.14000000059604645,
-        0.09000000357627869
+        0.7699999809265137,
+        0.7699999809265137,
+        0.7699999809265137
       ]
     },
     {
       "name": "n",
       "type": "float",
-      "value": 0.08
+      "value": 0.1
     }
   ]
 }
