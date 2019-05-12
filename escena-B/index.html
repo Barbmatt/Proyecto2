@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
 	<meta charset="UTF-8">
-	<title>Proyecto #1</title>
+	<title>Fire at will</title>
 	<script src="libs/gl-matrix-min.js"></script>
 	<script src="libs/VertexAttributeInfo.js"></script>
 	<script src="libs/VAOHelper.js"></script>
@@ -10,64 +11,138 @@
 	<script src="libs/interfaz.js"></script>
 	<script src="libs/Utils.js"></script>
 	<script src="libs/OBJParser.js"></script>
-	<script src="libs/vertex.glsl"></script>
-	<script src="libs/fragment.glsl"></script>
-	<script src="libs/Camara_esfericas.js"></script>
-	<script src="Modelos/house.js"></script>
-	<script src="Modelos/rocket.js"></script>
-	<script src="Modelos/mountain.js"></script>
-	<script src="app.js"></script>
+	<script src="libs/Camara.js"></script>
+	<script src="libs/Model.js"></script>
+	<script src="libs/Light.js"></script>
+	<script src="Shaders/Phong.js"></script>
+	<script src="Shaders/Phong3.js"></script>
+	<script src="Shaders/Ward3.js"></script>
+	<script src="Shaders/Color_posicion.js"></script>
+	<script src="Modelos/arboles.obj"></script>
+	<script src="Modelos/banderas.obj"></script>
+	<script src="Modelos/cannon.obj"></script>
+	<script src="Modelos/castillo.obj"></script>
+	<script src="Modelos/esfera.obj"></script>
+	<script src="Modelos/puerta.obj"></script>
+	<script src="main.js"></script>
+	<script type="text/javascript">
+		window.addEventListener('keydown',this.oyente_teclado,false);
+
+		function oyente_teclado(e) {
+			var tecla = e.keyCode;
+			     if ( tecla == 37 ) camara.flecha_derecha();
+			else if ( tecla == 38 ) camara.flecha_arriba();
+			else if ( tecla == 39 ) camara.flecha_izquierda();
+			else if ( tecla == 40 ) camara.flecha_abajo();
+
+			else if ( tecla == 87 ) camara.flecha_arriba();
+			else if ( tecla == 68 ) camara.flecha_izquierda();
+			else if ( tecla == 65 ) camara.flecha_derecha();
+			else if ( tecla == 83 ) camara.flecha_abajo();
+			else if ( tecla == 32 ) {
+				let select = document.getElementById("camara_seleccionada");
+				if ( select.value == 1 ) select.value = 0;
+				else select.value = 1;
+			}
+		}
+	</script>
 </head>
 
-<body>
-	<h1>Proyecto #1</h1>
-	<canvas id='webglCanvas' width="800" height="800" style='float:left;'>
+<body onload='onLoad();'>
+	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
 	</canvas>
 
-	<table border='2'>
+	<!---------------------------- Luz puntual -------------------------------->
+
+
+	<table style="table-layout: fixed; width:450px;" border="3">
 		<tr>
-			<td>Rotar casa</td>
-			<td><input type="range" disabled id="range_casa" step="1" min="0" max="360" value="0" oninput="rotar_casa(this);"></td>
-		</tr>
-		<tr>
-			<td>Rotar cohete</td>
-			<td><input type="range" disabled id='range_cohete' step="1" min="0" max="360" value="0" oninput="rotar_cohete(this);"></td>
-		</tr>
-		<tr>
-			<td>Orbitar cohete</td>
-			<td><input type="range" disabled id='range_orbita' step="0.01" min="0" max="360" value="0" oninput="orbitar_cohete(this);"></td>
-		</tr>
-		<tr>
-			<td>Seleccionar tipo de cámara</td>
+			<td>Luz puntual</td>
 			<td>
-				<select disabled id="camara_seleccionada" onclick="control_camara()">
-					<option value=0>Manual</option>
-					<option value=1>Automática</option>
-				</select>
+				<button id="dibujar_puntual" onclick="toggle(luz_puntual,id);">On</button>
 			</td>
 		</tr>
 		<tr>
-			<td>Paneo</td>
-			<td><input type="range" disabled id="range_paneo" step="1" min="-180" max="180" value="45" oninput="paneo(this);"></td>
-		</tr>
-		<tr>
-			<td>Zoom</td>
-			<td><input type="range" disabled id="range_zoom" step="0.1" min="3" max="110" value="63" oninput="zoom(this);"></td>
-		</tr>
-		<tr>
-			<td>Altura</td>
-			<td><input type="range" disabled id="range_altura" step="1" min="-50" max="90" value="30" oninput="altura(this);"></td>
-		</tr>
-		<tr>
-			<td><button id="boton_reset" disabled onclick="reset_camera();">Restablecer cámara</button>
-			</td>
+			<td>Posición</td>
 			<td>
-				<button id="boton_cargar_dibujar" onclick="onLoad();">Cargar y dibujar</button>
+				<label>x:</label>
+				<input type="text" id="pos_puntualx" value="20" size="3" oninput="posicionx(luz_puntual, id);">
+				<label>y:</label>
+				<input type="text" id="pos_puntualy" value="20" size="3" oninput="posiciony(luz_puntual, id);">
+				<label>z:</label>
+				<input type="text" id="pos_puntualz" value="20" size="3" oninput="posicionz(luz_puntual, id);">
+			</td>
+		</tr>
+
+
+		<tr>
+			<td>Intensidad</td>
+			<td>
+				<label>r:</label>
+				<input type="text" id="intensidad_puntualr" value="1" size="3" oninput="intensidadr(luz_puntual, id);">
+				<label>g:</label>
+				<input type="text" id="intensidad_puntualg" value="0.58" size="3" oninput="intensidadg(luz_puntual, id);">
+				<label>b:</label>
+				<input type="text" id="intensidad_puntualb" value="0.16" size="3" oninput="intensidadb(luz_puntual, id);">
+			</td>
+		</tr>
+		<tr>
+			<td>Atenuacion</td>
+			<td>
+				<label>a:</label>
+				<input type="text" id="atenuacion_puntuala" value="0" size="3" oninput="atenuaciona(luz_puntual,id);">
+				<label>b:</label>
+				<input type="text" id="atenuacion_puntualb" value="0" size="3" oninput="atenuacionb(luz_puntual,id);">
+				<label>c:</label>
+				<input type="text" id="atenuacion_puntualc" value="0" size="3" oninput="atenuacionc(luz_puntual,id);">
 			</td>
 		</tr>
 	</table>
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
-	<table style="table-layout: fixed; width: 380px;" border="3">
+
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
+	<!------------------------------- Luz ambiente ------------------------------------>
+
+	<table style="table-layout: fixed; width:450px;" border="3">
+		<tr>
+			<td>Luz ambiente</td>
+			<td>
+				<label>r:</label>
+				<input type="text" id="intensidad_ambienter" value="1" size="3" oninput="intensidad_ambienter(id);">
+				<label>g:</label>
+				<input type="text" id="intensidad_ambienteg" value="1" size="3" oninput="intensidad_ambienteg(id);">
+				<label>b:</label>
+				<input type="text" id="intensidad_ambienteb" value="1" size="3" oninput="intensidad_ambienteb(id);">
+			</td>
+		</tr>
+	</table>
+
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
+	<!------------------------------- Cámara ------------------------------------>
+
+
+	<table style="table-layout: fixed; width:450px;" border="3">
+			<tr>
+				<td>Cámara</td>
+				<td>
+					<label></label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button id="boton_reset" onclick="reset_camara();">Restablecer cámara
+					</button>
+				</td>
+				<td>
+					<select id="camara_seleccionada">
+						<option value=0>Cámara manual</option>
+						<option value=1>Cámara automática</option>
+					</select>
+				</td>
+			</tr>
+	</table>
+
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
+	<table style="table-layout: fixed; width:450px;" border="3">
 		<tr>
 			<td>
 				<li><a href="../index.html">Volver al índice</a></li>
@@ -75,11 +150,13 @@
 		</tr>
 		<tr>
 			<td>
-				<li><a href="../escena-A/index.html">Ir a la escena A</a></li>
+				<li><a href="../escena-B/index.html">Ir a la escena B</a></li>
 			</td>
 		</tr>
 	</table>
-	
+
+
+
 </body>
 
 </html>
