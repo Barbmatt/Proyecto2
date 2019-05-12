@@ -17,14 +17,14 @@ var shader_m;
 var shader_s;
 var shader_r;
 var shader_luz;
-var camara; 		
+var camara;
 
 // direccional: [0.79, 0.89, 1], cielo cubierto
 // spot: [1.0.96,0.89], luz fluorescente
 // puntual: [1,0.58,0.16],luz de vela
 
 var luz_spot;
-var luz_puntual;	
+var luz_puntual;
 var luz_direccional;
 var luz_ambiente;
 
@@ -44,22 +44,22 @@ var flecha_direccional;
 
 // constante para objetos métalicos (copper)
 var material_m = {
-	ka: [0.33,0.22,0.03],
-	kd: [0.78, 0.57, 0.11],
-	ks: [0.99, 0.94, 0.8],
-	n: 40
+	ka: [0.23,0.23,0.23],
+	kd: [0.28, 0.28, 0.28],
+	ks: [0.77, 0.77, 0.77],
+	n: 0.12
 };
 
-// constantes para objetos satinado 
+// constantes para objetos satinado
 var material_s = {
 	ka: [0.19 ,0.07 ,0.02],
 	kd: [0.7 ,0.27 ,0.08],
 	ks: [0.26 ,0.14 ,0.09],
-	n: 90
+	n: 20
 };
 
 // constantes para objetos rugoso(Black Rubber)
-var material_r = { 
+var material_r = {
 	ka: [0.10,0.19,0.17],
 	kd: [0.40,0.74,0.70],
 	ks: [0.30,0.31,0.31],
@@ -79,9 +79,10 @@ function onLoad() {
 	let canvas = document.getElementById('webglCanvas');
 	gl = canvas.getContext('webgl2');
 
-	shader_m = new Phong3(gl);
+	shader_m = new Ward3(gl);
 	shader_s = new Phong3(gl);
 	shader_r = new Phong3(gl);
+	shader_suelo = new Phong3(gl);
 	shader_luz = new Color_posicion(gl);
 
 	// objetos para las luces
@@ -90,12 +91,12 @@ function onLoad() {
 	flecha_direccional = new Model(direccional_obj,shader_luz.loc_posicion,null);
 
 
-	// Cargo los objetos	
+	// Cargo los objetos
 	esfera = new Model(esfera_obj,shader_m.loc_posicion,shader_m.loc_normal);
 	mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
 
 	// cargo el suelo
-	suelo = new Model(suelo_obj, shader_m.loc_posicion, shader_m.loc_normal);
+	suelo = new Model(suelo_obj, shader_suelo.loc_posicion, shader_suelo.loc_normal);
 	mat4.translate(matriz_modelo_suelo,matriz_modelo_suelo,[0,-4.568,0]);
 	mat4.scale(matriz_modelo_suelo,matriz_modelo_suelo,[1000,15,1000]);
 
@@ -110,7 +111,7 @@ function onLoad() {
 	gl.bindVertexArray(null);
 
 	gl.useProgram(shader_luz.shader_program);
-	
+
 	// se empieza a dibujar por cuadro
 	requestAnimationFrame(onRender)
 }
@@ -128,13 +129,13 @@ function onRender(now) {
 	if ( luz_puntual.dibujar ) dibujar_luz(luz_puntual,1, esfera_puntual);
 	if ( luz_direccional.dibujar ) dibujar_luz(luz_direccional,2,flecha_direccional);
 
-	dibujar_suelo(shader_m, material_suelo);
+	dibujar_suelo(shader_suelo, material_suelo);
 
 	// Dibujar esferas
 	dibujar_esfera(shader_m, material_m, 0);
 	dibujar_esfera(shader_s, material_s, 2);
 	dibujar_esfera(shader_r, material_r, 4);
-	
+
 	requestAnimationFrame(onRender);
 }
 
@@ -150,12 +151,16 @@ function dibujar_luz(luz, que_dibujar, objeto) {
 	if ( que_dibujar == 0 ) {
 		// rotar cono de spot
 		let escala = 10*luz.angulo/180;
+		mat4.targetTo(matriz_modelo_luz, luz.posicion, [0,1,0], luz.direccion);
 		mat4.scale(matriz_modelo_luz, matriz_modelo_luz, [escala,1,escala]);
 	}
+	else if ( que_dibujar == 2 ) {
+		mat4.targetTo(matriz_modelo_luz, [0,0,0], [0,1,0], luz.direccion);
+	}
 	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_luz);
-	
+
 	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
-	
+
 	gl.bindVertexArray(objeto.vao);
 	gl.drawElements(gl.TRIANGLES, objeto.cant_indices, gl.UNSIGNED_INT, 0);
 	gl.bindVertexArray(null);
@@ -230,4 +235,3 @@ function control_automatica(now) {
 		last_draw_time = now;
 	}
 }
-

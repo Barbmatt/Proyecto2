@@ -16,7 +16,7 @@
 	<script src="libs/Light.js"></script>
 	<script src="Shaders/Phong.js"></script>
 	<script src="Shaders/Phong3.js"></script>
-	<script src="Shaders/Ward.js"></script>
+	<script src="Shaders/Ward3.js"></script>
 	<script src="Shaders/Color_posicion.js"></script>
 	<script src="Modelos/esfera.js"></script>
 	<script src="Modelos/spot.js"></script>
@@ -25,18 +25,18 @@
 	<script src="main.js"></script>
 	<script type="text/javascript">
 		window.addEventListener('keydown',this.oyente_teclado,false);
-		
+
 		function oyente_teclado(e) {
 			var tecla = e.keyCode;
-			     if ( tecla == 37 ) camara.flecha_derecha(); 			
-			else if ( tecla == 38 ) camara.flecha_arriba(); 		
-			else if ( tecla == 39 ) camara.flecha_izquierda(); 		
-			else if ( tecla == 40 ) camara.flecha_abajo(); 		
+			     if ( tecla == 37 ) camara.flecha_derecha();
+			else if ( tecla == 38 ) camara.flecha_arriba();
+			else if ( tecla == 39 ) camara.flecha_izquierda();
+			else if ( tecla == 40 ) camara.flecha_abajo();
 
-			else if ( tecla == 87 ) camara.flecha_arriba(); 		
-			else if ( tecla == 68 ) camara.flecha_izquierda(); 		
-			else if ( tecla == 65 ) camara.flecha_derecha(); 		
-			else if ( tecla == 83 ) camara.flecha_abajo(); 	
+			else if ( tecla == 87 ) camara.flecha_arriba();
+			else if ( tecla == 68 ) camara.flecha_izquierda();
+			else if ( tecla == 65 ) camara.flecha_derecha();
+			else if ( tecla == 83 ) camara.flecha_abajo();
 			else if ( tecla == 32 ) {
 				let select = document.getElementById("camara_seleccionada");
 				if ( select.value == 1 ) select.value = 0;
@@ -52,10 +52,10 @@
 
 	<!---------------------------- Luz spot -------------------------------->
 
-	<table style="table-layout: fixed; width: 380px;" border="3">
+	<table style="table-layout: fixed; width:450px;" border="3">
 		<tr>
 			<td>Luz spot</td>
-			<td> 
+			<td>
 				<button id="dibujar_spot" onclick="toggle(luz_spot,id);">On</button>
 			</td>
 		</tr>
@@ -116,14 +116,14 @@
 		</tr>
 	</table>
 
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
 	<!---------------------------- Luz puntual -------------------------------->
 
 
-	<table style="table-layout: fixed; width: 380px;" border="3">
+	<table style="table-layout: fixed; width:450px;" border="3">
 		<tr>
 			<td>Luz puntual</td>
-			<td> 
+			<td>
 				<button id="dibujar_puntual" onclick="toggle(luz_puntual,id);">On</button>
 			</td>
 		</tr>
@@ -164,14 +164,14 @@
 		</tr>
 	</table>
 
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
 	<!---------------------------- Luz direccional ----------------------------->
 
 
-	<table style="table-layout: fixed; width: 380px;" border="3">
+	<table style="table-layout: fixed; width:450px;" border="3">
 		<tr>
 			<td>Luz direccional</td>
-			<td> 
+			<td>
 				<button id="dibujar_direccional" onclick="toggle(luz_direccional,id);">On</button>
 			</td>
 		</tr>
@@ -204,12 +204,12 @@
 
 
 	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
-	<!------------------------------- Luz ambiente ------------------------------------>	
+	<!------------------------------- Luz ambiente ------------------------------------>
 
-	<table style="table-layout: fixed; width: 380px;" border="3">
+	<table style="table-layout: fixed; width:450px;" border="3">
 		<tr>
 			<td>Luz ambiente</td>
-			<td> 
+			<td>
 				<label>r:</label>
 				<input type="text" id="intensidad_ambienter" value="1" size="3" oninput="intensidad_ambienter(id);">
 				<label>g:</label>
@@ -219,20 +219,20 @@
 			</td>
 		</tr>
 	</table>
-	
-	
-	
-	
-	
-	
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
+
+
+
+
+
+
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
 	<!------------------------------- Cámara ------------------------------------>
 
 
-	<table style="table-layout: fixed; width: 380px;" border="3">
+	<table style="table-layout: fixed; width:450px;" border="3">
 			<tr>
 				<td>Cámara</td>
-				<td> 
+				<td>
 					<label></label>
 				</td>
 			</tr>
@@ -250,8 +250,8 @@
 			</tr>
 	</table>
 
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>	
-	<table style="table-layout: fixed; width: 380px;" border="3">
+	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
+	<table style="table-layout: fixed; width:450px;" border="3">
 		<tr>
 			<td>
 				<li><a href="../index.html">Volver al índice</a></li>
@@ -263,10 +263,9 @@
 			</td>
 		</tr>
 	</table>
-	
+
 
 
 </body>
 
 </html>
-
