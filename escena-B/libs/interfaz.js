@@ -55,10 +55,8 @@ function intensidad_ambienteb(id) { luz_ambiente[2] = document.getElementById(id
 function iniciar_luces() {
 	// se setean las luces (spot, puntual, direccional y ambiente)
 
-	luz_spot = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
 	luz_puntual = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
-	luz_direccional = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
-	luz_ambiente = [1,1,1];
+	luz_ambiente = [0,0,0];
 
 	posicionx(luz_puntual, "pos_puntualx");
 	posiciony(luz_puntual, "pos_puntualy");

@@ -92,6 +92,7 @@ class Ward3 {
 
         uniform vec3 ppuntual;
         uniform vec3 pspot;
+        uniform vec3 ddireccional;
 
         in vec3 vertexNormal;
         in vec3 vertexPosition;
@@ -100,6 +101,7 @@ class Ward3 {
         out vec3 ojo;
         out vec3 Lspot;
         out vec3 LEspot;
+        out vec3 ddir;
 
         void main() {
             vec3 p = vec3(viewMatrix * modelMatrix *vec4(vertexPosition, 1));
@@ -107,7 +109,7 @@ class Ward3 {
             Lpuntual = normalize(Lpuntual - p);
             normal = normalize(vec3(normalMatrix*vec4(vertexNormal,1)));
             ojo = normalize(-p);
-
+            ddir = normalize( vec3( viewMatrix * vec4( ddireccional,0  ) )  );
 
             LEspot = vec3(viewMatrix * vec4(pspot,1));
             Lspot = normalize( vec3(modelMatrix * vec4(vertexPosition, 1)) - pspot );
@@ -136,7 +138,6 @@ class Ward3 {
         uniform float angulo;
         uniform vec3 faspot;
 
-        uniform vec3 ddireccional;
         uniform vec3 idireccional;
 
         in vec3 Lspot;
@@ -144,6 +145,7 @@ class Ward3 {
         in vec3 normal;
         in vec3 Lpuntual;
         in vec3 ojo;
+        in vec3 ddir;
 
         out vec4 fragmentColor;
 
@@ -193,7 +195,7 @@ class Ward3 {
                 float tangente = (1.0 - NH2)/ NH2;
                 float divisor = 4.0*PI*n2;
                 float exp_aux = exp(-tangente*tangente/n2)/divisor;
-                color += intensidad*exp_aux * ks/sqrt(NL*NV);
+                //color += intensidad*exp_aux ks/sqrt(NL*NV);
             }
 
             return color;
@@ -235,7 +237,7 @@ class Ward3 {
             float FP = 1.0/3.0;
 
             vec3 luzpuntual = ward_puntual(Lpuntual, fapuntual, ipuntual);
-            vec3 luzdireccional = ward_direccional(ddireccional, idireccional);
+            vec3 luzdireccional = ward_direccional(ddir, idireccional);
             vec3 luzspot = ward_spot(Lspot, LEspot, dspot, faspot, ispot, angulo);
             vec3 luz = ia*ka + FP*(luzpuntual + luzdireccional + luzspot);
 

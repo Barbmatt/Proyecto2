@@ -12,9 +12,7 @@ var gl;
 var shader_ward, shader_phong, shader_luz;
 var camara;
 
-var luz_spot;
 var luz_puntual;
-var luz_direccional;
 var luz_ambiente;
 
 // variables de matrices
@@ -37,8 +35,8 @@ function onLoad() {
 	let canvas = document.getElementById('webglCanvas');
 	gl = canvas.getContext('webgl2');
 
-	shader_phong = new Phong3(gl);
-	shader_ward = new Ward3(gl);
+	shader_phong = new Phong(gl);
+	shader_ward = new Ward(gl);
 	shader_luz = new Shader_luz(gl);
 
 	banderas = new Model(banderas_obj, material_banderas, shader_phong.loc_posicion, shader_phong.loc_normal);
@@ -85,7 +83,7 @@ function onRender(now) {
 	// limpiar canvas
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	//dibujar_luz();
+	dibujar_luz();
 
 	dibujar_agua();
 
@@ -110,8 +108,6 @@ function dibujar_luz() {
 	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader_luz.u_matriz_proyeccion, false, camara.proyeccion());
 	shader_luz.set_luz(luz_puntual.intensidad);
-
-	this.shader_program = ShaderProgramHelper.create(this.vertex(), this.fragment());
 
 	let matriz_modelo_luz = mat4.create();
 	mat4.translate(matriz_modelo_luz, matriz_modelo_luz, luz_puntual.posicion);
@@ -140,7 +136,7 @@ function dibujar_objeto(objeto, shader, matriz_modelo) {
 	gl.uniformMatrix4fv(shader.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader.u_matriz_proyeccion, false, camara.proyeccion());
 	gl.uniformMatrix4fv(shader.u_matriz_modelo, false, matriz_modelo);
-	shader.set_luz(luz_ambiente,luz_spot,luz_puntual,luz_direccional);
+	shader.set_luz(luz_puntual,luz_ambiente);
 	shader.set_material(objeto.material);
 
 	let matriz_normal = mat4.create()
