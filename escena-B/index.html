@@ -14,16 +14,21 @@
 	<script src="libs/Camara.js"></script>
 	<script src="libs/Model.js"></script>
 	<script src="libs/Light.js"></script>
-	<script src="Shaders/Phong.js"></script>
 	<script src="Shaders/Phong3.js"></script>
 	<script src="Shaders/Ward3.js"></script>
-	<script src="Shaders/Color_posicion.js"></script>
-	<script src="Modelos/arboles.obj"></script>
-	<script src="Modelos/banderas.obj"></script>
-	<script src="Modelos/cannon.obj"></script>
-	<script src="Modelos/castillo.obj"></script>
+	<script src="Shaders/Shader_luz.js"></script>
+	<script src="Modelos/bote/bote.obj"></script>
+	<script src="Modelos/bote/hinges.obj"></script>
+	<script src="Modelos/bote/remos.obj"></script>
+	<script src="Modelos/castillo/banderas.obj"></script>
+	<script src="Modelos/castillo/castillo.obj"></script>
+	<script src="Modelos/castillo/puerta.obj"></script>
+	<script src="Modelos/cañón/barrels.obj"></script>
+	<script src="Modelos/cañón/ruedas.obj"></script>
+	<script src="Modelos/cañón/soporte.obj"></script>
 	<script src="Modelos/esfera.obj"></script>
-	<script src="Modelos/puerta.obj"></script>
+	<script src="Modelos/agua.obj"></script>
+	<script src="Modelos/materiales.js"></script>
 	<script src="main.js"></script>
 	<script type="text/javascript">
 		window.addEventListener('keydown',this.oyente_teclado,false);
@@ -49,7 +54,7 @@
 </head>
 
 <body onload='onLoad();'>
-	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
+	<canvas id='webglCanvas' width="1300" height="910" style='float:left' oninput="teclado(this);">
 	</canvas>
 
 	<!---------------------------- Luz puntual -------------------------------->
@@ -66,11 +71,11 @@
 			<td>Posición</td>
 			<td>
 				<label>x:</label>
-				<input type="text" id="pos_puntualx" value="20" size="3" oninput="posicionx(luz_puntual, id);">
+				<input type="text" id="pos_puntualx" value="50" size="3" oninput="posicionx(luz_puntual, id);">
 				<label>y:</label>
-				<input type="text" id="pos_puntualy" value="20" size="3" oninput="posiciony(luz_puntual, id);">
+				<input type="text" id="pos_puntualy" value="60" size="3" oninput="posiciony(luz_puntual, id);">
 				<label>z:</label>
-				<input type="text" id="pos_puntualz" value="20" size="3" oninput="posicionz(luz_puntual, id);">
+				<input type="text" id="pos_puntualz" value="70" size="3" oninput="posicionz(luz_puntual, id);">
 			</td>
 		</tr>
 

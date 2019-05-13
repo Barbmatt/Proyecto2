@@ -1,10 +1,6 @@
 
 /*\
 	TODO:
-		- if ( !isNaN(pz) ) posicion_puntual_vieja[2]; es decir, validar la entrada de cada textfield.
-		- cambiar función de atenuación por algo distinto a 1.
-		- poner las luces y las esferas con un mismo new Model.
-		- distintas esferas con distinto shader pero con un único loc_posicion/normal de _m?? al crear la esfera
 		- rotar vectores de luces
 \*/
 
@@ -13,8 +9,7 @@
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
 var gl;
-var shader_ward;
-var shader_phong;
+var shader_ward, shader_phong, shader_luz;
 var camara;
 
 var luz_spot;
@@ -23,49 +18,18 @@ var luz_direccional;
 var luz_ambiente;
 
 // variables de matrices
-var matriz_modelo_bala = mat4.create();
 //var matriz_modelo_suelo = mat4.create();
+var matriz_modelo_bala = mat4.create();
 var matriz_modelo_castillo = mat4.create();
+var matriz_modelo_bote_cannon = mat4.create();
 var matriz_modelo_luz = mat4.create();
 
 //Aux variables,
-var banderas, cannon, bala, castillo, puerta;
+var banderas, castillo, puerta;
+var bala, barrels, cannon, ruedas, soporte;
+var bote, hinges, remos;
 var esfera_puntual;
-
-var material_banderas = {
-	ka: [0.19 ,0.07 ,0.02],
-	kd: [0.7 ,0.27 ,0.08],
-	ks: [0.26 ,0.14 ,0.09],
-	n: 20
-};
-
-var material_cannon = {
-	ka: [0.19 ,0.07 ,0.02],
-	kd: [0.7 ,0.27 ,0.08],
-	ks: [0.26 ,0.14 ,0.09],
-	n: 20
-};
-
-var material_castillo = {
-	ka: [0.23,0.23,0.23],
-	kd: [0.28, 0.28, 0.28],
-	ks: [0.77, 0.77, 0.77],
-	n: 0.12
-};
-
-var material_bala = {
-	ka: [0.10,0.19,0.17],
-	kd: [0.40,0.74,0.70],
-	ks: [0.30,0.31,0.31],
-	n: 12.8
-};
-
-var material_puerta = {
-	ka: [0.11,0.06,0.11],
-	kd: [0.43, 0.47, 0.54],
-	ks: [0.33, 0.33, 0.52],
-	n: 9.85
-};
+var agua;
 
 function onLoad() {
 
@@ -75,14 +39,24 @@ function onLoad() {
 
 	shader_phong = new Phong3(gl);
 	shader_ward = new Ward3(gl);
+	shader_luz = new Shader_luz(gl);
 
 	banderas = new Model(banderas_obj, material_banderas, shader_phong.loc_posicion, shader_phong.loc_normal);
-	cannon = new Model(cannon_obj,  material_cannon, shader_ward.loc_posicion, shader_ward.loc_normal);
 	castillo = new Model(castillo_obj, material_castillo, shader_phong.loc_posicion, shader_phong.loc_normal);
-	bala = new Model(esfera_obj, material_bala, shader_ward.loc_posicion, shader_ward.loc_normal);
 	puerta = new Model(puerta_obj, material_puerta, shader_ward.loc_posicion, shader_ward.loc_normal);
 
-	esfera_puntual = new Model(esfera_obj, material_banderas, shader_phong.loc_posicion, shader_phong.loc_normal);
+	barrels = new Model(barrels_obj, material_barrels, shader_ward.loc_posicion, shader_ward.loc_normal);
+	bala = new Model(esfera_obj, material_bala, shader_ward.loc_posicion, shader_ward.loc_normal);
+	ruedas = new Model(ruedas_obj, material_ruedas, shader_phong.loc_posicion, shader_phong.loc_normal);
+	soporte = new Model(soporte_obj, material_soporte, shader_ward.loc_posicion, shader_ward.loc_normal);
+
+	bote = new Model(bote_obj,  material_bote, shader_phong.loc_posicion, shader_phong.loc_normal);
+	hinges = new Model(hinges_obj, material_hinges, shader_ward.loc_posicion, shader_ward.loc_normal);
+	remos = new Model(remos_obj, material_remos, shader_phong.loc_posicion, shader_phong.loc_normal);
+
+	agua = new Model(agua_obj, material_agua, shader_phong.loc_posicion, shader_phong.loc_normal);
+
+	esfera_puntual = new Model(esfera_obj, null, shader_luz.loc_posicion, null);
 
 	camara = new Camara(canvas);
 
@@ -94,8 +68,11 @@ function onLoad() {
 
 	gl.bindVertexArray(null);
 
-	mat4.scale(matriz_modelo_castillo, matriz_modelo_castillo, [3,3,3]);
-	mat4.translate(matriz_modelo_luz, matriz_modelo_luz, luz_puntual.posicion);
+	mat4.scale(matriz_modelo_castillo, matriz_modelo_castillo, [6,6,6]);
+	mat4.translate(matriz_modelo_castillo, matriz_modelo_castillo, [2,0,2]);
+	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [0,1,0]);
+	mat4.scale(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [3,3,3]);
+	mat4.rotateY(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, 0.6);
 
 	// se empieza a dibujar por cuadro
 	requestAnimationFrame(onRender)
@@ -108,13 +85,54 @@ function onRender(now) {
 	// limpiar canvas
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// Dibujar esferas
-	dibujar_objeto(esfera_puntual, shader_phong, matriz_modelo_luz);
+	//dibujar_luz();
+
+	dibujar_agua();
+
 	dibujar_objeto(banderas, shader_phong, matriz_modelo_castillo);
 	dibujar_objeto(castillo, shader_phong, matriz_modelo_castillo);
 	dibujar_objeto(puerta, shader_ward, matriz_modelo_castillo);
 
+	dibujar_objeto(barrels, shader_ward, matriz_modelo_bote_cannon);
+	//dibujar_objeto(bala, shader_ward, matriz_modelo_bala);
+	dibujar_objeto(ruedas, shader_phong, matriz_modelo_bote_cannon);
+	dibujar_objeto(soporte, shader_ward, matriz_modelo_bote_cannon);
+
+	dibujar_objeto(bote, shader_phong, matriz_modelo_bote_cannon);
+	dibujar_objeto(hinges, shader_ward, matriz_modelo_bote_cannon);
+	dibujar_objeto(remos, shader_phong, matriz_modelo_bote_cannon);
+
 	requestAnimationFrame(onRender);
+}
+
+function dibujar_luz() {
+	gl.useProgram(shader_luz.shader_program);
+	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
+	gl.uniformMatrix4fv(shader_luz.u_matriz_proyeccion, false, camara.proyeccion());
+	shader_luz.set_luz(luz_puntual.intensidad);
+
+	this.shader_program = ShaderProgramHelper.create(this.vertex(), this.fragment());
+
+	let matriz_modelo_luz = mat4.create();
+	mat4.translate(matriz_modelo_luz, matriz_modelo_luz, luz_puntual.posicion);
+	mat4.scale(matriz_modelo_luz, matriz_modelo_luz, [3,3,3]);
+
+	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false, matriz_modelo_luz);
+
+	gl.bindVertexArray(esfera_puntual.vao);
+	gl.drawElements(gl.TRIANGLES, esfera_puntual.cant_indices, gl.UNSIGNED_INT, 0);
+	gl.bindVertexArray(null);
+	gl.useProgram(null);
+}
+
+function dibujar_agua() {
+	let matriz_modelo_agua_p = mat4.create();
+	let matriz_modelo_agua_n = mat4.create();
+	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_p);
+	mat4.translate(matriz_modelo_agua_p, matriz_modelo_agua_p, [0,0,50]);
+	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_p);
+	mat4.translate(matriz_modelo_agua_n, matriz_modelo_agua_n, [0,0,-50]);
+	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_n);
 }
 
 function dibujar_objeto(objeto, shader, matriz_modelo) {

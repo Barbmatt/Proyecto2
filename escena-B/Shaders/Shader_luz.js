@@ -1,4 +1,4 @@
-class Color_posicion {
+class Shader_luz {
 
     constructor(gl) {
         this.gl = gl;
@@ -13,6 +13,8 @@ class Color_posicion {
         this.loc_posicion = this.gl.getAttribLocation(this.shader_program, 'vertexPosition');
     }
     
+    set_luz(intensidad) { this.gl.uniform3f(this.u_intensidad, intensidad[0], intensidad[1], intensidad[2]); }
+
     vertex() {
         return `#version 300 es
 
@@ -20,13 +22,9 @@ class Color_posicion {
         uniform mat4 modelMatrix;
         uniform mat4 projectionMatrix;
     
-        uniform vec3 intensidad;
-
         in vec3 vertexPosition;
-        out vec3 color;
     
         void main() {
-            color = intensidad;
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
         }
         
@@ -38,11 +36,12 @@ class Color_posicion {
         return `#version 300 es
         precision mediump float;
 
-        in vec3 color;
+        uniform vec3 intensidad;
+        
         out vec4 fragmentColor;
 
         void main(){
-            fragmentColor = vec4(color,1);
+            fragmentColor = vec4(intensidad,1);
         }
         `;
     }
