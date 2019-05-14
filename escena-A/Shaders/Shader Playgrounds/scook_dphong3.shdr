@@ -1,0 +1,139 @@
+{
+  "vertexSource": "#version 300 es \n\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 modelMatrix;\nuniform mat4 normalMatrix;\n\nuniform vec3 ppuntual;\nuniform vec3 pspot;\nuniform vec3 ddireccional;\n\nin vec3 vertexNormal;\nin vec3 vertexPosition;\n\nout vec3 ddireccion;\nout vec3 lpuntual;\nout vec3 lspot;\nout vec3 lEspot;\nout vec3 ojo;\nout vec3 normal;\n\nvoid main() {\n    vec3 pos = vec3( viewMatrix * modelMatrix * vec4(vertexPosition, 1) );\n    ojo = normalize( -pos );\n    normal = normalize( vec3( normalMatrix * vec4(vertexNormal, 1) ) );\n    \n    lpuntual = vec3( viewMatrix * vec4(ppuntual, 1) );\n    lpuntual = normalize( lpuntual - pos );\n    \n    lspot = normalize( pspot - vec3(modelMatrix * vec4(vertexPosition, 1)));\n    \n    lEspot = vec3( viewMatrix * vec4(pspot, 1) );\n    lEspot = normalize( lEspot - pos );\n    \n    ddireccion = vec3( viewMatrix * vec4(ddireccional,0) );\n    \n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition,1); \n}",
+  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nuniform vec3 iambiente;\n\nuniform vec3 ka;\nuniform vec3 kd;\nuniform vec3 ks;\nuniform float alfa;\nuniform float f0;\n\nuniform vec3 ipuntual;\nuniform vec3 apuntual;\n\nuniform vec3 ispot;\nuniform vec3 aspot;\nuniform vec3 dspot;\nuniform float angulo;\n\nuniform vec3 idireccional;\n\nin vec3 ddireccion;\nin vec3 lpuntual;\nin vec3 lspot;\nin vec3 lEspot;\nin vec3 ojo;\nin vec3 normal;\n\nout vec4 fragmentColor;\n\nvec3 cook_puntual() {\n    float PI = 3.14159;\n    \n    vec3 L = normalize(lpuntual);\n    vec3 V = normalize(ojo);\n    vec3 N = normalize(normal);\n    vec3 H = normalize(V+L);\n    \n    float NH = max( dot(N,H) , 0.0001);\n    float NV = max( dot(N,V) , 0.0001);\n    float VH = max( dot(V,H) , 0.0001);\n    float NL = max( dot(N,L) , 0.0001);\n    \n    float G = min(1.0, min(2.0*NH*NV/VH, 2.0*NH*NL/VH));\n    \n\tfloat Ft = f0 + (1.0-f0) * pow(1.0-VH,5.0);\n    float tan2b = ( 1.0 - (NH*NH) ) / ( NH*NH );\n    float exponente = -tan2b/(alfa*alfa);\n    float divisor = alfa * alfa * pow(NH,4.0); \t\t\t\n    float Dt = exp(exponente)/divisor;\n    \n    float d = sqrt( L.x*L.x + L.y*L.y + L.z*L.z );\n    float fatt = 1.0/( 1.0 + apuntual.x + apuntual.y*d + apuntual.z*d*d );\n    \n    float CT = (Ft/PI)*( (Dt*G) / (NV*NL) );\n    vec3 especular = ks*fatt*ipuntual*CT;\n    vec3 difuso = ipuntual*kd*fatt*NL;\n    return difuso + especular;\n}\n\nvec3 cook_direccional() {\n    float PI = 3.14159;\n    \n    vec3 L = normalize(-ddireccion);\n    vec3 V = normalize(ojo);\n    vec3 N = normalize(normal);\n    vec3 H = normalize(V+L);\n    \n    float NH = max( dot(N,H) , 0.0001);\n    float NV = max( dot(N,V) , 0.0001);\n    float VH = max( dot(V,H) , 0.0001);\n    float NL = max( dot(N,L) , 0.0001);\n    \n    float G = min(1.0, min(2.0*NH*NV/VH, 2.0*NH*NL/VH));\n    \n\tfloat Ft = f0 + (1.0-f0) * pow(1.0-VH,5.0);\n    float tan2b = ( 1.0 - (NH*NH) ) / ( NH*NH );\n    float exponente = -tan2b/(alfa*alfa);\n    float divisor = alfa * alfa * pow(NH,4.0); \t\t\t\n    float Dt = exp(exponente)/divisor;\n    \n    float CT = (Ft/PI)*( (Dt*G) / (NV*NL) );\n    vec3 especular = ks*idireccional*CT;\n    vec3 difuso = idireccional*kd*NL;\n    return difuso + especular;\n}\n\nvec3 cook_spot() {\n    vec3 D = normalize(-dspot);\n    vec3 Lspot = normalize(lspot);\n    vec3 color  = vec3(0,0,0);\n    \n    if ( angulo == 0.0 || dot(Lspot,D) > angulo ) {\n        float PI = 3.14159;\n\n        vec3 L = normalize(lEspot);\n        vec3 V = normalize(ojo);\n        vec3 N = normalize(normal);\n        vec3 H = normalize(V+L);\n\n        float NH = max( dot(N,H) , 0.0001);\n        float NV = max( dot(N,V) , 0.0001);\n        float VH = max( dot(V,H) , 0.0001);\n        float NL = max( dot(N,L) , 0.0001);\n\n        float G = min(1.0, min(2.0*NH*NV/VH, 2.0*NH*NL/VH));\n\n        float Ft = f0 + (1.0-f0) * pow(1.0-VH,5.0);\n        float tan2b = ( 1.0 - (NH*NH) ) / ( NH*NH );\n        float exponente = -tan2b/(alfa*alfa);\n        float divisor = alfa * alfa * pow(NH,4.0); \t\t\t\n        float Dt = exp(exponente)/divisor;\n\n        float d = sqrt( L.x*L.x + L.y*L.y + L.z*L.z );\n        float fatt = 1.0/( 1.0 + aspot.x + aspot.y*d + aspot.z*d*d );\n\n        float CT = (Ft/PI)*( (Dt*G) / (NV*NL) );\n        vec3 especular = ks*fatt*ispot*CT;\n        vec3 difuso = ispot*kd*fatt*NL;\n        color = difuso + especular;\n    }\n    return color;\n}\n\n\n\nvoid main() {\n    float FP = 1.0/3.0;\n    vec3 luzpuntual = cook_puntual();\n    vec3 luzspot = cook_spot();\n    vec3 luzdireccional = cook_direccional();\n    \n    vec3 luz = iambiente*ka + FP*( luzpuntual + luzspot + luzdireccional );\n    \n    fragmentColor = vec4(luz,1);\n}",
+  "model": "teapot",
+  "uniforms": [
+    {
+      "name": "ppuntual",
+      "type": "vec3",
+      "value": [
+        0,
+        -2,
+        0
+      ]
+    },
+    {
+      "name": "pspot",
+      "type": "vec3",
+      "value": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "name": "ddireccional",
+      "type": "vec3",
+      "value": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "iambiente",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "ka",
+      "type": "vec3",
+      "value": [
+        0.10000000149011612,
+        0.20000000298023224,
+        0.30000001192092896
+      ]
+    },
+    {
+      "name": "kd",
+      "type": "vec3",
+      "value": [
+        0.30000001192092896,
+        0.10000000149011612,
+        0.6000000238418579
+      ]
+    },
+    {
+      "name": "ks",
+      "type": "vec3",
+      "value": [
+        0.5,
+        0.30000001192092896,
+        0.10000000149011612
+      ]
+    },
+    {
+      "name": "alfa",
+      "type": "float",
+      "value": 0.04
+    },
+    {
+      "name": "f0",
+      "type": "float",
+      "value": 10
+    },
+    {
+      "name": "ipuntual",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "apuntual",
+      "type": "vec3",
+      "value": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "ispot",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "aspot",
+      "type": "vec3",
+      "value": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "dspot",
+      "type": "vec3",
+      "value": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "name": "angulo",
+      "type": "float",
+      "value": 0.99
+    },
+    {
+      "name": "idireccional",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}

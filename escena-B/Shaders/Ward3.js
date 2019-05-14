@@ -110,7 +110,7 @@ class Ward3 {
 
 
             LEspot = vec3(viewMatrix * vec4(pspot,1));
-            Lspot = normalize( vec3(modelMatrix * vec4(vertexPosition, 1)) - pspot );
+            Lspot = normalize( pspot - vec3(modelMatrix * vec4(vertexPosition, 1)) );
             LEspot = normalize(vec3(LEspot-p));
 
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
@@ -202,7 +202,7 @@ class Ward3 {
         vec3 ward_spot(vec3 luz_mundo, vec3 luz_ojo, vec3 direccion, vec3 atenuacion, vec3 intensidad, float angulo) {
 
             vec3 V = normalize(ojo);
-            vec3 D = normalize(direccion);
+            vec3 D = normalize(-direccion);
             vec3 N = normalize(normal);
             vec3 Lmundo = normalize(luz_mundo);
             vec3 L = normalize(luz_ojo);

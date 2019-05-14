@@ -113,7 +113,7 @@ class Phong3 {
 
 
             LEspot = vec3(viewMatrix * vec4(pspot,1));
-            Lspot = normalize( vec3(modelMatrix * vec4(vertexPosition, 1)) - pspot );
+            Lspot = normalize( pspot - vec3(modelMatrix * vec4(vertexPosition, 1)) );
             LEspot = normalize(vec3(LEspot-vPE));
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);
         }
@@ -170,7 +170,7 @@ class Phong3 {
             vec3 luzdireccional =  idireccional*( kd*NL);// + ks*NHn );
 
 
-            vec3 Dspot = normalize(dspot);
+            vec3 Dspot = normalize(-dspot);
             vec3 vL = normalize(Lspot);
             L = normalize(LEspot);
             H = normalize(L+V);

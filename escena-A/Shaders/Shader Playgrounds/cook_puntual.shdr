@@ -1,0 +1,80 @@
+{
+  "vertexSource": "#version 300 es \n\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 modelMatrix;\nuniform mat4 normalMatrix;\n\nuniform vec3 posicion_luz;\n\nin vec3 vertexNormal;\nin vec3 vertexPosition;\n\nout vec3 luz;\nout vec3 ojo;\nout vec3 normal;\n\n\nvoid main() {\n    vec3 pos = vec3( viewMatrix * modelMatrix * vec4(vertexPosition, 1) );\n    luz = vec3( viewMatrix * vec4(posicion_luz, 1) );\n    luz = normalize( luz - pos );\n    ojo = normalize( -pos );\n    normal = normalize( vec3( normalMatrix * vec4(vertexNormal, 1) ) );\n    \n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition,1); \n}",
+  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nuniform vec3 ia;\n\nuniform vec3 ka;\nuniform vec3 kd;\nuniform vec3 ks;\nuniform float alfa;\nuniform float f0;\n\nuniform vec3 intensidad;\nuniform vec3 atenuacion;\n\nin vec3 luz;\nin vec3 ojo;\nin vec3 normal;\n\nout vec4 fragmentColor;\n\nvoid main() {\n    float PI = 3.14159;\n    \n    vec3 L = normalize(luz);\n    vec3 V = normalize(ojo);\n    vec3 N = normalize(normal);\n    vec3 H = normalize(V+L);\n    \n    float NH = max( dot(N,H) , 0.0001);\n    float NV = max( dot(N,V) , 0.0001);\n    float VH = max( dot(V,H) , 0.0001);\n    float NL = max( dot(N,L) , 0.0001);\n    \n    float G = min(1.0, min(2.0*NH*NV/VH, 2.0*NH*NL/VH));\n    \n\tfloat Ft = f0 + (1.0-f0) * pow(1.0-VH,5.0);\n    float tan2b = ( 1.0 - (NH*NH) ) / ( NH*NH );\n    float exponente = -tan2b/(alfa*alfa);\n    float divisor = alfa * alfa * pow(NH,4.0); \t\t\t\n    float Dt = exp(exponente)/divisor;\n    \n    float d = sqrt( L.x*L.x + L.y*L.y + L.z*L.z );\n    float fatt = 1.0/( 1.0 + atenuacion.x + atenuacion.y*d + atenuacion.z*d*d );\n    \n    float CT = (Ft/PI)*( (Dt*G) / (NV*NL) );\n    vec3 especular = ks*fatt*intensidad*CT;\n    vec3 difuso = intensidad*kd*fatt*NL;\n    vec3 color = ia*ka + difuso + especular;\n    \n    fragmentColor = vec4(color,1);\n}",
+  "model": "teapot",
+  "uniforms": [
+    {
+      "name": "posicion_luz",
+      "type": "vec3",
+      "value": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "name": "ia",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "ka",
+      "type": "vec3",
+      "value": [
+        0.10000000149011612,
+        0.30000001192092896,
+        0.20000000298023224
+      ]
+    },
+    {
+      "name": "kd",
+      "type": "vec3",
+      "value": [
+        0.10000000149011612,
+        0.20000000298023224,
+        0.30000001192092896
+      ]
+    },
+    {
+      "name": "ks",
+      "type": "vec3",
+      "value": [
+        0.4000000059604645,
+        0.6000000238418579,
+        0.20000000298023224
+      ]
+    },
+    {
+      "name": "alfa",
+      "type": "float",
+      "value": 0.05
+    },
+    {
+      "name": "f0",
+      "type": "float",
+      "value": 1023902983298398
+    },
+    {
+      "name": "intensidad",
+      "type": "vec3",
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "atenuacion",
+      "type": "vec3",
+      "value": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}
