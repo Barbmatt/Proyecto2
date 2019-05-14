@@ -23,6 +23,7 @@
 	<script src="Modelos/direccional.obj"></script>
 	<script src="Modelos/suelo.obj"></script>
 	<script src="main.js"></script>
+	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
 	<script type="text/javascript">
 		window.addEventListener('keydown',this.oyente_teclado,false);
 
@@ -47,15 +48,19 @@
 </head>
 
 <body onload='onLoad();'>
-	<canvas id='webglCanvas' width="1000" height="700" style='float:left' oninput="teclado(this);">
-	</canvas>
-
-	<!---------------------------- Luz spot -------------------------------->
-
-	<table style="table-layout: fixed; width:460px;" border="3">
-		<tr>
-			<td>Luz spot</td>
-			<td>
+	<div id ='DivPrincipal'	>
+			<h1 id="Titulo">Escena A</h1>
+		<div id ='Canvas'>
+			<canvas id='webglCanvas' width="1000" height="700" oninput="teclado(this);">
+			</canvas>
+		</div>
+		
+		<!---------------------------- Luz spot -------------------------------->
+		<div id='PanelPrincipal'>
+		<table id="BodyTables">
+		<tr id="HeadTables">
+			<td colspan="1">Luz Spot</td>
+			<td >
 				<button id="dibujar_spot" onclick="toggle(luz_spot,id);">On</button>
 			</td>
 		</tr>
@@ -115,14 +120,12 @@
 			</td>
 		</tr>
 	</table>
-
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
 	<!---------------------------- Luz puntual -------------------------------->
 
 
-	<table style="table-layout: fixed; width:460px;" border="3">
-		<tr>
-			<td>Luz puntual</td>
+	<table  id="BodyTables">
+		<tr id="HeadTables">
+			<td colspan="1">Luz Puntual</td>
 			<td>
 				<button id="dibujar_puntual" onclick="toggle(luz_puntual,id);">On</button>
 			</td>
@@ -164,13 +167,12 @@
 		</tr>
 	</table>
 
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
 	<!---------------------------- Luz direccional ----------------------------->
 
 
-	<table style="table-layout: fixed; width:460px;" border="3">
-		<tr>
-			<td>Luz direccional</td>
+	<table id="BodyTables">
+		<tr id="HeadTables">
+			<td colspan="1">Luz Direccional</td>
 			<td>
 				<button id="dibujar_direccional" onclick="toggle(luz_direccional,id);">On</button>
 			</td>
@@ -200,16 +202,12 @@
 			</td>
 		</tr>
 	</table>
-
-
-
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
 	<!------------------------------- Luz ambiente ------------------------------------>
 
-	<table style="table-layout: fixed; width:460px;" border="3">
-		<tr>
-			<td>Luz ambiente</td>
-			<td>
+	<table id="BodyTables">
+		<tr id="HeadTables">
+			<td colspan="1">Luz Ambiente</td>
+			<td >
 				<label>r:</label>
 				<input type="text" id="intensidad_ambienter" value="1" size="3" oninput="intensidad_ambienter(id);">
 				<label>g:</label>
@@ -220,18 +218,12 @@
 		</tr>
 	</table>
 
-
-
-
-
-
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
 	<!------------------------------- Cámara ------------------------------------>
 
 
-	<table style="table-layout: fixed; width:460px;" border="3">
-			<tr>
-				<td>Cámara</td>
+	<table id="BodyTables">
+			<tr id="HeadTables">
+				<td colspan="2">Cámara</td>
 				<td>
 					<label></label>
 				</td>
@@ -251,8 +243,8 @@
 	</table>
 
 	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
-	<table style="table-layout: fixed; width:460px;" border="3">
-		<tr>
+	<table id="BodyTables" >
+		<tr  id="HeadTables">
 			<td>
 				<li><a href="../index.html">Volver al índice</a></li>
 			</td>
@@ -263,9 +255,9 @@
 			</td>
 		</tr>
 	</table>
+</div>	
 
-
+</div>
 
 </body>
-
 </html>
