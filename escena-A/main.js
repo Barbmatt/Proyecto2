@@ -44,26 +44,28 @@ var flecha_direccional;
 
 // constante para objetos métalicos (copper)
 var material_m = {
-	ka: [0.23,0.23,0.23],
-	kd: [0.28, 0.28, 0.28],
+	ka: [0.25,0.25,0.25],
+	kd: [0.4, 0.4, 0.4],
 	ks: [0.77, 0.77, 0.77],
-	n: 0.12
+	alfa: 0.05,
+	f0: 10
 };
 
 // constantes para objetos satinado
 var material_s = {
-	ka: [0.19 ,0.07 ,0.02],
-	kd: [0.7 ,0.27 ,0.08],
-	ks: [0.26 ,0.14 ,0.09],
-	n: 20
+	ka: [0.10,0.19,0.17],
+	kd: [0.40,0.74,0.70],
+	ks: [0.30,0.31,0.31],
+	alfa: -0.37,
+	f0: 1
 };
 
 // constantes para objetos rugoso(Black Rubber)
 var material_r = {
-	ka: [0.10,0.19,0.17],
-	kd: [0.40,0.74,0.70],
-	ks: [0.30,0.31,0.31],
-	n: 12.8
+	ka: [0.11,0.06,0.11],
+	kd: [0.43,0.47,0.54],
+	ks: [0.33,0.33,0.52],
+	n: 9.85
 };
 
 var material_suelo = {
@@ -73,15 +75,17 @@ var material_suelo = {
 	n: 32
 };
 
+let a = 0, f = 0;
+
 function onLoad() {
 
 	// obtener el canvas
 	let canvas = document.getElementById('webglCanvas');
 	gl = canvas.getContext('webgl2');
 
-	shader_m = new Ward3(gl);
-	shader_s = new Phong3(gl);
-	shader_r = new Phong3(gl);
+	shader_m = new Cook3(gl);
+	shader_s = new Cook3(gl);
+	shader_r = new Ward3(gl);
 	shader_suelo = new Phong3(gl);
 	shader_luz = new Color_posicion(gl);
 
@@ -125,11 +129,11 @@ function onRender(now) {
 
 	// 0 = spot, 1 = puntual, 2 = direccional
 
-	if ( luz_spot.dibujar ) dibujar_luz(luz_spot,0,cono_spot);
-	if ( luz_puntual.dibujar ) dibujar_luz(luz_puntual,1, esfera_puntual);
-	if ( luz_direccional.dibujar ) dibujar_luz(luz_direccional,2,flecha_direccional);
+	// if ( luz_spot.dibujar ) dibujar_luz(luz_spot,0,cono_spot);
+	// if ( luz_puntual.dibujar ) dibujar_luz(luz_puntual,1, esfera_puntual);
+	// if ( luz_direccional.dibujar ) dibujar_luz(luz_direccional,2,flecha_direccional);
 
-	dibujar_suelo(shader_suelo, material_suelo);
+	//dibujar_suelo(shader_suelo, material_suelo);
 
 	// Dibujar esferas
 	dibujar_esfera(shader_m, material_m, 0);
@@ -137,6 +141,36 @@ function onRender(now) {
 	dibujar_esfera(shader_r, material_r, 4);
 
 	requestAnimationFrame(onRender);
+}
+
+function f0_m(slider) {
+	console.log(Math.exp(parseFloat(slider.value)));
+	material_m.f0 = Math.exp(parseFloat(slider.value));
+}
+
+function alfa_m(slider) {
+	console.log(Math.log(parseFloat(slider.value)));
+	material_m.alfa = Math.log(parseFloat(slider.value));
+}
+
+function f0_s(slider) {
+	console.log(slider.value);
+	material_s.f0 = Math.exp(parseFloat(slider.value));
+}
+
+function alfa_s(slider) {
+	console.log(slider.value);
+	material_s.alfa = Math.log(parseFloat(slider.value));
+}
+
+function f0_r(slider) {
+	console.log(slider.value);
+	material_r.f0 = Math.exp(parseFloat(slider.value));
+}
+
+function alfa_r(slider) {
+	console.log(slider.value);
+	material_r.alfa = Math.log(parseFloat(slider.value));
 }
 
 function dibujar_luz(luz, que_dibujar, objeto) {
