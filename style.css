@@ -7,20 +7,21 @@ body{
 /* Personalizacíon para seleccionar la Escena*/
 #SelectEscene{
 	background-color : rgb(240, 118, 3);
-	width : 220px;
-	height : 380px;
+	width : 450px;
+	height : 700px;
 	margin : auto;
 	border-radius : 25px;
 	border : 2px solid #183661;
-	color : rgb(250, 246, 246);
+	color : rgb(12, 0, 0);
 	text-align : center;
 }
 /* Enlace a cada escena*/
 #Enlaces{
 	background-color : rgb(255, 230, 2);
-	font-family :  Verdana;
+	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+	font-size: 20px;
 	width : 150px;
-	height : 100px;
+	height : 120px;
 	margin : auto;
 	border-radius : 25px;
 	border : 2px solid #183661;
@@ -32,14 +33,27 @@ body{
 #Integrantes{
 	background-color : rgb(73, 73, 73);
 	font-family :  Verdana;
-	width : 180px;
-	height : 170px;
+	font-size: 18px;
+	width :200px;
+	height : 175px;
 	margin : auto;
 	border-radius : 25px;
-	border : 2px solid #183661;
+	border : 2px solid #944700;
 	color : rgb(253, 252, 252);
 	text-align : center;
+}
 
+#Titulo{
+	color : rgb(8, 8, 8);
+	text-align : center;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-size: 32px
+}
 
+#Tetera{
+	width:200px;
+	height:200px;
+	border-radius : 25px;
+	border: 2px solid ;
 }
 

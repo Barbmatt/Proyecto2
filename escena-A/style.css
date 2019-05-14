@@ -47,12 +47,12 @@ padding-right: 200px;
 /**Headers de la tabla (Tipo de Luz)*/
 #HeadTables{
 	background-color : #bb5400;
-	font-size :19px;
+	font-size :22px;
 	color : rgb(39, 37, 37);
-	font-family : Verdana;
+	font-family : Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
-/**Modificaciones del contenido de la tabla general*/
+/**Modificaciones del contenido(body) de la tabla general*/
 #BodyTables{
 	color : white;
 	background-color : #696a6b;
@@ -65,6 +65,7 @@ padding-right: 200px;
 	border-radius : 10px;
 	overflow : hidden;
 	font-family : Helvetica;
+	font-size:19px;
 	
 }
 
