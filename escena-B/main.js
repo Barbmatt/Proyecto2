@@ -1,10 +1,4 @@
 
-/*\
-	TODO:
-		- rotar vectores de luces
-\*/
-
-
 
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
@@ -21,6 +15,7 @@ var matriz_modelo_bala = mat4.create();
 var matriz_modelo_castillo = mat4.create();
 var matriz_modelo_bote_cannon = mat4.create();
 var matriz_modelo_luz = mat4.create();
+var matriz_modelo_castlebase = mat4.create();
 
 //Aux variables,
 var banderas, castillo, puerta;
@@ -28,6 +23,7 @@ var bala, barrels, cannon, ruedas, soporte;
 var bote, hinges, remos;
 var esfera_puntual;
 var agua;
+var castlebase;
 
 function onLoad() {
 
@@ -39,22 +35,34 @@ function onLoad() {
 	shader_ward = new Ward(gl);
 	shader_luz = new Shader_luz(gl);
 
-	banderas = new Model(banderas_obj, material_banderas, shader_phong.loc_posicion, shader_phong.loc_normal);
-	castillo = new Model(castillo_obj, material_castillo, shader_phong.loc_posicion, shader_phong.loc_normal);
-	puerta = new Model(puerta_obj, material_puerta, shader_ward.loc_posicion, shader_ward.loc_normal);
 
+	// Elementos que componen al castillo
+	banderas = new Model(banderas_obj, material_banderas, shader_phong.loc_posicion, shader_phong.loc_normal);
+	
+	castillo = new Model(castillo_obj, material_castillo, shader_phong.loc_posicion, shader_phong.loc_normal);
+	mat4.translate(matriz_modelo_castillo,matriz_modelo_castillo,[0.0,1.3,0]);
+
+	puerta = new Model(puerta_obj, material_puerta, shader_ward.loc_posicion, shader_ward.loc_normal);
+	// Elementos que componen al cañon	
 	barrels = new Model(barrels_obj, material_barrels, shader_ward.loc_posicion, shader_ward.loc_normal);
 	bala = new Model(esfera_obj, material_bala, shader_ward.loc_posicion, shader_ward.loc_normal);
 	ruedas = new Model(ruedas_obj, material_ruedas, shader_phong.loc_posicion, shader_phong.loc_normal);
 	soporte = new Model(soporte_obj, material_soporte, shader_ward.loc_posicion, shader_ward.loc_normal);
 
+	// Elementos que componen al bote 
 	bote = new Model(bote_obj,  material_bote, shader_phong.loc_posicion, shader_phong.loc_normal);
 	hinges = new Model(hinges_obj, material_hinges, shader_ward.loc_posicion, shader_ward.loc_normal);
 	remos = new Model(remos_obj, material_remos, shader_phong.loc_posicion, shader_phong.loc_normal);
 
 	agua = new Model(agua_obj, material_agua, shader_phong.loc_posicion, shader_phong.loc_normal);
 
+	// Luz en forma  de esfera	
 	esfera_puntual = new Model(esfera_obj, null, shader_luz.loc_posicion, null);
+
+	// Plataforma para el castillo
+	castlebase = new Model(castlebase_obj,material_castillo,shader_phong.loc_posicion,shader_phong.loc_normal);
+	mat4.translate(matriz_modelo_castlebase,matriz_modelo_castlebase,[18.9,1.3,19.8]);
+	mat4.scale(matriz_modelo_castlebase,matriz_modelo_castlebase,[13,15,13]);
 
 	camara = new Camara(canvas);
 
@@ -86,6 +94,8 @@ function onRender(now) {
 	dibujar_luz();
 
 	dibujar_agua();
+
+	dibujar_base(shader_phong, material_castillo);
 
 	dibujar_objeto(banderas, shader_phong, matriz_modelo_castillo);
 	dibujar_objeto(castillo, shader_phong, matriz_modelo_castillo);
@@ -129,6 +139,11 @@ function dibujar_agua() {
 	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_p);
 	mat4.translate(matriz_modelo_agua_n, matriz_modelo_agua_n, [0,0,-50]);
 	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_n);
+}
+
+function dibujar_base(shader, material) {
+	castlebase.material = material;
+	dibujar_objeto(castlebase, shader, matriz_modelo_castlebase);
 }
 
 function dibujar_objeto(objeto, shader, matriz_modelo) {
