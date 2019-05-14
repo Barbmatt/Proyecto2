@@ -2,7 +2,7 @@
 
 function reset_camara() { camara.reset(); }
 
-function toggle_camara() { 
+function toggle_camara() {
 	let select = document.getElementById("camara_seleccionada");
 	if ( select.value == 1 ) select.value = 0;
 	else select.value = 1;
@@ -65,18 +65,18 @@ function intensidad_ambienteg(id) { luz_ambiente[1] = document.getElementById(id
 
 function intensidad_ambienteb(id) { luz_ambiente[2] = document.getElementById(id).value; }
 
-function toggle(luz,id) { 
+function toggle(luz,id) {
 	let dibujar = luz.dibujar;
-	luz.dibujar = !dibujar; 
+	luz.dibujar = !dibujar;
 	document.getElementById(id).innerText = dibujar ? "Off" : "On";
 }
 
 function iniciar_luces() {
 	// se setean las luces (spot, puntual, direccional y ambiente)
 
-	luz_spot = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);			
-	luz_puntual = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);					
-	luz_direccional = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);		
+	luz_spot = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
+	luz_puntual = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
+	luz_direccional = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
 	luz_ambiente = [1,1,1];
 
 	posicionx(luz_spot, "pos_spotx");

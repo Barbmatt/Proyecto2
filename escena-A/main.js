@@ -8,8 +8,6 @@
 		- rotar vectores de luces
 \*/
 
-
-
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
 var gl;
@@ -23,14 +21,10 @@ var camara;
 // spot: [1.0.96,0.89], luz fluorescente
 // puntual: [1,0.58,0.16],luz de vela
 
-var luz_spot;
-var luz_puntual;
-var luz_direccional;
-var luz_ambiente;
+var luz_spot, luz_puntual, luz_direccional, luz_ambiente;
 
 // variables de matrices
 var matriz_modelo_esfera = mat4.create();
-var matriz_modelo_suelo = mat4.create();
 var matriz_modelo_spot = mat4.create();
 
 //Aux variables,
@@ -44,11 +38,11 @@ var flecha_direccional;
 
 // constante para objetos métalicos (copper)
 var material_m = {
-	ka: [0.25,0.25,0.25],
-	kd: [0.4, 0.4, 0.4],
+	ka: [0.23,0.23,0.23],
+	kd: [0.28, 0.28, 0.28],
 	ks: [0.77, 0.77, 0.77],
-	alfa: 0.05,
-	f0: 10
+	alfa: 1.97,
+	f0: 1
 };
 
 // constantes para objetos satinado
@@ -101,8 +95,6 @@ function onLoad() {
 
 	// cargo el suelo
 	suelo = new Model(suelo_obj, shader_suelo.loc_posicion, shader_suelo.loc_normal);
-	mat4.translate(matriz_modelo_suelo,matriz_modelo_suelo,[0,-4.568,0]);
-	mat4.scale(matriz_modelo_suelo,matriz_modelo_suelo,[1000,15,1000]);
 
 	camara = new Camara(canvas);
 
@@ -129,11 +121,11 @@ function onRender(now) {
 
 	// 0 = spot, 1 = puntual, 2 = direccional
 
-	// if ( luz_spot.dibujar ) dibujar_luz(luz_spot,0,cono_spot);
-	// if ( luz_puntual.dibujar ) dibujar_luz(luz_puntual,1, esfera_puntual);
-	// if ( luz_direccional.dibujar ) dibujar_luz(luz_direccional,2,flecha_direccional);
+	if ( luz_spot.dibujar ) dibujar_luz(luz_spot,0,cono_spot);
+	if ( luz_puntual.dibujar ) dibujar_luz(luz_puntual,1, esfera_puntual);
+	if ( luz_direccional.dibujar ) dibujar_luz(luz_direccional,2,flecha_direccional);
 
-	//dibujar_suelo(shader_suelo, material_suelo);
+	dibujar_suelo(shader_suelo, material_suelo);
 
 	// Dibujar esferas
 	dibujar_esfera(shader_m, material_m, 0);
@@ -141,36 +133,6 @@ function onRender(now) {
 	dibujar_esfera(shader_r, material_r, 4);
 
 	requestAnimationFrame(onRender);
-}
-
-function f0_m(slider) {
-	console.log(Math.exp(parseFloat(slider.value)));
-	material_m.f0 = Math.exp(parseFloat(slider.value));
-}
-
-function alfa_m(slider) {
-	console.log(Math.log(parseFloat(slider.value)));
-	material_m.alfa = Math.log(parseFloat(slider.value));
-}
-
-function f0_s(slider) {
-	console.log(slider.value);
-	material_s.f0 = Math.exp(parseFloat(slider.value));
-}
-
-function alfa_s(slider) {
-	console.log(slider.value);
-	material_s.alfa = Math.log(parseFloat(slider.value));
-}
-
-function f0_r(slider) {
-	console.log(slider.value);
-	material_r.f0 = Math.exp(parseFloat(slider.value));
-}
-
-function alfa_r(slider) {
-	console.log(slider.value);
-	material_r.alfa = Math.log(parseFloat(slider.value));
 }
 
 function dibujar_luz(luz, que_dibujar, objeto) {
@@ -185,7 +147,7 @@ function dibujar_luz(luz, que_dibujar, objeto) {
 	if ( que_dibujar == 0 ) {
 		// rotar cono de spot
 		let escala = 10*luz.angulo/180;
-		mat4.targetTo(matriz_modelo_luz, luz.posicion, [0,1,0], luz.direccion);
+		// mat4.targetTo(matriz_modelo_luz, luz.posicion, [0,1,0], luz.direccion);
 		mat4.scale(matriz_modelo_luz, matriz_modelo_luz, [escala,1,escala]);
 	}
 	else if ( que_dibujar == 2 ) {
@@ -206,7 +168,15 @@ function dibujar_suelo(shader, material) {
 	gl.uniformMatrix4fv(shader.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader.u_matriz_proyeccion, false, camara.proyeccion());
 	suelo.material = material;
-	dibujar(shader, suelo, matriz_modelo_suelo);
+	var matriz_modelo_suelo;
+	for ( let i = -5; i <= 5; i++ )
+		for ( let j = -5; j <= 5; j++ ) {
+			matriz_modelo_suelo = mat4.create();
+			mat4.scale(matriz_modelo_suelo,matriz_modelo_suelo,[10,15,10]);
+			mat4.translate(matriz_modelo_suelo,matriz_modelo_suelo,[i*2,-0.33,j*2]);
+			dibujar(shader, suelo, matriz_modelo_suelo);
+		}
+
 	gl.useProgram(null);
 }
 

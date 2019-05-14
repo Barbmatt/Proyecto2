@@ -1,28 +1,8 @@
 {
-  "vertexSource": "#version 300 es\n\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\nuniform mat4 modelMatrix;\n\nuniform vec3 posL;//  posicion de la luz en coordenadas del mundo\n\nin vec3 vertexNormal;\nin vec3 vertexPosition;\nout vec3 normal;\nout vec3 luz;\nout vec3 ojo;\n\n\nvoid main() {\n    vec3 vPE = vec3(viewMatrix * modelMatrix * vec4(vertexPosition, 1));\n    vec3 LE = vec3(viewMatrix * vec4(posL,1));\n    luz = normalize(vec3(LE-vPE));\n    normal = normalize(vec3(normalMatrix*vec4(vertexNormal,1)));\n    ojo = normalize(-vPE);  // distancia entre la posicion del ojo (0,0,0) y un vertice del objeto\n   \n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);\n}",
-  "fragmentSource": "#version 300 es\n#define PI 3.14159265\nprecision mediump float;\nuniform float rho; // ro entre[0,1]\nuniform float sigma; //sigma entre [0,90]\n);\nvec3 Ln = normalize(luz);\nvec3 Vn = normalize(ojo);\n//Calculo L (cos(thetai) al cuadrado) \nfloat L = max(0.0,dot(Nn,Ln));\n//Calculo L (cos2(thetar) al cuadrado) \nfloat V = max(0.0,dot(Nn,Vn));\n//Calculo P    \nfloat resP1=dot(normalize(Ln-Nn*L),normalize(Vn -Nn*V));   \nfloat P = max(0.0,resP1);  \n\nfloat sigma2 = sigma*sigma; \nin vec3 normal;\nin vec3 luz;\nin vec3 ojo;\n\nout vec4 fragmentColor;\n\nvoid main() {\nvec3 Nn = normalize(normal  \n//Calculo A    \nfloat A = 1.0 -0.5*(sigma2/(sigma2 + 0.33));   \n//Calculo B \nfloat B = 0.45*(sigma2/(sigma2 +0.09));\n//sen(alfa)*tan(beta) con identidades trigonometricas\nfloat C = sqrt((1.0-L*L)*(1.0-V*V))/max(L,V);  \n//pasa al vector color el resultado de la ecuacion\nvec3 color  ;   \ncolor+= rho/PI*(A+(B*P*C));  \nfragmentColor = vec4(color,1);\n       \n}",
+  "vertexSource": "#version 300 es\n    \nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\nuniform mat4 modelMatrix;\n\nuniform vec3 posL;//  posicion de la luz en coordenadas del mundo\n\nin vec3 vertexNormal;\nin vec3 vertexPosition;\nout vec3 normal;\nout vec3 luz;\nout vec3 ojo;\n\n\nvoid main() {\n    vec3 vPE = vec3(viewMatrix * modelMatrix * vec4(vertexPosition, 1));\n    vec3 LE = vec3(viewMatrix * vec4(posL,1));\n    luz = normalize(vec3(LE-vPE));\n    normal = normalize(vec3(normalMatrix*vec4(vertexNormal,1)));\n    ojo = normalize(-vPE);  // distancia entre la posicion del ojo (0,0,0) y un vertice del objeto\n\n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);\n}",
+  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nuniform float rho; // ro entre[0,1]\nuniform float sigma; //sigma entre [0,90]\n\nin vec3 normal;\nin vec3 luz;\nin vec3 ojo;\n\nout vec4 fragmentColor;\n\nvoid main() {\n\tfloat PI = 3.14159265;\n    vec3 L = normalize(luz);\n    vec3 V = normalize(ojo);\n    vec3 N = normalize(normal);\n    //Calculo L (cos(thetai) al cuadrado) \n    float NL = max(0.0,dot(N,L));\n    //Calculo L (cos2(thetar) al cuadrado) \n    float NV = max(0.0,dot(N,V));\n    //Calculo P    \n    float resP1=dot(normalize(L-N*NL),normalize(V -N*NV));   \n    float P = max(0.0,resP1);  \n\n    float sigma2 = sigma*sigma; \n    //Calculo A    \n    float A = 1.0 -0.5*(sigma2/(sigma2 + 0.33));   \n    //Calculo B \n    float B = 0.45*(sigma2/(sigma2 +0.09));\n    //sen(alfa)*tan(beta) con identidades trigonometricas\n    float C = sqrt((1.0-NL*NL)*(1.0-NV*NV))/max(NL,NV);  \n    //pasa al vector color el resultado de la ecuacion\n    vec3 color = *rho/PI*(A+(B*P*C));  \n    fragmentColor = vec4(color,1);\n}\n\n\n\n\n{\n  \"vertexSource\": \"\n    \n    \n    #version 300 es\n    #define PI 3.14159265\n    precision mediump float;\n    uniform float rho; // ro entre[0,1]\n    uniform float sigma; //sigma entre [0,90]\n);\nvec3 Ln = normalize(luz);\nvec3 Vn = normalize(ojo);\n//Calculo L (cos(thetai) al cuadrado) \nfloat L = max(0.0,dot(Nn,Ln));\n//Calculo L (cos2(thetar) al cuadrado) \nfloat V = max(0.0,dot(Nn,Vn));\n//Calculo P    \nfloat resP1=dot(normalize(Ln-Nn*L),normalize(Vn -Nn*V));   \nfloat P = max(0.0,resP1);  \n        \n        float sigma2 = sigma*sigma; \n        in vec3 normal;\n        in vec3 luz;\n        in vec3 ojo;\n        \n        out vec4 fragmentColor;\n        \n        void main() {\n            vec3 Nn = normalize(normal  \n                //Calculo A    \n                float A = 1.0 -0.5*(sigma2/(sigma2 + 0.33));   \n                //Calculo B \n                float B = 0.45*(sigma2/(sigma2 +0.09));\n                //sen(alfa)*tan(beta) con identidades trigonometricas\n                float C = sqrt((1.0-L*L)*(1.0-V*V))/max(L,V);  \n                //pasa al vector color el resultado de la ecuacion\n                vec3 color  ;   \n                color+= rho/PI*(A+(B*P*C));  \n                fragmentColor = vec4(color,1);\n                \n            }\",\n  ",
   "model": "teapot",
-  "uniforms": [
-    {
-      "name": "posL",
-      "type": "vec3",
-      "value": [
-        0,
-        1,
-        0
-      ]
-    },
-    {
-      "name": "rho",
-      "type": "float",
-      "value": 1
-    },
-    {
-      "name": "sigma",
-      "type": "float",
-      "value": 90
-    }
-  ],
+  "uniforms": [],
   "textureUnits": [
     "blank",
     "blank",

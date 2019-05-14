@@ -186,7 +186,7 @@
 				<label>y:</label>
 				<input type="text" id="dir_direccionaly" value="0" size="3" oninput="direcciony(luz_direccional,id);">
 				<label>z:</label>
-				<input type="text" id="dir_direccionalz" value="1" size="3" oninput="direccionz(luz_direccional,id);">
+				<input type="text" id="dir_direccionalz" value="-1" size="3" oninput="direccionz(luz_direccional,id);">
 			</td>
 		</tr>
 
@@ -255,49 +255,6 @@
 			</td>
 		</tr>
 	</table>
-	<table id="BodyTables">
-			<tr id="HeadTables">
-				<td colspan="2">Metal</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="range" id="m_a" step="0.001" min="0.001" max="1" value="0.001" oninput="alfa_m(this);"></td>
-				</td>
-				<td>
-					<input type="range" id="m_f0" step="0.001" min="0.001" max="50" value="0.001" oninput="f0_m(this);"></td>
-				</td>
-			</tr>
-	</table>
-	<table id="BodyTables">
-			<tr id="HeadTables">
-				<td colspan="2">Satinado</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="range" id="s_a" step="0.001" min="0.001" max="1" value="0.001" oninput="alfa_s(this);"></td>
-				</td>
-				<td>
-					<input type="range" id="s_f0" step="0.001" min="0.001" max="50" value="0.001" oninput="f0_s(this);"></td>
-				</td>
-			</tr>
-	</table>
-	<table id="BodyTables">
-			<tr id="HeadTables">
-				<td colspan="2">Rugoso</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="range" id="r_a" step="0.001" min="0.001" max="1" value="0.001" oninput="alfa_r(this);"></td>
-				</td>
-				<td>
-					<input type="range" id="r_f0" step="0.001" min="-10" max="10" value="0" oninput="f0_r(this);"></td>
-				</td>
-			</tr>
-	</table>
-
-
-
-
 </div>
 
 </div>

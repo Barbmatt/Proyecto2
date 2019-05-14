@@ -1,15 +1,15 @@
 {
   "vertexSource": "#version 300 es\n\nuniform mat4 viewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 normalMatrix;\nuniform mat4 modelMatrix;\n\nuniform vec3 ppuntual;\nuniform vec3 pspot;\n\nin vec3 vertexNormal;\nin vec3 vertexPosition;\nout vec3 normal;\nout vec3 Lpuntual;\nout vec3 ojo;\nout vec3 Lspot;\nout vec3 LEspot;\n\nvoid main() {\n    vec3 p = vec3(viewMatrix * modelMatrix *vec4(vertexPosition, 1));\n    Lpuntual = vec3(viewMatrix * vec4(ppuntual,1)); \n    Lpuntual = normalize(Lpuntual - p);\n    normal = normalize(vec3(normalMatrix*vec4(vertexNormal,1)));\n    ojo = normalize(-p);\n    \n    \n    LEspot = vec3(viewMatrix * vec4(pspot,1));\n    Lspot = normalize( vec3(modelMatrix * vec4(vertexPosition, 1)) - pspot );\n    LEspot = normalize(vec3(LEspot-p));\n    \n    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition, 1);\n}",
-  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nuniform vec3 ia;\n\nuniform vec3 ip;\nuniform vec3 fa;\n\nuniform vec3 ka;\nuniform vec3 kd;\nuniform vec3 ks;\nuniform float n;\n\nin vec3 Lspot;\nin vec3 LEspot;\nin vec3 normal;\nin vec3 Lpuntual;\nin vec3 ojo;\n\nout vec4 fragmentColor;\n\nvoid main() {\n    vec3 V = normalize(ojo);\n    vec3 N = normalize(normal);\n    vec3 L = normalize(Lpuntual);\n    vec3 H = normalize(ojo+L);\n    \n    float NL = max(dot(N,L),0.0);\n    float NV = max(dot(N,V),0.0);\n    float d = sqrt(L.x*L.x + L.y*L.y + L.z*L.z  );\n    float fa = 1.0/(1.0+fa.x+fa.y*d+fa.z*d*d);\n    \n    vec3 color =  ia*ka + fa*ip*kd*NL; \n    \n    if ( NL > 0.0 && NV > 0.0 ) {\n   \t\tfloat NH = max(dot(H,N),0.0); \n        float NH2 = NH*NH;\n    \tfloat PI = 3.14159;\n        float n2 = n*n;\n        float tangente = (1.0 - NH2)/ NH2;\n        float divisor = 4.0*PI*n2;\n        float exp_aux = exp(-tangente*tangente/n2)/divisor;\n        color += fa*ip*exp_aux * ks/sqrt(NL*NV);\n    }\n    \n    \n    fragmentColor = vec4(color,1);//* 1.5;\n}",
-  "model": "cube",
+  "fragmentSource": "#version 300 es\nprecision mediump float;\n\nuniform vec3 ia;\n\nuniform vec3 ip;\nuniform vec3 fa;\n\nuniform vec3 ka;\nuniform vec3 kd;\nuniform vec3 ks;\nuniform float n;\n\nin vec3 Lspot;\nin vec3 LEspot;\nin vec3 normal;\nin vec3 Lpuntual;\nin vec3 ojo;\n\nout vec4 fragmentColor;\n\nvoid main() {\n    vec3 V = normalize(ojo);\n    vec3 N = normalize(normal);\n    vec3 L = normalize(Lpuntual);\n    vec3 H = normalize(ojo+L);\n    \n    float NL = max(dot(N,L),0.0);\n    float NV = max(dot(N,V),0.0);\n    float d = sqrt(L.x*L.x + L.y*L.y + L.z*L.z  );\n    float fa = 1.0/(1.0+fa.x+fa.y*d+fa.z*d*d);\n    \n    float PI = 3.14159;\n    \n    vec3 color =  fa*ip*kd/PI; \n    \n    \n    \n    fragmentColor = vec4(color,1);//* 1.5;\n}",
+  "model": "teapot",
   "uniforms": [
     {
       "name": "ppuntual",
       "type": "vec3",
       "value": [
         0,
-        0,
-        3
+        2,
+        0
       ]
     },
     {
@@ -78,7 +78,16 @@
     {
       "name": "n",
       "type": "float",
-      "value": 0.1
+      "value": 1
     }
+  ],
+  "textureUnits": [
+    "blank",
+    "blank",
+    "blank",
+    "blank",
+    "blank",
+    "blank",
+    "blank"
   ]
 }
