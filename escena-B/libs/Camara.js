@@ -28,9 +28,13 @@ class Camara {
         this.registerZone.addEventListener("wheel", (event) => { this.zoom_mouse(event) }, { passive: true })
         this.registerZone.addEventListener("mousedown", (event) => { this.drag_start(event) })
         this.registerZone.addEventListener("dblclick", (event) => { this.reset() })
+        this.registerZone.onwheel = function(event){ event.preventDefault(); };
+        this.registerZone.onmousewheel = function(event){ event.preventDefault(); };
+
         document.addEventListener("mousemove", (event) => { this.drag_move(event) })
         document.addEventListener("mouseup", () => { this.drag_end() })
     }
+
 
     // resetea la cámara
     reset() {

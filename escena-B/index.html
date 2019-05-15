@@ -17,6 +17,7 @@
 	<script src="Shaders/Phong.js"></script>
 	<script src="Shaders/Ward.js"></script>
 	<script src="Shaders/Shader_luz.js"></script>
+	<script src="Shaders/Cook.js"></script>
 	<script src="Modelos/bote/bote.obj"></script>
 	<script src="Modelos/bote/hinges.obj"></script>
 	<script src="Modelos/bote/remos.obj"></script>
@@ -28,6 +29,7 @@
 	<script src="Modelos/cañón/soporte.obj"></script>
 	<script src="Modelos/esfera.obj"></script>
 	<script src="Modelos/castlebase.obj"></script>
+	<script src="Modelos/sandLandscape.obj"></script>
 	<script src="Modelos/agua.obj"></script>
 	<script src="Modelos/materiales.js"></script>
 	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
@@ -146,9 +148,9 @@
 					</td>
 				</tr>
 		</table>
-	
-	<!----------------------------------Indices-------------------------->	
-	
+
+	<!----------------------------------Indices-------------------------->
+
 		<table id="BodyTables">
 			<tr id="HeadTables">
 				<td>
@@ -157,27 +159,27 @@
 			</tr>
 			<tr>
 				<td>
-					<li><a href="../escena-B/index.html">Ir a la escena B</a></li>
+					<li><a href="../escena-A/index.html">Ir a la escena A</a></li>
 				</td>
 			</tr>
 		</table>
-	
-	
-	<!----------------------------- Castillo ----------------------------------------> 
+
+
+	<!----------------------------- Castillo ---------------------------------------->
 
 		<table id="BodyTables">
 			<tr id="HeadTables">
 				<td colspan="2">Castillo</td>
-			</tr>	
-			<tr>	
+			</tr>
+			<tr>
 				<td>Ka</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rka_castillo" value="0.23" size="3" oninput="modificar_ka(material_castillo, id,0);">
+					<input type="text" id="rka_castillo" value="0.13" size="3" oninput="modificar_ka(material_castillo, id,0);">
 					<label>g:</label>
-					<input type="text" id="gka_castillo" value="0.23" size="3" oninput="modificar_ka(material_castillo, id,1);">
+					<input type="text" id="gka_castillo" value="0.13" size="3" oninput="modificar_ka(material_castillo, id,1);">
 					<label>b:</label>
-					<input type="text" id="bks_castillo" value="0.23" size="3" oninput="modificar_ka(material_castillo, id,2);">
+					<input type="text" id="bks_castillo" value="0.13" size="3" oninput="modificar_ka(material_castillo, id,2);">
 				</td>
 			</tr>
 
@@ -186,34 +188,34 @@
 				<td>Kd</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rkd_castillo" value="0.28" size="3" oninput="modificar_kd(material_castillo, id,0);">
+					<input type="text" id="rkd_castillo" value="0.8" size="3" oninput="modificar_kd(material_castillo, id,0);">
 					<label>g:</label>
-					<input type="text" id="gkd_castillo" value="0.28" size="3" oninput="modificar_kd(material_castillo, id,1);">
+					<input type="text" id="gkd_castillo" value="0.8" size="3" oninput="modificar_kd(material_castillo, id,1);">
 					<label>b:</label>
-					<input type="text" id="bkd_castillo" value="0.28" size="3" oninput="modificar_kd(material_castillo, id,2);">
+					<input type="text" id="bkd_castillo" value="0.8" size="3" oninput="modificar_kd(material_castillo, id,2);">
 				</td>
 			</tr>
 			<tr>
 				<td>Ks</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rks_castillo" value="0.77" size="3" oninput="modificar_ks(material_castillo,id,0);">
+					<input type="text" id="rks_castillo" value="0.01" size="3" oninput="modificar_ks(material_castillo,id,0);">
 					<label>g:</label>
-					<input type="text" id="gks_castillo" value="0.77" size="3" oninput="modificar_ks(material_castillo,id,1);">
+					<input type="text" id="gks_castillo" value="0.01" size="3" oninput="modificar_ks(material_castillo,id,1);">
 					<label>b:</label>
-					<input type="text" id="bks_castillo" value="0.77" size="3" oninput="modificar_ks(material_castillo,id,2);">
+					<input type="text" id="bks_castillo" value="0.01" size="3" oninput="modificar_ks(material_castillo,id,2);">
 				</td>
 			</tr>
 			<tr>
-				<td>Rugosidad</td>
+				<td>Brillo</td>
 				<td>
 				<label>n:</label>
-				<input type="text" id="n_castillo" value="0.77" size="3" oninput="modificar_rugosidad(material_castillo,id);">
+				<input type="text" id="n_castillo" value="20" size="3" oninput="modificar_n(material_castillo,id);">
 				</td>
 			</tr>
 		</table>
-		</div>	
-		<!----------------------------- Bote ----------------------------------------> 
+		</div>
+		<!----------------------------- Bote ---------------------------------------->
 		<div id ='Div1'>
 			<table id="BodyTableBB">
 				<tr id="HeadTableBB">
@@ -223,11 +225,11 @@
 					<td>Ka</td>
 					<td>
 						<label>r:</label>
-						<input type="text" id="rka_bote" value="0.11" size="3" oninput="modificar_ka(material_bote, id,0);">
+						<input type="text" id="rka_bote" value="0.4" size="3" oninput="modificar_ka(material_bote, id,0);">
 						<label>g:</label>
-						<input type="text" id="gka_bote" value="0.06" size="3" oninput="modificar_ka(material_bote, id,1);">
+						<input type="text" id="gka_bote" value="0.17" size="3" oninput="modificar_ka(material_bote, id,1);">
 						<label>b:</label>
-						<input type="text" id="bks_bote" value="0.11" size="3" oninput="modificar_ka(material_bote, id,2);">
+						<input type="text" id="bks_bote" value="0.06" size="3" oninput="modificar_ka(material_bote, id,2);">
 					</td>
 				</tr>
 
@@ -236,46 +238,46 @@
 					<td>Kd</td>
 					<td>
 						<label>r:</label>
-						<input type="text" id="rkd_bote" value="0.43" size="3" oninput="modificar_kd(material_bote, id,0);">
+						<input type="text" id="rkd_bote" value="0.47" size="3" oninput="modificar_kd(material_bote, id,0);">
 						<label>g:</label>
 						<input type="text" id="gkd_bote" value="0.47" size="3" oninput="modificar_kd(material_bote, id,1);">
 						<label>b:</label>
-						<input type="text" id="bkd_bote" value="0.54" size="3" oninput="modificar_kd(material_bote, id,2);">
+						<input type="text" id="bkd_bote" value="0.47" size="3" oninput="modificar_kd(material_bote, id,2);">
 					</td>
 				</tr>
 				<tr>
 					<td>Ks</td>
 					<td>
 						<label>r:</label>
-						<input type="text" id="rks_bote" value="0.33" size="3" oninput="modificar_ks(material_bote,id,0);">
+						<input type="text" id="rks_bote" value="0.01" size="3" oninput="modificar_ks(material_bote,id,0);">
 						<label>g:</label>
-						<input type="text" id="gks_bote" value="0.33" size="3" oninput="modificar_ks(material_bote,id,1);">
+						<input type="text" id="gks_bote" value="0.01" size="3" oninput="modificar_ks(material_bote,id,1);">
 						<label>b:</label>
-						<input type="text" id="bks_bote" value="0.52" size="3" oninput="modificar_ks(material_bote,id,2);">
+						<input type="text" id="bks_bote" value="0.01" size="3" oninput="modificar_ks(material_bote,id,2);">
 					</td>
 				</tr>
 				<tr>
 					<td>Brillo</td>
 					<td>
 					<label>n:</label>
-					<input type="text" id="n_bote" value="0.77" size="3" oninput="modificar_n(material_bote,id);">
+					<input type="text" id="n_bote" value="9" size="3" oninput="modificar_n(material_bote,id);">
 					</td>
 				</tr>
 			</table>
-		<!----------------------------- Barriles ----------------------------------------> 
+		<!----------------------------- Barrels ---------------------------------------->
 		<table id="BodyTableBB">
 			<tr id="HeadTableBB">
-				<td colspan="2">Barriles</td>
+				<td colspan="2">Cañones</td>
 			</tr>
 			<tr>
 				<td>Ka</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rka_barriles" value="0.11" size="3" oninput="modificar_ka(material_barrels, id,0);">
+					<input type="text" id="rka_barriles" value="0.25" size="3" oninput="modificar_ka(material_barrels, id,0);">
 					<label>g:</label>
-					<input type="text" id="gka_barriles" value="0.06" size="3" oninput="modificar_ka(material_barrels, id,1);">
+					<input type="text" id="gka_barriles" value="0.25" size="3" oninput="modificar_ka(material_barrels, id,1);">
 					<label>b:</label>
-					<input type="text" id="bks_barriles" value="0.11" size="3" oninput="modificar_ka(material_barrels, id,2);">
+					<input type="text" id="bks_barriles" value="0.25" size="3" oninput="modificar_ka(material_barrels, id,2);">
 				</td>
 			</tr>
 
@@ -283,33 +285,39 @@
 				<td>Kd</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rkd_barriles" value="0.43" size="3" oninput="modificar_kd(material_barrels, id,0);">
+					<input type="text" id="rkd_barriles" value="0.4" size="3" oninput="modificar_kd(material_barrels, id,0);">
 					<label>g:</label>
-					<input type="text" id="gkd_barriles" value="0.47" size="3" oninput="modificar_kd(material_barrels, id,1);">
+					<input type="text" id="gkd_barriles" value="0.4" size="3" oninput="modificar_kd(material_barrels, id,1);">
 					<label>b:</label>
-					<input type="text" id="bkd_barriles" value="0.54" size="3" oninput="modificar_kd(material_barrels, id,2);">
+					<input type="text" id="bkd_barriles" value="0.4" size="3" oninput="modificar_kd(material_barrels, id,2);">
 				</td>
 			</tr>
 			<tr>
 				<td>Ks</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rks_barriles" value="0.33" size="3" oninput="modificar_ks(material_barrels,id,0);">
+					<input type="text" id="rks_barriles" value="0.77" size="3" oninput="modificar_ks(material_barrels,id,0);">
 					<label>g:</label>
-					<input type="text" id="gks_barriles" value="0.33" size="3" oninput="modificar_ks(material_barrels,id,1);">
+					<input type="text" id="gks_barriles" value="0.77" size="3" oninput="modificar_ks(material_barrels,id,1);">
 					<label>b:</label>
-					<input type="text" id="bks_barriles" value="0.52" size="3" oninput="modificar_ks(material_barrels,id,2);">
+					<input type="text" id="bks_barriles" value="0.77" size="3" oninput="modificar_ks(material_barrels,id,2);">
 				</td>
 			</tr>
 			<tr>
-				<td>Brillo</td>
+				<td>Rugosidad</td>
 				<td>
-				<label>n:</label>
-				<input type="text" id="n_barriles" value="0.77" size="3" oninput="modificar_n(material_barrels,id);">
-				</td>
+				<input type="text" id="n_barriles" value="1" size="3" oninput="modificar_rugosidad(material_barrels,id);">
+			</td>
+			</tr>
+			<tr>
+
+				<td>Reflectancia</td>
+				<td>
+				<input type="text" id="f_barriles" value="0.3" size="3" oninput="modificar_reflectancia(material_barrels,id);">
+			</td>
 			</tr>
 		</table>
-	
+
 	<!---------------------------------bala-------------------------------------------------->
 		<table id="BodyTableBB">
 			<tr id="HeadTableBB">
@@ -350,14 +358,19 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Brillo</td>
+				<td>Rugosidad</td>
 				<td>
-				<label>n:</label>
-				<input type="text" id="n_bala" value="0.77" size="3" oninput="modificar_n(material_bala,id);">
+					<input type="text" id="n_bala" value="20" size="3" oninput="modificar_rugosidad(material_bala,id);">
+				</td>
+			</tr>
+			<tr>
+				<td>Reflectancia</td>
+				<td>
+				<input type="text" id="f_bala" value="1" size="3" oninput="modificar_reflectancia(material_bala,id);">
 				</td>
 			</tr>
 		</table>
-	
+
 		<!---------------------------------soporte-------------------------------------------------->
 		<table id="BodyTableBB">
 				<tr id="HeadTableBB">
@@ -367,11 +380,11 @@
 				<td>Ka</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rka_soporte" value="0.11" size="3" oninput="modificar_ka(material_soporte, id,0);">
+					<input type="text" id="rka_soporte" value="0.22" size="3" oninput="modificar_ka(material_soporte, id,0);">
 					<label>g:</label>
-					<input type="text" id="gka_soporte" value="0.06" size="3" oninput="modificar_ka(material_soporte, id,1);">
+					<input type="text" id="gka_soporte" value="0.09" size="3" oninput="modificar_ka(material_soporte, id,1);">
 					<label>b:</label>
-					<input type="text" id="bks_soporte" value="0.11" size="3" oninput="modificar_ka(material_soporte, id,2);">
+					<input type="text" id="bks_soporte" value="0.09" size="3" oninput="modificar_ka(material_soporte, id,2);">
 				</td>
 			</tr>
 
@@ -379,22 +392,22 @@
 				<td>Kd</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rkd_soporte" value="0.43" size="3" oninput="modificar_kd(material_soporte, id,0);">
+					<input type="text" id="rkd_soporte" value="0.4" size="3" oninput="modificar_kd(material_soporte, id,0);">
 					<label>g:</label>
-					<input type="text" id="gkd_soporte" value="0.47" size="3" oninput="modificar_kd(material_soporte, id,1);">
+					<input type="text" id="gkd_soporte" value="0.4" size="3" oninput="modificar_kd(material_soporte, id,1);">
 					<label>b:</label>
-					<input type="text" id="bkd_soporte" value="0.54" size="3" oninput="modificar_kd(material_soporte, id,2);">
+					<input type="text" id="bkd_soporte" value="0.4" size="3" oninput="modificar_kd(material_soporte, id,2);">
 				</td>
 			</tr>
 			<tr>
 				<td>Ks</td>
 				<td>
 					<label>r:</label>
-					<input type="text" id="rks_soporte" value="0.33" size="3" oninput="modificar_ks(material_soporte,id,0);">
+					<input type="text" id="rks_soporte" value="0.01" size="3" oninput="modificar_ks(material_soporte,id,0);">
 					<label>g:</label>
-					<input type="text" id="gks_soporte" value="0.33" size="3" oninput="modificar_ks(material_soporte,id,1);">
+					<input type="text" id="gks_soporte" value="0.01" size="3" oninput="modificar_ks(material_soporte,id,1);">
 					<label>b:</label>
-					<input type="text" id="bks_soporte" value="0.52" size="3" oninput="modificar_ks(material_soporte,id,2);">
+					<input type="text" id="bks_soporte" value="0.01" size="3" oninput="modificar_ks(material_soporte,id,2);">
 				</td>
 			</tr>
 			<tr>
@@ -405,8 +418,7 @@
 				</td>
 			</tr>
 		</table>
-	</div>
-</div>
+
 </body>
 
 </html>

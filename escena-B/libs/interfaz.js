@@ -80,3 +80,29 @@ function toggle(luz,id) {
 	luz.dibujar = !dibujar;
 	document.getElementById(id).innerText = dibujar ? "Off" : "On";
 }
+
+
+function modificar_ka(material, id, i){
+	material.ka[i] = document.getElementById(id).value;
+}
+
+function modificar_kd(material, id, i){
+	material.kd[i] = document.getElementById(id).value;
+}
+
+function modificar_ks(material, id, i){
+	material.ks[i] = document.getElementById(id).value;
+}
+
+function modificar_n(material,id){
+	material.n = document.getElementById(id).value;
+}
+
+function modificar_rugosidad(material,id){
+	material.alfa =  document.getElementById(id).value;
+}
+
+function modificar_relfectancia(material,id){
+	material.f0 =  document.getElementById(id).value;
+}
+
