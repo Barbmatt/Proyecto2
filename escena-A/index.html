@@ -62,7 +62,7 @@
 		<tr id="HeadTables">
 			<td colspan="1">Luz Spot</td>
 			<td >
-				<button id="dibujar_spot" onclick="toggle(luz_spot,id);">On</button>
+				<button id="dibujar_spot" onclick="toggle(luz_spot,id,0);">On</button>
 			</td>
 		</tr>
 
@@ -100,11 +100,11 @@
 			<td>Intensidad</td>
 			<td>
 				<label>r:</label>
-				<input type="text" id="intensidad_spotr" value="1" size="3" oninput="intensidadr(luz_spot,id);">
+				<input type="text" id="intensidad_spotr" value="1" size="3" oninput="intensidadr(luz_spot,id, 0);">
 				<label>g:</label>
-				<input type="text" id="intensidad_spotg" value="0.96" size="3" oninput="intensidadg(luz_spot,id);">
+				<input type="text" id="intensidad_spotg" value="0.96" size="3" oninput="intensidadg(luz_spot,id, 0);">
 				<label>b:</label>
-				<input type="text" id="intensidad_spotb" value="0.89" size="3" oninput="intensidadb(luz_spot,id);">
+				<input type="text" id="intensidad_spotb" value="0.89" size="3" oninput="intensidadb(luz_spot,id, 0);">
 			</td>
 		</tr>
 
@@ -128,7 +128,7 @@
 		<tr id="HeadTables">
 			<td colspan="1">Luz Puntual</td>
 			<td>
-				<button id="dibujar_puntual" onclick="toggle(luz_puntual,id);">On</button>
+				<button id="dibujar_puntual" onclick="toggle(luz_puntual,id,1);">On</button>
 			</td>
 		</tr>
 		<tr>
@@ -148,11 +148,11 @@
 			<td>Intensidad</td>
 			<td>
 				<label>r:</label>
-				<input type="text" id="intensidad_puntualr" value="1" size="3" oninput="intensidadr(luz_puntual, id);">
+				<input type="text" id="intensidad_puntualr" value="1" size="3" oninput="intensidadr(luz_puntual, id, 1);">
 				<label>g:</label>
-				<input type="text" id="intensidad_puntualg" value="0.58" size="3" oninput="intensidadg(luz_puntual, id);">
+				<input type="text" id="intensidad_puntualg" value="0.58" size="3" oninput="intensidadg(luz_puntual, id, 1);">
 				<label>b:</label>
-				<input type="text" id="intensidad_puntualb" value="0.16" size="3" oninput="intensidadb(luz_puntual, id);">
+				<input type="text" id="intensidad_puntualb" value="0.16" size="3" oninput="intensidadb(luz_puntual, id, 1);">
 			</td>
 		</tr>
 		<tr>
@@ -175,7 +175,7 @@
 		<tr id="HeadTables">
 			<td colspan="1">Luz Direccional</td>
 			<td>
-				<button id="dibujar_direccional" onclick="toggle(luz_direccional,id);">On</button>
+				<button id="dibujar_direccional" onclick="toggle(luz_direccional,id, 2);">On</button>
 			</td>
 		</tr>
 		<tr>
@@ -195,11 +195,11 @@
 			<td>Intensidad</td>
 			<td>
 				<label>r:</label>
-				<input type="text" id="intensidad_direccionalr" value="0.79" size="3" oninput="intensidadr(luz_direccional,id);">
+				<input type="text" id="intensidad_direccionalr" value="0.79" size="3" oninput="intensidadr(luz_direccional,id,2);">
 				<label>g:</label>
-				<input type="text" id="intensidad_direccionalg" value="0.89" size="3" oninput="intensidadg(luz_direccional,id);">
+				<input type="text" id="intensidad_direccionalg" value="0.89" size="3" oninput="intensidadg(luz_direccional,id,2);">
 				<label>b:</label>
-				<input type="text" id="intensidad_direccionalb" value="1" size="3" oninput="intensidadb(luz_direccional,id);">
+				<input type="text" id="intensidad_direccionalb" value="1" size="3" oninput="intensidadb(luz_direccional,id,2);">
 			</td>
 		</tr>
 	</table>

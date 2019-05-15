@@ -22,6 +22,7 @@ var camara;
 // puntual: [1,0.58,0.16],luz de vela
 
 var luz_spot, luz_puntual, luz_direccional, luz_ambiente;
+var ispot, ipuntual, idireccional;
 
 // variables de matrices
 var matriz_modelo_esfera = mat4.create();
@@ -147,7 +148,6 @@ function dibujar_luz(luz, que_dibujar, objeto) {
 	if ( que_dibujar == 0 ) {
 		// rotar cono de spot
 		let escala = luz.angulo > 180 ? 10 : 10*luz.angulo/180;
-		console.log(escala);
 		mat4.scale(matriz_modelo_luz, matriz_modelo_luz, [escala,2,escala]);
 	}
 	else if ( que_dibujar == 2 ) {

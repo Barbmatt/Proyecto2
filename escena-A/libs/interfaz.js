@@ -23,26 +23,39 @@ function posicionz(luz, id) { luz.posicion[2] = document.getElementById(id).valu
 
 
 // funciones de dirección de luces.
-function direccionx(luz, id, tipo_luz) { luz.direccion[0] = document.getElementById(id).value; }
+function direccionx(luz, id) { luz.direccion[0] = document.getElementById(id).value; }
 
-function direcciony(luz, id, tipo_luz) { luz.direccion[1] = document.getElementById(id).value; }
+function direcciony(luz, id) { luz.direccion[1] = document.getElementById(id).value; }
 
-function direccionz(luz, id, tipo_luz) { luz.direccion[2] = document.getElementById(id).value; }
-
-
+function direccionz(luz, id) { luz.direccion[2] = document.getElementById(id).value; }
 
 
 // funciones de intensidad de luces.
-function intensidadr(luz, id) { luz.intensidad[0] = document.getElementById(id).value; }
+function intensidadr(luz, id, tipo_luz) {
+	let valor = document.getElementById(id).value;
+	if ( tipo_luz == 0 ) ispot[0] = valor;
+	else if ( tipo_luz == 1 ) ipuntual[0] = valor;
+	else idireccional[0] = valor;
+	luz.intensidad[0] = valor;
+}
 
-function intensidadg(luz, id) { luz.intensidad[1] = document.getElementById(id).value; }
+function intensidadg(luz, id, tipo_luz) {
+	let valor = document.getElementById(id).value;
+	if ( tipo_luz == 0 ) ispot[1] = valor;
+	else if ( tipo_luz == 1 ) ipuntual[1] = valor;
+	else idireccional[1] = valor;
+	luz.intensidad[1] = valor;
+}
 
-function intensidadb(luz, id) { luz.intensidad[2] = document.getElementById(id).value; }
-
-
+function intensidadb(luz, id, tipo_luz) {
+	let valor = document.getElementById(id).value;
+	if ( tipo_luz == 0 ) ispot[2] = valor;
+	else if ( tipo_luz == 1 ) ipuntual[2] = valor;
+	else idireccional[2] = valor;
+	luz.intensidad[2] = valor;
+}
 
 function angulo(luz) { luz.angulo = document.getElementById("angulo").value; }
-
 
 // atenuacion
 function atenuaciona(luz,id) {
@@ -66,8 +79,46 @@ function intensidad_ambienteg(id) { luz_ambiente[1] = document.getElementById(id
 
 function intensidad_ambienteb(id) { luz_ambiente[2] = document.getElementById(id).value; }
 
-function toggle(luz,id) {
+function toggle(luz, id, tipo_luz) {
 	let dibujar = luz.dibujar;
+	if ( dibujar ) {
+		if ( tipo_luz == 0 ) {
+			document.getElementById("intensidad_spotr").disabled = true;
+			document.getElementById("intensidad_spotg").disabled = true;
+			document.getElementById("intensidad_spotb").disabled = true;
+		}
+		else if ( tipo_luz == 1 ) {
+			document.getElementById("intensidad_puntualr").disabled = true;
+			document.getElementById("intensidad_puntualg").disabled = true;
+			document.getElementById("intensidad_puntualb").disabled = true;
+		}
+		else {
+			document.getElementById("intensidad_direccionalr").disabled = true;
+			document.getElementById("intensidad_direccionalg").disabled = true;
+			document.getElementById("intensidad_direccionalb").disabled = true;
+		}
+		luz.intensidad = [0,0,0];
+	}
+	else {
+		if ( tipo_luz == 0 ) {
+			luz.intensidad = [ispot[0], ispot[1], ispot[2]];
+			document.getElementById("intensidad_spotr").disabled = false;
+			document.getElementById("intensidad_spotg").disabled = false;
+			document.getElementById("intensidad_spotb").disabled = false;
+		}
+		else if ( tipo_luz == 1 ) {
+			luz.intensidad = [ipuntual[0], ipuntual[1], ipuntual[2]];
+			document.getElementById("intensidad_puntualr").disabled = false;
+			document.getElementById("intensidad_puntualg").disabled = false;
+			document.getElementById("intensidad_puntualb").disabled = false;
+		}
+		else {
+			luz.intensidad = [idireccional[0], idireccional[1], idireccional[2]];
+			document.getElementById("intensidad_direccionalr").disabled = false;
+			document.getElementById("intensidad_direccionalg").disabled = false;
+			document.getElementById("intensidad_direccionalb").disabled = false;
+		}
+	}
 	luz.dibujar = !dibujar;
 	document.getElementById(id).innerText = dibujar ? "Off" : "On";
 }
@@ -78,6 +129,7 @@ function iniciar_luces() {
 	luz_spot = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
 	luz_puntual = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
 	luz_direccional = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
+	ispot = [0,0,0], ipuntual = [0,0,0], idireccional = [0,0,0];
 	luz_ambiente = [1,1,1];
 
 	posicionx(luz_spot, "pos_spotx");
@@ -86,9 +138,9 @@ function iniciar_luces() {
 	direccionx(luz_spot, "dir_spotx");
 	direcciony(luz_spot, "dir_spoty");
 	direccionz(luz_spot, "dir_spotz");
-	intensidadr(luz_spot, "intensidad_spotr");
-	intensidadg(luz_spot, "intensidad_spotg");
-	intensidadb(luz_spot, "intensidad_spotb");
+	intensidadr(luz_spot, "intensidad_spotr", 0);
+	intensidadg(luz_spot, "intensidad_spotg", 0);
+	intensidadb(luz_spot, "intensidad_spotb", 0);
 	angulo(luz_spot);
 	atenuaciona(luz_spot,"atenuacion_spota");
 	atenuacionb(luz_spot,"atenuacion_spotb");
@@ -97,9 +149,9 @@ function iniciar_luces() {
 	posicionx(luz_puntual, "pos_puntualx");
 	posiciony(luz_puntual, "pos_puntualy");
 	posicionz(luz_puntual, "pos_puntualz");
-	intensidadr(luz_puntual, "intensidad_puntualr");
-	intensidadg(luz_puntual, "intensidad_puntualg");
-	intensidadb(luz_puntual, "intensidad_puntualb");
+	intensidadr(luz_puntual, "intensidad_puntualr", 1);
+	intensidadg(luz_puntual, "intensidad_puntualg", 1);
+	intensidadb(luz_puntual, "intensidad_puntualb", 1);
 	atenuaciona(luz_puntual,"atenuacion_puntuala");
 	atenuacionb(luz_puntual,"atenuacion_puntualb");
 	atenuacionc(luz_puntual,"atenuacion_puntualc");
@@ -108,12 +160,14 @@ function iniciar_luces() {
 	direccionx(luz_direccional, "dir_direccionalx");
 	direcciony(luz_direccional, "dir_direccionaly");
 	direccionz(luz_direccional, "dir_direccionalz");
-	intensidadr(luz_direccional, "intensidad_direccionalr");
-	intensidadg(luz_direccional, "intensidad_direccionalg");
-	intensidadb(luz_direccional, "intensidad_direccionalb");
-
+	intensidadr(luz_direccional, "intensidad_direccionalr", 2);
+	intensidadg(luz_direccional, "intensidad_direccionalg", 2);
+	intensidadb(luz_direccional, "intensidad_direccionalb", 2);
 	intensidad_ambienter("intensidad_ambienter");
 	intensidad_ambienteg("intensidad_ambienteg");
 	intensidad_ambienteb("intensidad_ambienteb");
 
+	console.log(luz_spot.intensidad);
+	console.log(luz_puntual.intensidad);
+	console.log(luz_direccional.intensidad);
 }
