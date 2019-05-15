@@ -146,12 +146,13 @@ function dibujar_luz(luz, que_dibujar, objeto) {
 	gl.uniform3f(shader_luz.u_intensidad, intensidad[0],intensidad[1],intensidad[2]);
 	if ( que_dibujar == 0 ) {
 		// rotar cono de spot
-		let escala = 10*luz.angulo/180;
-		// mat4.targetTo(matriz_modelo_luz, luz.posicion, [0,1,0], luz.direccion);
-		mat4.scale(matriz_modelo_luz, matriz_modelo_luz, [escala,1,escala]);
+		let escala = luz.angulo > 180 ? 10 : 10*luz.angulo/180;
+		console.log(escala);
+		mat4.scale(matriz_modelo_luz, matriz_modelo_luz, [escala,2,escala]);
 	}
 	else if ( que_dibujar == 2 ) {
-		mat4.targetTo(matriz_modelo_luz, [0,0,0], [0,1,0], luz.direccion);
+		let direccion = vec3.normalize(luz.direccion, luz.direccion);
+		mat4.targetTo(matriz_modelo_luz, [0,0,0], [0,1,0], direccion);
 	}
 	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_luz);
 

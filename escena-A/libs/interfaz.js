@@ -23,11 +23,12 @@ function posicionz(luz, id) { luz.posicion[2] = document.getElementById(id).valu
 
 
 // funciones de dirección de luces.
-function direccionx(luz, id) { luz.direccion[0] = document.getElementById(id).value; }
+function direccionx(luz, id, tipo_luz) { luz.direccion[0] = document.getElementById(id).value; }
 
-function direcciony(luz, id) { luz.direccion[1] = document.getElementById(id).value; }
+function direcciony(luz, id, tipo_luz) { luz.direccion[1] = document.getElementById(id).value; }
 
-function direccionz(luz, id) { luz.direccion[2] = document.getElementById(id).value; }
+function direccionz(luz, id, tipo_luz) { luz.direccion[2] = document.getElementById(id).value; }
+
 
 
 

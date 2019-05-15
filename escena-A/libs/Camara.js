@@ -22,6 +22,10 @@ class Camara {
         this.lastY         = 0
         this.registerZone  = registerZone
 
+        this.registerZone.onwheel = function(event){ event.preventDefault(); };
+
+        this.registerZone.onmousewheel = function(event){ event.preventDefault(); };
+
         this.registerZone.addEventListener("wheel", (event) => { this.zoom_mouse(event) }, { passive: true })
         this.registerZone.addEventListener("mousedown", (event) => { this.drag_start(event) })
         this.registerZone.addEventListener("dblclick", (event) => { this.reset() })
@@ -37,7 +41,7 @@ class Camara {
     }
 
     // crea y retorna la matriz de proyección
-    proyeccion() { 
+    proyeccion() {
         mat4.perspective(this.matriz_proyeccion, this.fovy, this.aspect, this.zNear, this.zFar);
         return this.matriz_proyeccion;
     }
@@ -64,7 +68,7 @@ class Camara {
 
     // efectúa el paneo en función de un nuevo valor de t en grados
     paneo(nuevo_t) { this.t += nuevo_t*Math.PI/180; }
-        
+
     // efectúa el zoom en función de un nuevo valor de r
     zoom(nuevo_r) { this.r += nuevo_r; }
 
@@ -73,7 +77,7 @@ class Camara {
 
     // rota la cámara alrededor del eje Y, en función del ángulo en grados que viene como parámetro
     rotar_camara(delta_t) { this.t += delta_t*Math.PI/180; }
-    
+
     zoom_mouse(event) { this.zoom(event.deltaY * this.zoomFactor * 7) }
 
     drag_start(event) {
