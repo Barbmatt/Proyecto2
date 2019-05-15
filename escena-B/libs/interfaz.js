@@ -73,3 +73,10 @@ function iniciar_luces() {
 	intensidad_ambienteb("intensidad_ambienteb");
 
 }
+
+//Funcion on/off luz puntual
+function toggle(luz,id) {
+	let dibujar = luz.dibujar;
+	luz.dibujar = !dibujar;
+	document.getElementById(id).innerText = dibujar ? "Off" : "On";
+}

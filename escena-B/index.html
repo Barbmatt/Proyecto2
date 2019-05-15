@@ -30,6 +30,7 @@
 	<script src="Modelos/castlebase.obj"></script>
 	<script src="Modelos/agua.obj"></script>
 	<script src="Modelos/materiales.js"></script>
+	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
 	<script src="main.js"></script>
 	<script type="text/javascript">
 		window.addEventListener('keydown',this.oyente_teclado,false);
@@ -55,20 +56,23 @@
 </head>
 
 <body onload='onLoad();'>
-	<canvas id='webglCanvas' width="1300" height="910" style='float:left' oninput="teclado(this);">
-	</canvas>
+	<div id ='DivPrincipal'	>
+		<h1 id="Titulo">Escena B</h1>
+			<div id ='Canvas'>
+				<canvas id='webglCanvas' width="1000" height="700" oninput="teclado(this);">
+				</canvas>
+			</div>
 
 	<!---------------------------- Luz puntual -------------------------------->
-
-
-	<table style="table-layout: fixed; width:450px;" border="3">
-		<tr>
+		<div id='PanelPrincipal'>
+			<table id="BodyTables" >
+			<tr id="HeadTables">
 			<td>Luz puntual</td>
 			<td>
 				<button id="dibujar_puntual" onclick="toggle(luz_puntual,id);">On</button>
 			</td>
-		</tr>
-		<tr>
+			</tr>
+			<tr>
 			<td>Posición</td>
 			<td>
 				<label>x:</label>
@@ -78,10 +82,10 @@
 				<label>z:</label>
 				<input type="text" id="pos_puntualz" value="70" size="3" oninput="posicionz(luz_puntual, id);">
 			</td>
-		</tr>
+			</tr>
 
 
-		<tr>
+			<tr>
 			<td>Intensidad</td>
 			<td>
 				<label>r:</label>
@@ -91,8 +95,8 @@
 				<label>b:</label>
 				<input type="text" id="intensidad_puntualb" value="0.16" size="3" oninput="intensidadb(luz_puntual, id);">
 			</td>
-		</tr>
-		<tr>
+			</tr>
+			<tr>
 			<td>Atenuacion</td>
 			<td>
 				<label>a:</label>
@@ -102,35 +106,70 @@
 				<label>c:</label>
 				<input type="text" id="atenuacion_puntualc" value="0" size="3" oninput="atenuacionc(luz_puntual,id);">
 			</td>
-		</tr>
-	</table>
-
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
+			</tr>
+		</table>
 	<!------------------------------- Luz ambiente ------------------------------------>
 
-	<table style="table-layout: fixed; width:450px;" border="3">
-		<tr>
-			<td>Luz ambiente</td>
-			<td>
-				<label>r:</label>
-				<input type="text" id="intensidad_ambienter" value="1" size="3" oninput="intensidad_ambienter(id);">
-				<label>g:</label>
-				<input type="text" id="intensidad_ambienteg" value="1" size="3" oninput="intensidad_ambienteg(id);">
-				<label>b:</label>
-				<input type="text" id="intensidad_ambienteb" value="1" size="3" oninput="intensidad_ambienteb(id);">
-			</td>
-		</tr>
-	</table>
+		<table id="BodyTables">
+			<tr id="HeadTables">
+				<td>Luz ambiente</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="intensidad_ambienter" value="1" size="3" oninput="intensidad_ambienter(id);">
+					<label>g:</label>
+					<input type="text" id="intensidad_ambienteg" value="1" size="3" oninput="intensidad_ambienteg(id);">
+					<label>b:</label>
+					<input type="text" id="intensidad_ambienteb" value="1" size="3" oninput="intensidad_ambienteb(id);">
+				</td>
+			</tr>
+		</table>
 
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
+	<!------------------------------- Cámara ------------------------------------>
 
-
+		<table id="BodyTables">
+				<tr id="HeadTables">
+					<td>Cámara</td>
+					<td>
+						<label></label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<button id="boton_reset" onclick="reset_camara();">Restablecer cámara
+						</button>
+					</td>
+					<td>
+						<select id="camara_seleccionada">
+							<option value=0>Cámara manual</option>
+							<option value=1>Cámara automática</option>
+						</select>
+					</td>
+				</tr>
+		</table>
+	
+	<!----------------------------------Indices-------------------------->	
+	
+		<table id="BodyTables">
+			<tr id="HeadTables">
+				<td>
+					<li><a href="../index.html">Volver al índice</a></li>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<li><a href="../escena-B/index.html">Ir a la escena B</a></li>
+				</td>
+			</tr>
+		</table>
+	
+	
 	<!----------------------------- Castillo ----------------------------------------> 
 
-
-	<table style="table-layout: fixed; width:450px;" border="3">
-				<td><label>Castillo</label></td>
-			<tr>
+		<table id="BodyTables">
+			<tr id="HeadTables">
+				<td colspan="2">Castillo</td>
+			</tr>	
+			<tr>	
 				<td>Ka</td>
 				<td>
 					<label>r:</label>
@@ -173,68 +212,60 @@
 				</td>
 			</tr>
 		</table>
-		<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
-
-
+		</div>	
 		<!----------------------------- Bote ----------------------------------------> 
+		<div id ='Div1'>
+			<table id="BodyTableBB">
+				<tr id="HeadTableBB">
+					<td colspan="2">Bote</td>
+				</tr>
+				<tr>
+					<td>Ka</td>
+					<td>
+						<label>r:</label>
+						<input type="text" id="rka_bote" value="0.11" size="3" oninput="modificar_ka(material_bote, id,0);">
+						<label>g:</label>
+						<input type="text" id="gka_bote" value="0.06" size="3" oninput="modificar_ka(material_bote, id,1);">
+						<label>b:</label>
+						<input type="text" id="bks_bote" value="0.11" size="3" oninput="modificar_ka(material_bote, id,2);">
+					</td>
+				</tr>
 
 
-	<table style="table-layout: fixed; width:450px;" border="3">
-			<tr>
-				<td>Bote</td>
-			</tr>
-			<tr>
-				<td>Ka</td>
-				<td>
-					<label>r:</label>
-					<input type="text" id="rka_bote" value="0.11" size="3" oninput="modificar_ka(material_bote, id,0);">
-					<label>g:</label>
-					<input type="text" id="gka_bote" value="0.06" size="3" oninput="modificar_ka(material_bote, id,1);">
-					<label>b:</label>
-					<input type="text" id="bks_bote" value="0.11" size="3" oninput="modificar_ka(material_bote, id,2);">
-				</td>
-			</tr>
-
-
-			<tr>
-				<td>Kd</td>
-				<td>
-					<label>r:</label>
-					<input type="text" id="rkd_bote" value="0.43" size="3" oninput="modificar_kd(material_bote, id,0);">
-					<label>g:</label>
-					<input type="text" id="gkd_bote" value="0.47" size="3" oninput="modificar_kd(material_bote, id,1);">
-					<label>b:</label>
-					<input type="text" id="bkd_bote" value="0.54" size="3" oninput="modificar_kd(material_bote, id,2);">
-				</td>
-			</tr>
-			<tr>
-				<td>Ks</td>
-				<td>
-					<label>r:</label>
-					<input type="text" id="rks_bote" value="0.33" size="3" oninput="modificar_ks(material_bote,id,0);">
-					<label>g:</label>
-					<input type="text" id="gks_bote" value="0.33" size="3" oninput="modificar_ks(material_bote,id,1);">
-					<label>b:</label>
-					<input type="text" id="bks_bote" value="0.52" size="3" oninput="modificar_ks(material_bote,id,2);">
-				</td>
-			</tr>
-			<tr>
-				<td>Brillo</td>
-				<td>
-				<label>n:</label>
-				<input type="text" id="n_bote" value="0.77" size="3" oninput="modificar_n(material_bote,id);">
-				</td>
-			</tr>
-		</table>
-		<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
-
-
-		<!----------------------------- Bote ----------------------------------------> 
-
-
-	<table style="table-layout: fixed; width:450px;" border="3">
-			<tr>
-				<td>Barriles</td>
+				<tr>
+					<td>Kd</td>
+					<td>
+						<label>r:</label>
+						<input type="text" id="rkd_bote" value="0.43" size="3" oninput="modificar_kd(material_bote, id,0);">
+						<label>g:</label>
+						<input type="text" id="gkd_bote" value="0.47" size="3" oninput="modificar_kd(material_bote, id,1);">
+						<label>b:</label>
+						<input type="text" id="bkd_bote" value="0.54" size="3" oninput="modificar_kd(material_bote, id,2);">
+					</td>
+				</tr>
+				<tr>
+					<td>Ks</td>
+					<td>
+						<label>r:</label>
+						<input type="text" id="rks_bote" value="0.33" size="3" oninput="modificar_ks(material_bote,id,0);">
+						<label>g:</label>
+						<input type="text" id="gks_bote" value="0.33" size="3" oninput="modificar_ks(material_bote,id,1);">
+						<label>b:</label>
+						<input type="text" id="bks_bote" value="0.52" size="3" oninput="modificar_ks(material_bote,id,2);">
+					</td>
+				</tr>
+				<tr>
+					<td>Brillo</td>
+					<td>
+					<label>n:</label>
+					<input type="text" id="n_bote" value="0.77" size="3" oninput="modificar_n(material_bote,id);">
+					</td>
+				</tr>
+			</table>
+		<!----------------------------- Barriles ----------------------------------------> 
+		<table id="BodyTableBB">
+			<tr id="HeadTableBB">
+				<td colspan="2">Barriles</td>
 			</tr>
 			<tr>
 				<td>Ka</td>
@@ -278,13 +309,11 @@
 				</td>
 			</tr>
 		</table>
-		<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
-
+	
 	<!---------------------------------bala-------------------------------------------------->
-
-		<table style="table-layout: fixed; width:450px;" border="3">
-			<tr>
-				<td>Bala</td>
+		<table id="BodyTableBB">
+			<tr id="HeadTableBB">
+				<td colspan="2">Bala</td>
 			</tr>
 			<tr>
 				<td>Ka</td>
@@ -328,15 +357,11 @@
 				</td>
 			</tr>
 		</table>
-		<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
-
-
-
-	<!---------------------------------soporte-------------------------------------------------->
-
-		<table style="table-layout: fixed; width:450px;" border="3">
-			<tr>
-				<td>Soporte</td>
+	
+		<!---------------------------------soporte-------------------------------------------------->
+		<table id="BodyTableBB">
+				<tr id="HeadTableBB">
+				<td colspan="6">Soporte</td>
 			</tr>
 			<tr>
 				<td>Ka</td>
@@ -380,50 +405,8 @@
 				</td>
 			</tr>
 		</table>
-		<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
-
-
-	
-	<!------------------------------- Cámara ------------------------------------>
-
-
-	<table style="table-layout: fixed; width:450px;" border="3">
-			<tr>
-				<td>Cámara</td>
-				<td>
-					<label></label>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<button id="boton_reset" onclick="reset_camara();">Restablecer cámara
-					</button>
-				</td>
-				<td>
-					<select id="camara_seleccionada">
-						<option value=0>Cámara manual</option>
-						<option value=1>Cámara automática</option>
-					</select>
-				</td>
-			</tr>
-	</table>
-
-	<table><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr></table>
-	<table style="table-layout: fixed; width:450px;" border="3">
-		<tr>
-			<td>
-				<li><a href="../index.html">Volver al índice</a></li>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<li><a href="../escena-B/index.html">Ir a la escena B</a></li>
-			</td>
-		</tr>
-	</table>
-
-
-
+	</div>
+</div>
 </body>
 
 </html>
