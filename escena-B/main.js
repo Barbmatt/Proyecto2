@@ -25,6 +25,10 @@ var agua;
 var castlebase;
 var base_castillo;
 
+//random para las balas
+let x = Math.random()*100-40;
+let y = Math.random()*100-40;
+
 function onLoad() {
 
 	// obtener el canvas
@@ -76,16 +80,16 @@ function onLoad() {
 
 	gl.bindVertexArray(null);
 
-	mat4.scale(matriz_modelo_castillo, matriz_modelo_castillo, [8,8,8]);
+	mat4.scale(matriz_modelo_castillo, matriz_modelo_castillo, [10,10,10]);
 	mat4.rotateY(matriz_modelo_castillo, matriz_modelo_castillo, 180);
-	mat4.translate(matriz_modelo_castillo, matriz_modelo_castillo, [-2,0.3,-8]);
-	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [30,1,40]);
-	mat4.scale(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [8,8,8]);
+	mat4.translate(matriz_modelo_castillo, matriz_modelo_castillo, [-2,-0.1,-8]);
+	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [20,1,25]);
+	mat4.scale(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [5,5,5]);
 	mat4.rotateY(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, 0.8);
 
 
-	mat4.scale(matriz_modelo_bala, matriz_modelo_bala, [0.1,0.1,0.1]);
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-20,50,-15]);
+	mat4.scale(matriz_modelo_bala, matriz_modelo_bala, [0.08,0.08,0.08]);
+//	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-20,50,-15]);
 
 	mat4.translate(matriz_modelo_base,matriz_modelo_base,[54.5,0,37.8]);
 	mat4.scale(matriz_modelo_base,matriz_modelo_base,[12,5,12]);
@@ -111,15 +115,50 @@ function onRender(now) {
 	dibujar_objeto(castillo, shader_phong, matriz_modelo_castillo);
 	dibujar_objeto(puerta, shader_ward, matriz_modelo_castillo);
 	dibujar_objeto(base_castillo,shader_phong,matriz_modelo_base);
-
 	dibujar_objeto(barrels, shader_cook, matriz_modelo_bote_cannon);
-	dibujar_objeto(bala, shader_ward, matriz_modelo_bala);
+
 	dibujar_objeto(ruedas, shader_phong, matriz_modelo_bote_cannon);
 	dibujar_objeto(soporte, shader_ward, matriz_modelo_bote_cannon);
 
 	dibujar_objeto(bote, shader_phong, matriz_modelo_bote_cannon);
 	dibujar_objeto(hinges, shader_cook, matriz_modelo_bote_cannon);
 	dibujar_objeto(remos, shader_phong, matriz_modelo_bote_cannon);
+
+
+
+
+	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-5,43,-45]);
+	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
+	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[5,-43,45]);
+
+	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [0,48,-15]);
+	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
+	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[-0,-48,15]);
+
+	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [0,43,-10]);
+	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
+	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[0,-43,10]);
+
+	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-30,43,-20]);
+	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
+	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[30,-43,20]);
+
+	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-20,45,-30]);
+	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
+	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[20,-45,30]);
+
+	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [0,43,-50]);
+	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
+	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[0,-43,50]);
+
+	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [10,43,-60]);
+	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
+	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[-10,-43,60]);
+
+
+	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [20,43,-70]);
+	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
+	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[-20,-43,70]);
 
 	requestAnimationFrame(onRender);
 }
