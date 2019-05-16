@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Fire at will</title>
+	<script src="../Libs/gl-matrix-min.js"></script>
+	<script src="../Libs/VertexAttributeInfo.js"></script>
+	<script src="../Libs/VAOHelper.js"></script>
+	<script src="../Libs/ShaderProgramHelper.js"></script>
+	<script src="../Libs/Binterfaz.js"></script>
+	<script src="../Libs/Utils.js"></script>
+	<script src="../Libs/OBJParser.js"></script>
+	<script src="../Libs/Camara.js"></script>
+	<script src="../Libs/Model.js"></script>
+	<script src="../Libs/Light.js"></script>
+	<script src="../Shaders/Escena B/Phong.js"></script>
+	<script src="../Shaders/Escena B/Ward.js"></script>
+	<script src="../Shaders/Escena B/Cook.js"></script>
+	<script src="../Shaders/Shader_luz.js"></script>
+	<script src="../Modelos/Escena B/bote/bote.obj"></script>
+	<script src="../Modelos/Escena B/bote/hinges.obj"></script>
+	<script src="../Modelos/Escena B/bote/remos.obj"></script>
+	<script src="../Modelos/Escena B/castillo/banderas.obj"></script>
+	<script src="../Modelos/Escena B/castillo/castillo.obj"></script>
+	<script src="../Modelos/Escena B/castillo/puerta.obj"></script>
+	<script src="../Modelos/Escena B/cañón/barrels.obj"></script>
+	<script src="../Modelos/Escena B/cañón/ruedas.obj"></script>
+	<script src="../Modelos/Escena B/cañón/soporte.obj"></script>
+	<script src="../Modelos/Escena B/castlebase.obj"></script>
+	<script src="../Modelos/Escena B/sandLandscape.obj"></script>
+	<script src="../Modelos/Escena B/agua.obj"></script>
+	<script src="../Modelos/Escena B/materiales.js"></script>
+	<script src="../Modelos/esfera.obj"></script>
+	<script src="main.js"></script>
+	<script type="text/javascript">
+		window.addEventListener('keydown',this.oyente_teclado,false);
+
+		function oyente_teclado(e) {
+			var tecla = e.keyCode;
+			     if ( tecla == 37 ) camara.flecha_derecha();
+			else if ( tecla == 38 ) camara.flecha_arriba();
+			else if ( tecla == 39 ) camara.flecha_izquierda();
+			else if ( tecla == 40 ) camara.flecha_abajo();
+
+			else if ( tecla == 87 ) camara.flecha_arriba();
+			else if ( tecla == 68 ) camara.flecha_izquierda();
+			else if ( tecla == 65 ) camara.flecha_derecha();
+			else if ( tecla == 83 ) camara.flecha_abajo();
+			else if ( tecla == 32 ) {
+				let select = document.getElementById("camara_seleccionada");
+				if ( select.value == 1 ) select.value = 0;
+				else select.value = 1;
+			}
+		}
+	</script>
+	<LINK REL=StyleSheet HREF="style.css" TYPE="text/css" MEDIA=screen>
+</head>
+
+<body onload='onLoad();'>
+	<div id ='DivPrincipal'	>
+		<h1 id="Titulo">Escena B</h1>
+			<div id ='Canvas'>
+				<canvas id='webglCanvas' width="1000" height="700" oninput="teclado(this);">
+				</canvas>
+			</div>
+
+	<!---------------------------- Luz puntual -------------------------------->
+		<div id='PanelPrincipal'>
+			<table id="BodyTables" >
+			<tr id="HeadTables">
+			<td>Luz puntual</td>
+			<td>
+				<button id="dibujar_puntual" onclick="toggle();">On</button>
+			</td>
+			</tr>
+			<tr>
+			<td>Posición</td>
+			<td>
+				<label>x:</label>
+				<input type="text" id="pos_puntualx" value="50" size="3" oninput="posicionx(luz_puntual, id);">
+				<label>y:</label>
+				<input type="text" id="pos_puntualy" value="60" size="3" oninput="posiciony(luz_puntual, id);">
+				<label>z:</label>
+				<input type="text" id="pos_puntualz" value="70" size="3" oninput="posicionz(luz_puntual, id);">
+			</td>
+			</tr>
+
+
+			<tr>
+			<td>Intensidad</td>
+			<td>
+				<label>r:</label>
+				<input type="text" id="intensidad_puntualr" value="1" size="3" oninput="intensidadr(luz_puntual, id);">
+				<label>g:</label>
+				<input type="text" id="intensidad_puntualg" value="0.58" size="3" oninput="intensidadg(luz_puntual, id);">
+				<label>b:</label>
+				<input type="text" id="intensidad_puntualb" value="0.16" size="3" oninput="intensidadb(luz_puntual, id);">
+			</td>
+			</tr>
+			<tr>
+			<td>Atenuacion</td>
+			<td>
+				<label>a:</label>
+				<input type="text" id="atenuacion_puntuala" value="0" size="3" oninput="atenuaciona(luz_puntual,id);">
+				<label>b:</label>
+				<input type="text" id="atenuacion_puntualb" value="0" size="3" oninput="atenuacionb(luz_puntual,id);">
+				<label>c:</label>
+				<input type="text" id="atenuacion_puntualc" value="0" size="3" oninput="atenuacionc(luz_puntual,id);">
+			</td>
+			</tr>
+		</table>
+	<!------------------------------- Luz ambiente ------------------------------------>
+
+		<table id="BodyTables">
+			<tr id="HeadTables">
+				<td>Luz ambiente</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="intensidad_ambienter" value="1" size="3" oninput="intensidad_ambienter(id);">
+					<label>g:</label>
+					<input type="text" id="intensidad_ambienteg" value="1" size="3" oninput="intensidad_ambienteg(id);">
+					<label>b:</label>
+					<input type="text" id="intensidad_ambienteb" value="1" size="3" oninput="intensidad_ambienteb(id);">
+				</td>
+			</tr>
+		</table>
+
+	<!------------------------------- Cámara ------------------------------------>
+
+		<table id="BodyTables">
+				<tr id="HeadTables">
+					<td>Cámara</td>
+					<td>
+						<label></label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<button id="boton_reset" onclick="reset_camara();">Restablecer cámara
+						</button>
+					</td>
+					<td>
+						<select id="camara_seleccionada">
+							<option value=0>Cámara manual</option>
+							<option value=1>Cámara automática</option>
+						</select>
+					</td>
+				</tr>
+		</table>
+
+	<!----------------------------------Indices-------------------------->
+
+		<table id="BodyTables">
+			<tr id="HeadTables">
+				<td>
+					<li><a href="../index.html">Volver al índice</a></li>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<li><a href="../A/index.html">Ir a la escena A</a></li>
+				</td>
+			</tr>
+		</table>
+
+
+	<!----------------------------- Castillo ---------------------------------------->
+
+		<table id="BodyTables">
+			<tr id="HeadTables">
+				<td colspan="2">Castillo</td>
+			</tr>
+			<tr>
+				<td>Ka</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rka_castillo" value="0.13" size="3" oninput="modificar_ka(material_castillo, id,0);">
+					<label>g:</label>
+					<input type="text" id="gka_castillo" value="0.13" size="3" oninput="modificar_ka(material_castillo, id,1);">
+					<label>b:</label>
+					<input type="text" id="bks_castillo" value="0.13" size="3" oninput="modificar_ka(material_castillo, id,2);">
+				</td>
+			</tr>
+
+
+			<tr>
+				<td>Kd</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rkd_castillo" value="0.8" size="3" oninput="modificar_kd(material_castillo, id,0);">
+					<label>g:</label>
+					<input type="text" id="gkd_castillo" value="0.8" size="3" oninput="modificar_kd(material_castillo, id,1);">
+					<label>b:</label>
+					<input type="text" id="bkd_castillo" value="0.8" size="3" oninput="modificar_kd(material_castillo, id,2);">
+				</td>
+			</tr>
+			<tr>
+				<td>Ks</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rks_castillo" value="0.01" size="3" oninput="modificar_ks(material_castillo,id,0);">
+					<label>g:</label>
+					<input type="text" id="gks_castillo" value="0.01" size="3" oninput="modificar_ks(material_castillo,id,1);">
+					<label>b:</label>
+					<input type="text" id="bks_castillo" value="0.01" size="3" oninput="modificar_ks(material_castillo,id,2);">
+				</td>
+			</tr>
+			<tr>
+				<td>Brillo</td>
+				<td>
+				<label>n:</label>
+				<input type="text" id="n_castillo" value="20" size="3" oninput="modificar_n(material_castillo,id);">
+				</td>
+			</tr>
+		</table>
+		</div>
+		<!----------------------------- Bote ---------------------------------------->
+		<div id ='Div1'>
+			<table id="BodyTableBB">
+				<tr id="HeadTableBB">
+					<td colspan="2">Bote</td>
+				</tr>
+				<tr>
+					<td>Ka</td>
+					<td>
+						<label>r:</label>
+						<input type="text" id="rka_bote" value="0.4" size="3" oninput="modificar_ka(material_bote, id,0);">
+						<label>g:</label>
+						<input type="text" id="gka_bote" value="0.17" size="3" oninput="modificar_ka(material_bote, id,1);">
+						<label>b:</label>
+						<input type="text" id="bks_bote" value="0.06" size="3" oninput="modificar_ka(material_bote, id,2);">
+					</td>
+				</tr>
+
+
+				<tr>
+					<td>Kd</td>
+					<td>
+						<label>r:</label>
+						<input type="text" id="rkd_bote" value="0.47" size="3" oninput="modificar_kd(material_bote, id,0);">
+						<label>g:</label>
+						<input type="text" id="gkd_bote" value="0.47" size="3" oninput="modificar_kd(material_bote, id,1);">
+						<label>b:</label>
+						<input type="text" id="bkd_bote" value="0.47" size="3" oninput="modificar_kd(material_bote, id,2);">
+					</td>
+				</tr>
+				<tr>
+					<td>Ks</td>
+					<td>
+						<label>r:</label>
+						<input type="text" id="rks_bote" value="0.01" size="3" oninput="modificar_ks(material_bote,id,0);">
+						<label>g:</label>
+						<input type="text" id="gks_bote" value="0.01" size="3" oninput="modificar_ks(material_bote,id,1);">
+						<label>b:</label>
+						<input type="text" id="bks_bote" value="0.01" size="3" oninput="modificar_ks(material_bote,id,2);">
+					</td>
+				</tr>
+				<tr>
+					<td>Brillo</td>
+					<td>
+					<label>n:</label>
+					<input type="text" id="n_bote" value="9" size="3" oninput="modificar_n(material_bote,id);">
+					</td>
+				</tr>
+			</table>
+		<!----------------------------- Barrels ---------------------------------------->
+		<table id="BodyTableBB">
+			<tr id="HeadTableBB">
+				<td colspan="2">Cañones</td>
+			</tr>
+			<tr>
+				<td>Ka</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rka_barriles" value="0.25" size="3" oninput="modificar_ka(material_barrels, id,0);">
+					<label>g:</label>
+					<input type="text" id="gka_barriles" value="0.25" size="3" oninput="modificar_ka(material_barrels, id,1);">
+					<label>b:</label>
+					<input type="text" id="bks_barriles" value="0.25" size="3" oninput="modificar_ka(material_barrels, id,2);">
+				</td>
+			</tr>
+
+			<tr>
+				<td>Kd</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rkd_barriles" value="0.4" size="3" oninput="modificar_kd(material_barrels, id,0);">
+					<label>g:</label>
+					<input type="text" id="gkd_barriles" value="0.4" size="3" oninput="modificar_kd(material_barrels, id,1);">
+					<label>b:</label>
+					<input type="text" id="bkd_barriles" value="0.4" size="3" oninput="modificar_kd(material_barrels, id,2);">
+				</td>
+			</tr>
+			<tr>
+				<td>Ks</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rks_barriles" value="0.77" size="3" oninput="modificar_ks(material_barrels,id,0);">
+					<label>g:</label>
+					<input type="text" id="gks_barriles" value="0.77" size="3" oninput="modificar_ks(material_barrels,id,1);">
+					<label>b:</label>
+					<input type="text" id="bks_barriles" value="0.77" size="3" oninput="modificar_ks(material_barrels,id,2);">
+				</td>
+			</tr>
+			<tr>
+				<td>Rugosidad</td>
+				<td>
+				<input type="text" id="n_barriles" value="1" size="3" oninput="modificar_rugosidad(material_barrels,id);">
+			</td>
+			</tr>
+			<tr>
+
+				<td>Reflectancia</td>
+				<td>
+				<input type="text" id="f_barriles" value="0.3" size="3" oninput="modificar_reflectancia(material_barrels,id);">
+			</td>
+			</tr>
+		</table>
+
+	<!---------------------------------bala-------------------------------------------------->
+		<table id="BodyTableBB">
+			<tr id="HeadTableBB">
+				<td colspan="2">Bala</td>
+			</tr>
+			<tr>
+				<td>Ka</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rka_bala" value="0.11" size="3" oninput="modificar_ka(material_bala, id,0);">
+					<label>g:</label>
+					<input type="text" id="gka_bala" value="0.06" size="3" oninput="modificar_ka(material_bala, id,1);">
+					<label>b:</label>
+					<input type="text" id="bks_bala" value="0.11" size="3" oninput="modificar_ka(material_bala, id,2);">
+				</td>
+			</tr>
+
+			<tr>
+				<td>Kd</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rkd_bala" value="0.43" size="3" oninput="modificar_kd(material_bala, id,0);">
+					<label>g:</label>
+					<input type="text" id="gkd_bala" value="0.47" size="3" oninput="modificar_kd(material_bala, id,1);">
+					<label>b:</label>
+					<input type="text" id="bkd_bala" value="0.54" size="3" oninput="modificar_kd(material_bala, id,2);">
+				</td>
+			</tr>
+			<tr>
+				<td>Ks</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rks_bala" value="0.33" size="3" oninput="modificar_ks(material_bala,id,0);">
+					<label>g:</label>
+					<input type="text" id="gks_bala" value="0.33" size="3" oninput="modificar_ks(material_bala,id,1);">
+					<label>b:</label>
+					<input type="text" id="bks_bala" value="0.52" size="3" oninput="modificar_ks(material_bala,id,2);">
+				</td>
+			</tr>
+			<tr>
+				<td>Rugosidad</td>
+				<td>
+					<input type="text" id="n_bala" value="20" size="3" oninput="modificar_rugosidad(material_bala,id);">
+				</td>
+			</tr>
+			<tr>
+				<td>Reflectancia</td>
+				<td>
+				<input type="text" id="f_bala" value="1" size="3" oninput="modificar_reflectancia(material_bala,id);">
+				</td>
+			</tr>
+		</table>
+
+		<!---------------------------------soporte-------------------------------------------------->
+		<table id="BodyTableBB">
+				<tr id="HeadTableBB">
+				<td colspan="6">Soporte</td>
+			</tr>
+			<tr>
+				<td>Ka</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rka_soporte" value="0.22" size="3" oninput="modificar_ka(material_soporte, id,0);">
+					<label>g:</label>
+					<input type="text" id="gka_soporte" value="0.09" size="3" oninput="modificar_ka(material_soporte, id,1);">
+					<label>b:</label>
+					<input type="text" id="bks_soporte" value="0.09" size="3" oninput="modificar_ka(material_soporte, id,2);">
+				</td>
+			</tr>
+
+			<tr>
+				<td>Kd</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rkd_soporte" value="0.4" size="3" oninput="modificar_kd(material_soporte, id,0);">
+					<label>g:</label>
+					<input type="text" id="gkd_soporte" value="0.4" size="3" oninput="modificar_kd(material_soporte, id,1);">
+					<label>b:</label>
+					<input type="text" id="bkd_soporte" value="0.4" size="3" oninput="modificar_kd(material_soporte, id,2);">
+				</td>
+			</tr>
+			<tr>
+				<td>Ks</td>
+				<td>
+					<label>r:</label>
+					<input type="text" id="rks_soporte" value="0.01" size="3" oninput="modificar_ks(material_soporte,id,0);">
+					<label>g:</label>
+					<input type="text" id="gks_soporte" value="0.01" size="3" oninput="modificar_ks(material_soporte,id,1);">
+					<label>b:</label>
+					<input type="text" id="bks_soporte" value="0.01" size="3" oninput="modificar_ks(material_soporte,id,2);">
+				</td>
+			</tr>
+			<tr>
+				<td>Brillo</td>
+				<td>
+				<label>n:</label>
+				<input type="text" id="n_soporte" value="0.77" size="3" oninput="modificar_n(material_soporte,id);">
+				</td>
+			</tr>
+		</table>
+
+</body>
+
+</html>
