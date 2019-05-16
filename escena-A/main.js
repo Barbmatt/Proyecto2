@@ -37,7 +37,7 @@ var esfera_puntual;
 var cono_spot;
 var flecha_direccional;
 
-// constante para objetos métalicos (copper)
+// constante para objetos métalicos (Polished Silver)
 var material_m = {
 	ka: [0.23,0.23,0.23],
 	kd: [0.28, 0.28, 0.28],
@@ -46,7 +46,7 @@ var material_m = {
 	f0: 1
 };
 
-// constantes para objetos satinado
+// constantes para objetos satinado (Turquoise)
 var material_s = {
 	ka: [0.10,0.19,0.17],
 	kd: [0.40,0.74,0.70],
@@ -55,7 +55,7 @@ var material_s = {
 	f0: 1
 };
 
-// constantes para objetos rugoso(Black Rubber)
+// constantes para objetos rugoso(Pewter)
 var material_r = {
 	ka: [0.11,0.06,0.11],
 	kd: [0.43,0.47,0.54],
