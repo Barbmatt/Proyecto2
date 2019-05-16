@@ -1,5 +1,3 @@
-
-
 var velocidad_rotacion = 45;			// 45º por segundo en la cámara automática
 var last_draw_time = 0;					// cuándo se dibujó el último cuadro
 var gl;
@@ -90,7 +88,7 @@ function onLoad() {
 	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-20,50,-15]);
 
 	mat4.translate(matriz_modelo_base,matriz_modelo_base,[54.5,0,37.8]);
-	mat4.scale(matriz_modelo_base,matriz_modelo_base,[5,5,5]);
+	mat4.scale(matriz_modelo_base,matriz_modelo_base,[12,5,12]);
 
 	// se empieza a dibujar por cuadro
 	requestAnimationFrame(onRender)
