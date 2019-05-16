@@ -4,7 +4,7 @@ var material_banderas = {
 	kd: [0.7 ,0.27 ,0.08],
 	ks: [0.26 ,0.14 ,0.09],
 	alfa: 0.05,
-	f0:1
+	f0: 1
 };
 
 // Tipo de material para el castillo ----> rugoso (piedra)
@@ -12,7 +12,7 @@ var material_castillo = {
 	ka: [0.13,0.13,0.13],
 	kd: [0.8, 0.8, 0.8],
 	ks: [0.01, 0.01, 0.01],
-	n:20
+	n: 20
 };
 
 // Tipo de material para el piso del castillo ----> rugoso
@@ -20,7 +20,7 @@ var material_piso = {
 	ka: [0.02,0.02,0.02],
 	kd: [0.01, 0.01, 0.01],
 	ks: [0.5, 0.5, 0.5],
-	n:9.85
+	n: 9.85
 };
 
 
@@ -29,7 +29,7 @@ var material_sand = {
 	ka: [0.25,0.22,0.11],
 	kd: [0.8, 0.8, 0.8],
 	ks: [0.01, 0.01, 0.01],
-	n:9.85
+	n: 9.85
 };
 
 
@@ -47,16 +47,16 @@ var material_barrels = {
 	kd: [0.4, 0.4, 0.4],
 	ks: [0.77, 0.77, 0.77],
 	alfa: 1,
-	f0:0.3
+	f0: 0.3
 };
 
 // Tipo de material para la bala  ----> metalica  (estaño)
-var material_bala = {
-	ka: [1,0.06,0.11],  
-	kd: [0.42, 0.47, 0.54],
-	ks: [0.33, 0.33, 0.52],
-	alfa: 2,
-	f0:1
+var material_balas = {
+	ka: [0.03,0.03,0.03],
+	kd: [0.6, 0.7, 0.8],
+	ks: [0.7, 0.7, 0.7],
+	alfa: 20,
+	f0: 1
 };
 
 // Tipo de material para las ruedas  ----> rugoso
@@ -72,13 +72,13 @@ var material_soporte = {
 	ka: [0.22,0.09,0.09],
 	kd: [0.4, 0.4, 0.4],
 	ks: [0.01, 0.01, 0.01],
-	n: 9.85
+	n: 0.77
 };
 
 // Tipo de material para el bote ----> rugoso
 var material_bote = {
-	ka: [0.4,0.17,0.0],
-	kd: [0.47, 0.47, 0.54],
+	ka: [0.4,0.17,0.06],
+	kd: [0.47, 0.47, 0.47],
 	ks: [0.01, 0.01, 0.01],
 	n: 9
 };
@@ -89,7 +89,7 @@ var material_hinges = {
 	kd: [0.42, 0.47, 0.54],
 	ks: [0.33, 0.33, 0.52],
 	alfa: 2,
-	f0:1
+	f0: 1
 };
 
 // Tipo de material para los remos ----> rugoso
@@ -102,8 +102,8 @@ var material_remos = {
 
 // Tipo de material para el agua  ----> satinado
 var material_agua = {
-	ka: [0.1,0.1,0.2],
-	kd: [0.1,0.1,0.1],
+	ka: [0.1,0.2,0.6],
+	kd: [0.1,0.2,0.8],
 	ks: [1,1,1],
 	n: 30
 };

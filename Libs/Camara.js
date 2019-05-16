@@ -4,7 +4,9 @@ class Camara {
 
     // construye la cámara con valores por defecto
     constructor(registerZone) {
-        this.reset(); // para reutilizar código
+        this.r = 90;
+        this.t = 60*Math.PI/180;
+        this.f = 40*Math.PI/180;
         this.matriz_vista = mat4.create();
 
         this.fovy = 50*Math.PI/180; // fovy = 50°
@@ -28,16 +30,8 @@ class Camara {
 
         this.registerZone.addEventListener("wheel", (event) => { this.zoom_mouse(event) }, { passive: true })
         this.registerZone.addEventListener("mousedown", (event) => { this.drag_start(event) })
-        this.registerZone.addEventListener("dblclick", (event) => { this.reset() })
         document.addEventListener("mousemove", (event) => { this.drag_move(event) })
         document.addEventListener("mouseup", () => { this.drag_end() })
-    }
-
-    // resetea la cámara
-    reset() {
-        this.r = 90;
-        this.t = 60*Math.PI/180;
-        this.f = 40*Math.PI/180;
     }
 
     // crea y retorna la matriz de proyección

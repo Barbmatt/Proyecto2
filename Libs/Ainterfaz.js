@@ -1,6 +1,10 @@
 // -----------------------funciones de cámara---------------------------------
 
-function reset_camara() { camara.reset(); }
+function reset_camara() {
+	camara.r = 90;
+	camara.t = 60*Math.PI/180;
+	camara.f = 40*Math.PI/180;
+}
 
 function toggle_camara() {
 	let select = document.getElementById("camara_seleccionada");

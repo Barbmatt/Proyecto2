@@ -10,7 +10,7 @@ var luz_ambiente;
 
 // variables de matrices
 //var matriz_modelo_suelo = mat4.create();
-var matriz_modelo_bala = mat4.create();
+var matriz_modelo_balas = mat4.create();
 var matriz_modelo_castillo = mat4.create();
 var matriz_modelo_bote_cannon = mat4.create();
 var matriz_modelo_luz = mat4.create();
@@ -19,7 +19,7 @@ var matriz_modelo_arena = mat4.create();
 
 //Aux variables,
 var banderas, castillo, puerta;
-var bala, barrels, cannon, ruedas, soporte;
+var balas, barrels, ruedas, soporte;
 var bote, hinges, remos;
 var esfera_puntual;
 var agua;
@@ -27,8 +27,9 @@ var castlebase;
 var arena;
 
 //random para las balas
-let x = Math.random()*100-40;
-let y = Math.random()*100-40;
+let xrnd = new Array(12);
+let yrnd = new Array(12);
+let zrnd = new Array(12);
 
 function onLoad() {
 
@@ -52,7 +53,7 @@ function onLoad() {
 
 	// Elementos que componen al cañon
 	barrels = new Model(barrels_obj, material_barrels, shader_cook.loc_posicion, shader_cook.loc_normal);
-	bala = new Model(esfera_obj, material_bala, shader_cook.loc_posicion, shader_cook.loc_normal);
+	balas = new Model(esfera_obj, material_balas, shader_cook.loc_posicion, shader_cook.loc_normal);
 	ruedas = new Model(ruedas_obj, material_ruedas, shader_phong.loc_posicion, shader_phong.loc_normal);
 	soporte = new Model(soporte_obj, material_soporte, shader_ward.loc_posicion, shader_ward.loc_normal);
 
@@ -67,16 +68,12 @@ function onLoad() {
 	// Luz en forma  de esfera
 	esfera_puntual = new Model(esfera_obj, null, shader_luz.loc_posicion, null);
 
-	// Plataforma para el castillo
-//	castlebase = new Model(castlebase_obj,material_piso,shader_phong.loc_posicion,shader_phong.loc_normal);
-//	mat4.translate(matriz_modelo_castlebase,matriz_modelo_castlebase,[18.9,1.3,19.8]);
-//	mat4.scale(matriz_modelo_castlebase,matriz_modelo_castlebase,[13,15,13]);
-
 	camara = new Camara(canvas);
+	reset_camara();
 
 	iniciar_luces();
 
-	gl.clearColor(0.04,0.04,0.04,1);;
+	gl.clearColor(0.5,0.5,0.6,1);;
 
 	gl.enable(gl.DEPTH_TEST);
 
@@ -89,11 +86,14 @@ function onLoad() {
 
 	mat4.scale(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [8,8,8]);
 	mat4.rotateY(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, 0.9);
-	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [0.2,0,4.23]);
+	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [0.2,0.07,4.23]);
 
 
-	mat4.scale(matriz_modelo_bala, matriz_modelo_bala, [0.08,0.08,0.08]);
-//	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-20,50,-15]);
+	for ( let i = 0; i < 12; i++) {
+		xrnd[i] = Math.random();
+		yrnd[i] = Math.random();
+		zrnd[i] = Math.random();
+	}
 
 	mat4.translate(matriz_modelo_arena,matriz_modelo_arena,[46,0,26]);
 	mat4.scale(matriz_modelo_arena,matriz_modelo_arena,[5,3.4,5]);
@@ -120,6 +120,7 @@ function onRender(now) {
 	dibujar_objeto(puerta, shader_ward, matriz_modelo_castillo);
 	dibujar_objeto(arena,shader_phong,matriz_modelo_arena);
 
+	dibujar_objeto(barrels, shader_ward, matriz_modelo_bote_cannon);
 	dibujar_objeto(ruedas, shader_phong, matriz_modelo_bote_cannon);
 	dibujar_objeto(soporte, shader_ward, matriz_modelo_bote_cannon);
 
@@ -127,41 +128,7 @@ function onRender(now) {
 	dibujar_objeto(hinges, shader_cook, matriz_modelo_bote_cannon);
 	dibujar_objeto(remos, shader_phong, matriz_modelo_bote_cannon);
 
-
-
-
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-5,43,-45]);
-	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
-	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[5,-43,45]);
-
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [0,48,-15]);
-	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
-	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[-0,-48,15]);
-
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [0,43,-10]);
-	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
-	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[0,-43,10]);
-
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-30,43,-20]);
-	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
-	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[30,-43,20]);
-
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-20,45,-30]);
-	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
-	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[20,-45,30]);
-
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [0,43,-50]);
-	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
-	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[0,-43,50]);
-
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [10,43,-60]);
-	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
-	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[-10,-43,60]);
-
-
-	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [20,43,-70]);
-	dibujar_objeto(bala, shader_cook, matriz_modelo_bala);
-	mat4.translate(matriz_modelo_bala,matriz_modelo_bala,[-20,-43,70]);
+	dibujar_balas();
 
 	requestAnimationFrame(onRender);
 }
@@ -185,19 +152,24 @@ function dibujar_luz() {
 }
 
 function dibujar_agua() {
-	let matriz_modelo_agua_p = mat4.create();
-	let matriz_modelo_agua_n = mat4.create();
-	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_p);
-	mat4.translate(matriz_modelo_agua_p, matriz_modelo_agua_p, [0,0,50]);
-	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_p);
-	mat4.translate(matriz_modelo_agua_n, matriz_modelo_agua_n, [0,0,-50]);
-	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_n);
+	let matriz_modelo_agua;
+	for ( let i = -1; i < 2; i++) {
+		matriz_modelo_agua = mat4.create();
+		mat4.translate(matriz_modelo_agua, matriz_modelo_agua, [0,0,i*50]);
+		dibujar_objeto(agua, shader_phong, matriz_modelo_agua);
+	}
 }
 
-//function dibujar_base(shader, material) {
-//	castlebase.material = material;
-//	dibujar_objeto(castlebase, shader, matriz_modelo_castlebase);
-//}
+function dibujar_balas() {
+	let matriz_modelo_balas;
+	for ( let i = -6; i < 6; i++) {
+		matriz_modelo_balas = mat4.create();
+		mat4.rotateY(matriz_modelo_balas, matriz_modelo_balas, -0.6);
+		mat4.translate(matriz_modelo_balas, matriz_modelo_balas, [-10+xrnd[i+6]*10,8+yrnd[i+6]*5,(i*0.5-4)*3+zrnd[i+6]*2 ]);
+		mat4.scale(matriz_modelo_balas, matriz_modelo_balas, [0.2,0.2,0.2]);
+		dibujar_objeto(balas, shader_cook, matriz_modelo_balas);
+	}
+}
 
 function dibujar_objeto(objeto, shader, matriz_modelo) {
 	gl.useProgram(shader.shader_program);

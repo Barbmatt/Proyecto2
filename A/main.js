@@ -98,6 +98,7 @@ function onLoad() {
 	suelo = new Model(suelo_obj, material_suelo, shader_suelo.loc_posicion, shader_suelo.loc_normal);
 
 	camara = new Camara(canvas);
+	reset_camara();
 
 	iniciar_luces();
 
