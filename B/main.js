@@ -15,7 +15,7 @@ var matriz_modelo_castillo = mat4.create();
 var matriz_modelo_bote_cannon = mat4.create();
 var matriz_modelo_luz = mat4.create();
 var matriz_modelo_castlebase = mat4.create();
-var matriz_modelo_base = mat4.create();
+var matriz_modelo_arena = mat4.create();
 
 //Aux variables,
 var banderas, castillo, puerta;
@@ -24,7 +24,7 @@ var bote, hinges, remos;
 var esfera_puntual;
 var agua;
 var castlebase;
-var base_castillo;
+var arena;
 
 //random para las balas
 let x = Math.random()*100-40;
@@ -48,7 +48,7 @@ function onLoad() {
 	mat4.translate(matriz_modelo_castillo,matriz_modelo_castillo,[0.0,1.3,0]);
 	puerta = new Model(puerta_obj, material_puerta, shader_ward.loc_posicion, shader_ward.loc_normal);
 
-	base_castillo = new Model(sandLandscape,material_sand, shader_phong.loc_posicion,shader_phong.loc_normal);
+	arena = new Model(arena_obj,material_sand, shader_phong.loc_posicion,shader_phong.loc_normal);
 
 	// Elementos que componen al cañon
 	barrels = new Model(barrels_obj, material_barrels, shader_cook.loc_posicion, shader_cook.loc_normal);
@@ -84,17 +84,19 @@ function onLoad() {
 
 	mat4.scale(matriz_modelo_castillo, matriz_modelo_castillo, [10,10,10]);
 	mat4.rotateY(matriz_modelo_castillo, matriz_modelo_castillo, 180);
-	mat4.translate(matriz_modelo_castillo, matriz_modelo_castillo, [-2,-0.1,-8]);
-	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [20,1,25]);
-	mat4.scale(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [5,5,5]);
-	mat4.rotateY(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, 0.8);
+	mat4.translate(matriz_modelo_castillo, matriz_modelo_castillo, [-2.5,0.04,-7]);
+
+
+	mat4.scale(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [8,8,8]);
+	mat4.rotateY(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, 0.9);
+	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [0.2,0,4.23]);
 
 
 	mat4.scale(matriz_modelo_bala, matriz_modelo_bala, [0.08,0.08,0.08]);
 //	mat4.translate(matriz_modelo_bala, matriz_modelo_bala, [-20,50,-15]);
 
-	mat4.translate(matriz_modelo_base,matriz_modelo_base,[54.5,0,37.8]);
-	mat4.scale(matriz_modelo_base,matriz_modelo_base,[12,5,12]);
+	mat4.translate(matriz_modelo_arena,matriz_modelo_arena,[46,0,26]);
+	mat4.scale(matriz_modelo_arena,matriz_modelo_arena,[5,3.4,5]);
 
 	// se empieza a dibujar por cuadro
 	requestAnimationFrame(onRender)
@@ -116,8 +118,7 @@ function onRender(now) {
 	dibujar_objeto(banderas, shader_cook, matriz_modelo_castillo);
 	dibujar_objeto(castillo, shader_phong, matriz_modelo_castillo);
 	dibujar_objeto(puerta, shader_ward, matriz_modelo_castillo);
-	dibujar_objeto(base_castillo,shader_phong,matriz_modelo_base);
-	dibujar_objeto(barrels, shader_cook, matriz_modelo_bote_cannon);
+	dibujar_objeto(arena,shader_phong,matriz_modelo_arena);
 
 	dibujar_objeto(ruedas, shader_phong, matriz_modelo_bote_cannon);
 	dibujar_objeto(soporte, shader_ward, matriz_modelo_bote_cannon);
