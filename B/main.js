@@ -45,7 +45,7 @@ function onLoad() {
 	// Elementos que componen al castillo
 	banderas = new Model(banderas_obj, material_banderas, shader_cook.loc_posicion, shader_cook.loc_normal);
 
-	castillo = new Model(castillo_obj, material_castillo, shader_phong.loc_posicion, shader_phong.loc_normal);
+	castillo = new Model(castillo_obj, material_castillo, shader_ward.loc_posicion, shader_ward.loc_normal);
 	mat4.translate(matriz_modelo_castillo,matriz_modelo_castillo,[0.0,1.3,0]);
 	puerta = new Model(puerta_obj, material_puerta, shader_ward.loc_posicion, shader_ward.loc_normal);
 
@@ -54,13 +54,13 @@ function onLoad() {
 	// Elementos que componen al cañon
 	barrels = new Model(barrels_obj, material_barrels, shader_cook.loc_posicion, shader_cook.loc_normal);
 	balas = new Model(esfera_obj, material_balas, shader_cook.loc_posicion, shader_cook.loc_normal);
-	ruedas = new Model(ruedas_obj, material_ruedas, shader_phong.loc_posicion, shader_phong.loc_normal);
+	ruedas = new Model(ruedas_obj, material_ruedas, shader_ward.loc_posicion, shader_ward.loc_normal);
 	soporte = new Model(soporte_obj, material_soporte, shader_ward.loc_posicion, shader_ward.loc_normal);
 
 	// Elementos que componen al bote
-	bote = new Model(bote_obj,  material_bote, shader_phong.loc_posicion, shader_phong.loc_normal);
+	bote = new Model(bote_obj,  material_bote, shader_ward.loc_posicion, shader_ward.loc_normal);
 	hinges = new Model(hinges_obj, material_hinges, shader_ward.loc_posicion, shader_ward.loc_normal);
-	remos = new Model(remos_obj, material_remos, shader_phong.loc_posicion, shader_phong.loc_normal);
+	remos = new Model(remos_obj, material_remos, shader_ward.loc_posicion, shader_ward.loc_normal);
 
 	agua = new Model(agua_obj, material_agua, shader_phong.loc_posicion, shader_phong.loc_normal);
 
@@ -116,17 +116,17 @@ function onRender(now) {
 	//dibujar_base(shader_phong, material_piso);
 
 	dibujar_objeto(banderas, shader_cook, matriz_modelo_castillo);
-	dibujar_objeto(castillo, shader_phong, matriz_modelo_castillo);
+	dibujar_objeto(castillo, shader_ward, matriz_modelo_castillo);
 	dibujar_objeto(puerta, shader_ward, matriz_modelo_castillo);
 	dibujar_objeto(arena,shader_phong,matriz_modelo_arena);
 
 	dibujar_objeto(barrels, shader_ward, matriz_modelo_bote_cannon);
-	dibujar_objeto(ruedas, shader_phong, matriz_modelo_bote_cannon);
+	dibujar_objeto(ruedas, shader_ward, matriz_modelo_bote_cannon);
 	dibujar_objeto(soporte, shader_ward, matriz_modelo_bote_cannon);
 
-	dibujar_objeto(bote, shader_phong, matriz_modelo_bote_cannon);
+	dibujar_objeto(bote, shader_ward, matriz_modelo_bote_cannon);
 	dibujar_objeto(hinges, shader_cook, matriz_modelo_bote_cannon);
-	dibujar_objeto(remos, shader_phong, matriz_modelo_bote_cannon);
+	dibujar_objeto(remos, shader_ward, matriz_modelo_bote_cannon);
 
 	dibujar_balas();
 

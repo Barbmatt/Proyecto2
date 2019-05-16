@@ -1,9 +1,9 @@
 // Tipo de material para la bandera  ----> satinado
 var material_banderas = {
-	ka: [0.19 ,0.07 ,0.02],
-	kd: [0.7 ,0.27 ,0.08],
-	ks: [0.26 ,0.14 ,0.09],
-	alfa: 0.05,
+	ka: [0.17 ,0.01 ,0.01],
+	kd: [0.61 ,0.04 ,0.04],
+	ks: [0.73 ,0.63 ,0.63],
+	alfa: 1,
 	f0: 1
 };
 
