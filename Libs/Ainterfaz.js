@@ -81,43 +81,24 @@ function intensidad_ambienteb(id) { luz_ambiente[2] = document.getElementById(id
 
 function toggle(luz, id, tipo_luz) {
 	let dibujar = luz.dibujar;
-	if ( dibujar ) {
-		if ( tipo_luz == 0 ) {
-			document.getElementById("intensidad_spotr").disabled = true;
-			document.getElementById("intensidad_spotg").disabled = true;
-			document.getElementById("intensidad_spotb").disabled = true;
-		}
-		else if ( tipo_luz == 1 ) {
-			document.getElementById("intensidad_puntualr").disabled = true;
-			document.getElementById("intensidad_puntualg").disabled = true;
-			document.getElementById("intensidad_puntualb").disabled = true;
-		}
-		else {
-			document.getElementById("intensidad_direccionalr").disabled = true;
-			document.getElementById("intensidad_direccionalg").disabled = true;
-			document.getElementById("intensidad_direccionalb").disabled = true;
-		}
-		luz.intensidad = [0,0,0];
+	if ( dibujar ) luz.intensidad = [0,0,0];
+	if ( tipo_luz == 0 ) {
+		if ( !dibujar ) luz.intensidad = [ispot[0], ispot[1], ispot[2]];
+		document.getElementById("intensidad_spotr").disabled = dibujar;
+		document.getElementById("intensidad_spotg").disabled = dibujar;
+		document.getElementById("intensidad_spotb").disabled = dibujar;
+	}
+	else if ( tipo_luz == 1 ) {
+		if ( !dibujar ) luz.intensidad = [ipuntual[0], ipuntual[1], ipuntual[2]];
+		document.getElementById("intensidad_puntualr").disabled = dibujar;
+		document.getElementById("intensidad_puntualg").disabled = dibujar;
+		document.getElementById("intensidad_puntualb").disabled = dibujar;
 	}
 	else {
-		if ( tipo_luz == 0 ) {
-			luz.intensidad = [ispot[0], ispot[1], ispot[2]];
-			document.getElementById("intensidad_spotr").disabled = false;
-			document.getElementById("intensidad_spotg").disabled = false;
-			document.getElementById("intensidad_spotb").disabled = false;
-		}
-		else if ( tipo_luz == 1 ) {
-			luz.intensidad = [ipuntual[0], ipuntual[1], ipuntual[2]];
-			document.getElementById("intensidad_puntualr").disabled = false;
-			document.getElementById("intensidad_puntualg").disabled = false;
-			document.getElementById("intensidad_puntualb").disabled = false;
-		}
-		else {
-			luz.intensidad = [idireccional[0], idireccional[1], idireccional[2]];
-			document.getElementById("intensidad_direccionalr").disabled = false;
-			document.getElementById("intensidad_direccionalg").disabled = false;
-			document.getElementById("intensidad_direccionalb").disabled = false;
-		}
+		if ( !dibujar ) luz.intensidad = [idireccional[0], idireccional[1], idireccional[2]];
+		document.getElementById("intensidad_direccionalr").disabled = dibujar;
+		document.getElementById("intensidad_direccionalg").disabled = dibujar;
+		document.getElementById("intensidad_direccionalb").disabled = dibujar;
 	}
 	luz.dibujar = !dibujar;
 	document.getElementById(id).innerText = dibujar ? "Off" : "On";

@@ -22,11 +22,23 @@ function posicionz(luz, id) { luz.posicion[2] = document.getElementById(id).valu
 
 
 // funciones de intensidad de luces.
-function intensidadr(luz, id) { luz.intensidad[0] = document.getElementById(id).value; }
+function intensidadr(luz, id) {
+	let valor = document.getElementById(id).value;
+	ipuntual[0] = valor;
+	luz.intensidad[0] = valor;
+}
 
-function intensidadg(luz, id) { luz.intensidad[1] = document.getElementById(id).value; }
+function intensidadg(luz, id) {
+	let valor = document.getElementById(id).value;
+	ipuntual[1] = valor;
+	luz.intensidad[1] = valor;
+}
 
-function intensidadb(luz, id) { luz.intensidad[2] = document.getElementById(id).value; }
+function intensidadb(luz, id) {
+	let valor = document.getElementById(id).value;
+	ipuntual[2] = valor;
+	luz.intensidad[2] = valor;
+}
 
 
 
@@ -53,9 +65,10 @@ function intensidad_ambienteg(id) { luz_ambiente[1] = document.getElementById(id
 function intensidad_ambienteb(id) { luz_ambiente[2] = document.getElementById(id).value; }
 
 function iniciar_luces() {
-	// se setean las luces (spot, puntual, direccional y ambiente)
+	// se setean las luces puntual y ambiente
 
 	luz_puntual = new Light([0,0,0],[0,0,0],[0,0,0],0,[0,0,0]);
+	ipuntual = [0,0,0];
 	luz_ambiente = [0,0,0];
 
 	posicionx(luz_puntual, "pos_puntualx");
@@ -75,10 +88,15 @@ function iniciar_luces() {
 }
 
 //Funcion on/off luz puntual
-function toggle(luz,id) {
-	let dibujar = luz.dibujar;
-	luz.dibujar = !dibujar;
-	document.getElementById(id).innerText = dibujar ? "Off" : "On";
+function toggle() {
+	let dibujar = luz_puntual.dibujar;
+	if ( dibujar ) luz_puntual.intensidad = [0,0,0];
+	else luz_puntual.intensidad = [ipuntual[0], ipuntual[1], ipuntual[2]];
+	document.getElementById("intensidad_puntualr").disabled = dibujar;
+	document.getElementById("intensidad_puntualg").disabled = dibujar;
+	document.getElementById("intensidad_puntualb").disabled = dibujar;
+	luz_puntual.dibujar = !dibujar;
+	document.getElementById("dibujar_puntual").innerText = dibujar ? "Off" : "On";
 }
 
 
@@ -102,7 +120,6 @@ function modificar_rugosidad(material,id){
 	material.alfa =  document.getElementById(id).value;
 }
 
-function modificar_relfectancia(material,id){
+function modificar_reflectancia(material,id){
 	material.f0 =  document.getElementById(id).value;
 }
-
