@@ -73,7 +73,7 @@ function onLoad() {
 
 	iniciar_luces();
 
-	gl.clearColor(0.5,0.5,0.6,1);;
+	gl.clearColor(0.01,0.01,0.08,1);;
 
 	gl.enable(gl.DEPTH_TEST);
 

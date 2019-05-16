@@ -102,8 +102,8 @@ var material_remos = {
 
 // Tipo de material para el agua  ----> satinado
 var material_agua = {
-	ka: [0.1,0.2,0.6],
-	kd: [0.1,0.2,0.8],
+	ka: [0.07,0.07,0.3],
+	kd: [0.07,0.07,0.3],
 	ks: [1,1,1],
 	n: 30
 };
