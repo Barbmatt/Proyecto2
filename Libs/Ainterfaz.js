@@ -166,8 +166,4 @@ function iniciar_luces() {
 	intensidad_ambienter("intensidad_ambienter");
 	intensidad_ambienteg("intensidad_ambienteg");
 	intensidad_ambienteb("intensidad_ambienteb");
-
-	console.log(luz_spot.intensidad);
-	console.log(luz_puntual.intensidad);
-	console.log(luz_direccional.intensidad);
 }

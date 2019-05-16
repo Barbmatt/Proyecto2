@@ -82,20 +82,20 @@ function onLoad() {
 	shader_s = new Cook3(gl);
 	shader_r = new Ward3(gl);
 	shader_suelo = new Phong3(gl);
-	shader_luz = new Color_posicion(gl);
+	shader_luz = new Shader_luz(gl);
 
 	// objetos para las luces
-	esfera_puntual = new Model(esfera_obj,shader_luz.loc_posicion,null);
-	cono_spot = new Model(spot_obj,shader_luz.loc_posicion,null);
-	flecha_direccional = new Model(direccional_obj,shader_luz.loc_posicion,null);
+	esfera_puntual = new Model(esfera_obj,null,shader_luz.loc_posicion,null);
+	cono_spot = new Model(spot_obj,null,shader_luz.loc_posicion,null);
+	flecha_direccional = new Model(direccional_obj,null,shader_luz.loc_posicion,null);
 
 
 	// Cargo los objetos
-	esfera = new Model(esfera_obj,shader_m.loc_posicion,shader_m.loc_normal);
+	esfera = new Model(esfera_obj,null,shader_m.loc_posicion,shader_m.loc_normal);
 	mat4.scale(matriz_modelo_esfera,matriz_modelo_esfera,[3,3,3]);
 
 	// cargo el suelo
-	suelo = new Model(suelo_obj, shader_suelo.loc_posicion, shader_suelo.loc_normal);
+	suelo = new Model(suelo_obj, material_suelo, shader_suelo.loc_posicion, shader_suelo.loc_normal);
 
 	camara = new Camara(canvas);
 
@@ -126,7 +126,7 @@ function onRender(now) {
 	if ( luz_puntual.dibujar ) dibujar_luz(luz_puntual,1, esfera_puntual);
 	if ( luz_direccional.dibujar ) dibujar_luz(luz_direccional,2,flecha_direccional);
 
-	dibujar_suelo(shader_suelo, material_suelo);
+	dibujar_suelo(shader_suelo);
 
 	// Dibujar esferas
 	dibujar_esfera(shader_m, material_m, 0);
@@ -143,11 +143,12 @@ function dibujar_luz(luz, que_dibujar, objeto) {
 	if ( que_dibujar == 0 || que_dibujar == 1 ) vector = luz.posicion;
 	let matriz_modelo_luz = mat4.create();
 	mat4.translate(matriz_modelo_luz,matriz_modelo_luz,vector);
-	let intensidad = luz.intensidad;
-	gl.uniform3f(shader_luz.u_intensidad, intensidad[0],intensidad[1],intensidad[2]);
+	shader_luz.set_luz(luz.intensidad);
 	if ( que_dibujar == 0 ) {
 		// rotar cono de spot
-		let escala = luz.angulo > 180 ? 10 : 10*luz.angulo/180;
+		let escala = 0;
+		if ( luz.angulo > 0 ) escala = luz.angulo > 180 ? 10 : 10*luz.angulo/180;
+		else luz.angulo = 0;
 		mat4.scale(matriz_modelo_luz, matriz_modelo_luz, [escala,2,escala]);
 	}
 	else if ( que_dibujar == 2 ) {
@@ -155,7 +156,6 @@ function dibujar_luz(luz, que_dibujar, objeto) {
 		mat4.targetTo(matriz_modelo_luz, [0,0,0], [0,1,0], direccion);
 	}
 	gl.uniformMatrix4fv(shader_luz.u_matriz_modelo, false,matriz_modelo_luz);
-
 	gl.uniformMatrix4fv(shader_luz.u_matriz_vista, false, camara.vista());
 
 	gl.bindVertexArray(objeto.vao);
@@ -164,11 +164,10 @@ function dibujar_luz(luz, que_dibujar, objeto) {
 	gl.useProgram(null);
 }
 
-function dibujar_suelo(shader, material) {
+function dibujar_suelo(shader) {
 	gl.useProgram(shader.shader_program);
 	gl.uniformMatrix4fv(shader.u_matriz_vista, false, camara.vista());
 	gl.uniformMatrix4fv(shader.u_matriz_proyeccion, false, camara.proyeccion());
-	suelo.material = material;
 	var matriz_modelo_suelo;
 	for ( let i = -5; i <= 5; i++ )
 		for ( let j = -5; j <= 5; j++ ) {

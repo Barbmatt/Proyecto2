@@ -57,6 +57,7 @@ function onLoad() {
 	remos = new Model(remos_obj, material_remos, shader_phong.loc_posicion, shader_phong.loc_normal);
 
 	agua = new Model(agua_obj, material_agua, shader_phong.loc_posicion, shader_phong.loc_normal);
+	console.log(agua)
 
 	// Luz en forma  de esfera
 	esfera_puntual = new Model(esfera_obj, null, shader_luz.loc_posicion, null);
@@ -145,6 +146,7 @@ function dibujar_luz() {
 function dibujar_agua() {
 	let matriz_modelo_agua_p = mat4.create();
 	let matriz_modelo_agua_n = mat4.create();
+	console.log(agua.material);
 	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_p);
 	mat4.translate(matriz_modelo_agua_p, matriz_modelo_agua_p, [0,0,50]);
 	dibujar_objeto(agua, shader_phong, matriz_modelo_agua_p);
@@ -163,6 +165,7 @@ function dibujar_objeto(objeto, shader, matriz_modelo) {
 	gl.uniformMatrix4fv(shader.u_matriz_proyeccion, false, camara.proyeccion());
 	gl.uniformMatrix4fv(shader.u_matriz_modelo, false, matriz_modelo);
 	shader.set_luz(luz_puntual, luz_ambiente);
+	console.log(objeto.material);
 	shader.set_material(objeto.material);
 
 	let matriz_normal = mat4.create();
