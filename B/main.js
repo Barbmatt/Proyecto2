@@ -86,7 +86,7 @@ function onLoad() {
 
 	mat4.scale(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [8,8,8]);
 	mat4.rotateY(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, 0.9);
-	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [0.2,0.07,4.23]);
+	mat4.translate(matriz_modelo_bote_cannon, matriz_modelo_bote_cannon, [0.2,0.10,4.23]);
 
 
 	for ( let i = 0; i < 12; i++) {
@@ -120,7 +120,7 @@ function onRender(now) {
 	dibujar_objeto(puerta, shader_ward, matriz_modelo_castillo);
 	dibujar_objeto(arena,shader_phong,matriz_modelo_arena);
 
-	dibujar_objeto(barrels, shader_ward, matriz_modelo_bote_cannon);
+	dibujar_objeto(barrels, shader_cook, matriz_modelo_bote_cannon);
 	dibujar_objeto(ruedas, shader_ward, matriz_modelo_bote_cannon);
 	dibujar_objeto(soporte, shader_ward, matriz_modelo_bote_cannon);
 

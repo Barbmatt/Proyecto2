@@ -43,19 +43,19 @@ var material_puerta = {
 
 // Tipo de material para el cañon  ----> metalica (cromo)
 var material_barrels = {
-	ka: [0.25,0.25,0.25],
-	kd: [0.4, 0.4, 0.4],
+	ka: [0.23,0.23,0.23],
+	kd: [0.28, 0.28, 0.28],
 	ks: [0.77, 0.77, 0.77],
-	alfa: 1,
+	alfa: 2,
 	f0: 0.3
 };
 
 // Tipo de material para la bala  ----> metalica  (estaño)
-var material_balas = {
-	ka: [0.03,0.03,0.03],
-	kd: [0.6, 0.7, 0.8],
-	ks: [0.7, 0.7, 0.7],
-	alfa: 20,
+var material_balas ={
+	ka: [0.01,0.01,0.01],
+	kd: [0.28, 0.28, 0.28],
+	ks: [0.77, 0.77, 0.77],
+	alfa: 2,
 	f0: 1
 };
 
